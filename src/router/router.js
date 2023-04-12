@@ -146,4 +146,4 @@ export default createBrowserRouter([
             return null
         },
     }
-], { basename: "/Ultimate-Garments" })
+])
