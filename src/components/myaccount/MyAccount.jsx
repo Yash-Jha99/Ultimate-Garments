@@ -90,6 +90,8 @@ const MyAccount = () => {
       {location.pathname !== "/myaccount" && (
         <Box
           m={{ xs: "", sm: "0px 64px 0 16px" }}
+          height={{ xs: "none", sm: "75vh" }}
+          overflow="auto"
           bgcolor="white"
           boxShadow={2}
           width="100%"

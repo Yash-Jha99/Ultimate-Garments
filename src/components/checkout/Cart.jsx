@@ -33,7 +33,6 @@ const CartItem = ({
       productId,
     });
     if (response.status === 201) {
-      alert("Moved to wishlist");
       // setNotify({ open: true, message: "Product Wishlisted" });
     }
   };

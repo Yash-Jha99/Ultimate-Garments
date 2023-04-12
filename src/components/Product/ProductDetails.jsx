@@ -37,6 +37,7 @@ const ProductDetails = () => {
     discount,
     offer = "FLAT ₹100 OFF On ₹999 (Code:SHIRT100)",
     colors,
+    options,
   } = product;
 
   const query = new URLSearchParams(search);
@@ -88,13 +89,18 @@ const ProductDetails = () => {
     if (!selectedColor.id) return setError("color");
     if (!selectedSize.id) return setError("size");
 
+    const selectedOption = options.find(
+      (opt) =>
+        opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
+    );
+    if (!selectedOption) return setError("option");
+
     setNotify({ open: true, message: "Product Added To Cart" });
     dispatch(
       addToCart({
         productId: id,
         quantity: qty,
-        colorId: selectedColor.id,
-        sizeId: selectedSize.id,
+        productOptionId: selectedOption.productOptionId,
       })
     );
   };

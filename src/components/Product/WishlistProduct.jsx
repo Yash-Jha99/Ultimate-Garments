@@ -42,12 +42,20 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
   };
 
   const handleAddToCart = () => {
+    const sizeProductOptionId = sizes.find(
+      (size) => size.id === selectedSize
+    ).productOptionId;
+    const colorProductOptionId = colors.find(
+      (color) => color.id === selectedColor
+    ).productOptionId;
+    if (sizeProductOptionId !== colorProductOptionId)
+      return alert("This size-color combination not available");
+
     dispatch(
       addToCart({
         productId,
         quantity,
-        colorId: selectedColor,
-        sizeId: selectedSize,
+        productOptionId: sizeProductOptionId,
       })
     );
     onAddToCart();
@@ -92,7 +100,7 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
                 {sizes.map((size) => (
                   <MenuItem
                     sx={{ textTransform: "uppercase" }}
-                    key={size.id}
+                    key={size.productOptionId}
                     value={size.id}
                   >
                     {size.name}
@@ -121,7 +129,7 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
                 {colors.map((color) => (
                   <MenuItem
                     sx={{ textTransform: "capitalize" }}
-                    key={color.id}
+                    key={color.productOptionId}
                     value={color.id}
                   >
                     {color.name}

@@ -1,7 +1,7 @@
 {
   "name": "ultimate_garments",
-  "homepage": "https://yash-jha99.github.io/ultimate-garments",
-  "version": "0.1.0",
+  "homepage": "https://yash-jha99.github.io/Ultimate-Garments",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",

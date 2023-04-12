@@ -1,0 +1,98 @@
+import { Box, Divider, Stack, Typography } from "@mui/material";
+import React from "react";
+import { useLoaderData } from "react-router-dom";
+
+const OrderDetails = () => {
+  const orderDetail = useLoaderData();
+  const {
+    image,
+    name,
+    price,
+    date,
+    color,
+    size,
+    first_name: firstName,
+    last_name: lastName,
+    mobile_number: mobileNumber,
+    city,
+    state,
+    pincode,
+    address,
+    town,
+  } = orderDetail;
+  return (
+    <Stack spacing={{ xs: 1, sm: 4 }} p={1}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 1, sm: 2 }}
+        divider={<Divider orientation="vertical" flexItem />}
+      >
+        <Stack
+          direction="row"
+          width={{ xs: "100%", sm: "50%" }}
+          spacing={2}
+          pb={{ xs: 1, sm: 3 }}
+        >
+          <Stack alignItems="center">
+            <Box
+              height={{ xs: 72, sm: 120 }}
+              width={{ xs: 72, sm: 120 }}
+              mx={{ xs: 0, sm: 2 }}
+            >
+              <img
+                src={image}
+                alt="product"
+                style={{
+                  objectFit: "contain",
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+            </Box>
+          </Stack>
+          <Stack width="100%" overflow="hidden" textOverflow="ellipsis">
+            <Typography variant="body2">{name}</Typography>
+            <Typography mb={2} fontWeight="bold" variant="h6" color="black">
+              ₹ {price}
+            </Typography>
+            <Typography variant="body2">
+              <b>Color : </b>
+              {color}
+            </Typography>
+            <Typography variant="body2">
+              <b>Size : </b>
+              {size}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Stack width={{ xs: "100%", sm: "50%" }}>
+          <Typography variant="body2">
+            <b>Ordered on </b> {date}
+          </Typography>
+        </Stack>
+      </Stack>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 1, sm: 2 }}
+        divider={<Divider orientation="vertical" flexItem />}
+      >
+        <Box width={{ xs: "100%", sm: "50%" }}>
+          <Typography variant="body1" fontWeight="bold">
+            Delivery Address
+          </Typography>
+          <Typography fontWeight={500} variant="subtitle1" mb={1}>
+            {firstName} {lastName}
+          </Typography>
+          <Typography variant="body2">
+            {address}, {town}
+            <br /> {city} - {pincode}, {state}{" "}
+          </Typography>
+          <Typography mt={1}>Mobile Number</Typography>
+          <Typography variant="body2">{mobileNumber}</Typography>
+        </Box>
+      </Stack>
+    </Stack>
+  );
+};
+
+export default OrderDetails;

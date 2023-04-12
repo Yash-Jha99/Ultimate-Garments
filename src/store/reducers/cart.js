@@ -14,21 +14,27 @@ const cartSlice = createSlice({
         addedToCart: (state, action) => {
             state.items.push(action.payload)
         },
+
         removedFromCart: (state, action) => {
             state.items = state.items.filter(product => product.id !== action.payload.id)
         },
+
         updatedCart: (state, action) => {
             state.items = state.items.map(product => product.id === action.payload.id ? { ...product, quantity: action.payload.quantity } : product)
         },
+
         setDeliveryAddress: (state, action) => {
             state.deliveryAddress = action.payload
             localStorage.setItem("da", JSON.stringify(action.payload))
         },
+
         initializeCart: (state, action) => {
             state.items = action.payload
             state.buyNow = null
+            localStorage.removeItem("bn")
             state.loading = false
         },
+
         setBuyNow: (state, action) => {
             state.buyNow = action.payload
             localStorage.setItem("bn", JSON.stringify(action.payload))

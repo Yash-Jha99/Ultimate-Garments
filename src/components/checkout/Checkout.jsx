@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
+import { postData } from "../../Services/NodeService";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
@@ -66,9 +67,49 @@ const Checkout = () => {
     )
     .reduce((total, discount) => total + discount, 0);
 
+  const handleCheckout = async () => {
+    const reqBody1 = {
+      products: cart.map((item) => ({
+        id: item.productId,
+        price: item.price,
+        quantity: item.quantity,
+        optionId: item.product_option_id,
+      })),
+      paymentType: "Cash",
+      addressId: deliveryAddress.id,
+    };
+    const res = await postData("order", reqBody1);
+    if (res.status === 201) {
+      const response = await postData("payment/create-checkout-session", {
+        cartsId: cart.map((item) => item.id),
+      });
+      if (response.status === 200) window.location.replace(response.data.url);
+    }
+  };
+
   useEffect(() => {
     setActiveStep(stepRoutes.indexOf(location.pathname));
   }, [location.pathname]);
+
+  if (cart.length === 0)
+    return (
+      <Stack
+        height="100vh"
+        justifyContent="center"
+        alignItems="center"
+        spacing={6}
+      >
+        <Typography variant="h1">No Product Found</Typography>
+        <Button
+          variant="contained"
+          size="large"
+          color="secondary"
+          onClick={() => navigate("/")}
+        >
+          Start Shopping
+        </Button>
+      </Stack>
+    );
 
   return (
     <Box>
@@ -145,82 +186,99 @@ const Checkout = () => {
                 </Typography>
               </Box>
             )}
-            <Typography variant="h6" borderBottom="1px solid lightgray" pb={1}>
-              PRICE DETAILS ({cart.length} items)
-            </Typography>
-            {location.pathname === "/checkout/payment" ? (
-              <Stack spacing={2} direction="row" justifyContent="space-between">
-                <Typography variant="body2">Total Price</Typography>
-                <Typography variant="body2">₹{totalAmount}</Typography>
-              </Stack>
-            ) : (
+            {cart.length !== 0 && (
               <>
+                <Typography
+                  variant="h6"
+                  borderBottom="1px solid lightgray"
+                  pb={1}
+                >
+                  PRICE DETAILS ({cart.length} items)
+                </Typography>
+                {location.pathname === "/checkout/payment" ? (
+                  <Stack
+                    spacing={2}
+                    direction="row"
+                    justifyContent="space-between"
+                  >
+                    <Typography variant="body2">Total Price</Typography>
+                    <Typography variant="body2">₹{totalAmount}</Typography>
+                  </Stack>
+                ) : (
+                  <>
+                    <Stack
+                      spacing={2}
+                      direction="row"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="body2">
+                        Total MRP (Inc. of Taxes)
+                      </Typography>
+                      <Typography variant="body2">
+                        ₹{totalAmount + totalDiscount}
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      spacing={2}
+                      direction="row"
+                      justifyContent="space-between"
+                    >
+                      <Typography variant="body2">Discount</Typography>
+                      <Typography variant="body2">
+                        - ₹{totalDiscount}
+                      </Typography>
+                    </Stack>
+                  </>
+                )}
                 <Stack
                   spacing={2}
                   direction="row"
                   justifyContent="space-between"
                 >
-                  <Typography variant="body2">
-                    Total MRP (Inc. of Taxes)
-                  </Typography>
-                  <Typography variant="body2">
-                    ₹{totalAmount + totalDiscount}
-                  </Typography>
+                  <Typography variant="body2">Shipping</Typography>
+                  <Typography variant="body2">Free</Typography>
                 </Stack>
                 <Stack
                   spacing={2}
                   direction="row"
+                  borderTop="1px solid lightgray"
                   justifyContent="space-between"
+                  pt={1}
                 >
-                  <Typography variant="body2">Discount</Typography>
-                  <Typography variant="body2">- ₹{totalDiscount}</Typography>
+                  <Typography fontWeight={500} variant="body1">
+                    {location.pathname === "/checkout/payment"
+                      ? "Amount Payable"
+                      : "Total Amount"}
+                  </Typography>
+                  <Typography fontWeight={500} variant="body1">
+                    ₹{totalAmount}
+                  </Typography>
                 </Stack>
+                <Typography
+                  variant="body1"
+                  color="white"
+                  bgcolor="success.main"
+                  p={0.5}
+                  textAlign="center"
+                >
+                  You Saved ₹{totalDiscount} on this order
+                </Typography>
+                <Button
+                  sx={{ p: 1, fontSize: 20 }}
+                  variant="contained"
+                  color="secondary"
+                  fullWidth
+                  size="large"
+                  onClick={() => {
+                    if (activeStep === 0) navigate(stepRoutes[1]);
+                    if (activeStep === 1) navigate(stepRoutes[2]);
+                    if (activeStep === 2) handleCheckout();
+                  }}
+                >
+                  CHECKOUT SECURELY
+                </Button>
               </>
             )}
-
-            <Stack spacing={2} direction="row" justifyContent="space-between">
-              <Typography variant="body2">Shipping</Typography>
-              <Typography variant="body2">Free</Typography>
-            </Stack>
-            <Stack
-              spacing={2}
-              direction="row"
-              borderTop="1px solid lightgray"
-              justifyContent="space-between"
-              pt={1}
-            >
-              <Typography fontWeight={500} variant="body1">
-                {location.pathname === "/checkout/payment"
-                  ? "Amount Payable"
-                  : "Total Amount"}
-              </Typography>
-              <Typography fontWeight={500} variant="body1">
-                ₹{totalAmount}
-              </Typography>
-            </Stack>
-            <Typography
-              variant="body1"
-              color="white"
-              bgcolor="success.main"
-              p={0.5}
-              textAlign="center"
-            >
-              You Saved ₹{totalDiscount} on this order
-            </Typography>
-            <Button
-              sx={{ p: 1, fontSize: 20 }}
-              variant="contained"
-              color="secondary"
-              fullWidth
-              size="large"
-              onClick={() => {
-                if (activeStep === 0) navigate(stepRoutes[1]);
-                if (activeStep === 1) navigate(stepRoutes[2]);
-                if (activeStep === 2) alert("Payment");
-              }}
-            >
-              CHECKOUT SECURELY
-            </Button>
           </Stack>
         </Stack>
       </Box>

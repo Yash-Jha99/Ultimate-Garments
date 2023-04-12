@@ -16,6 +16,8 @@ import LoginPage from "../components/Auth/LoginPage";
 import { getData } from "../Services/NodeService";
 import Admin from "../components/Admin/Admin"
 import { getCart, setBuyNow } from "../store/reducers/cart";
+import Order from "../components/myaccount/Order";
+import OrderDetails from "../components/myaccount/OrderDetails";
 
 export default createBrowserRouter([
     {
@@ -82,14 +84,25 @@ export default createBrowserRouter([
                     },
                     {
                         path: "/myaccount/orders",
-                        element: <>order</>
+                        element: <Order />,
+                        loader: async () => {
+                            return await getData('order')
+                        }
                     },
                     {
                         path: "/myaccount/address",
                         element: <h1>addresss</h1>
                     },
+                    {
+                        path: "/myaccount/orders/:orderId/:orderItemId",
+                        element: <OrderDetails />,
+                        loader: async ({ params }) => {
+                            return await getData('order/' + params.orderId + "/" + params.orderItemId)
+                        }
+                    },
                 ]
-            }
+            },
+
         ]
     },
 
@@ -101,16 +114,15 @@ export default createBrowserRouter([
             if (!auth.isLoggedIn) {
                 return redirect("/login?from=" + request.url)
             }
+            if (!localStorage.getItem("bn"))
+                store.dispatch(getCart())
+
             return null
         },
         children: [
             {
                 path: "/checkout/cart",
                 element: <Cart />,
-                loader: ({ request }) => {
-                    store.dispatch(getCart())
-                    return null
-                },
             },
             {
                 path: "/checkout/shipping",
@@ -134,4 +146,4 @@ export default createBrowserRouter([
             return null
         },
     }
-])
+], { basename: "/Ultimate-Garments" })
