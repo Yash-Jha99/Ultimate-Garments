@@ -27,7 +27,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Logo from "../../logo.png";
 
 import Logout from "@mui/icons-material/Logout";
 import {
@@ -153,7 +152,7 @@ const Header = (props) => {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Box py={2}>
-        <img src={Logo} alt="Ultimate Garments" width={150} />
+        <img src="%PUBLIC_URL%/logo.png" alt="Ultimate Garments" width={150} />
       </Box>
       <Divider />
       <List>
