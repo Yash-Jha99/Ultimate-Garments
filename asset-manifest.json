@@ -1,17 +1,18 @@
 {
   "files": {
     "main.css": "/Ultimate-Garments/static/css/main.3619aa03.css",
-    "main.js": "/Ultimate-Garments/static/js/main.cd0abfff.js",
+    "main.js": "/Ultimate-Garments/static/js/main.8f79c620.js",
     "static/js/787.a83a24c2.chunk.js": "/Ultimate-Garments/static/js/787.a83a24c2.chunk.js",
     "static/media/banner-1.jpg": "/Ultimate-Garments/static/media/banner-1.82ccf2ea77da15dd842c.jpg",
     "static/media/login-image-final.jpg": "/Ultimate-Garments/static/media/login-image-final.e1081b7708a6cc3f13e5.jpg",
+    "static/media/logo.png": "/Ultimate-Garments/static/media/logo.762a3511f89a029d5a38.png",
     "index.html": "/Ultimate-Garments/index.html",
     "main.3619aa03.css.map": "/Ultimate-Garments/static/css/main.3619aa03.css.map",
-    "main.cd0abfff.js.map": "/Ultimate-Garments/static/js/main.cd0abfff.js.map",
+    "main.8f79c620.js.map": "/Ultimate-Garments/static/js/main.8f79c620.js.map",
     "787.a83a24c2.chunk.js.map": "/Ultimate-Garments/static/js/787.a83a24c2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3619aa03.css",
-    "static/js/main.cd0abfff.js"
+    "static/js/main.8f79c620.js"
   ]
 }
