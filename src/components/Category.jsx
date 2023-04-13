@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Product from "./Product/Product";
-
+import useDataFetch from "../hooks/useDataFetch";
 import { useParams } from "react-router-dom";
 import {
   Grid,
@@ -20,10 +20,11 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CheckCircle, Circle, FilterAlt } from "@mui/icons-material";
 import { getData } from "../Services/NodeService";
+import Loader from "./General/Loader";
 
 const Category = () => {
   const { categoryName } = useParams();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [sizeFilters, setSizeFilters] = useState([]);
   const [colorFilters, setColorFilters] = useState([]);
   const [priceFilters, setPriceFilters] = useState(null);
@@ -40,31 +41,57 @@ const Category = () => {
     setOpenDrawer(!openDrawer);
   };
 
-  const getFilters = async () => {
-    const sizes = await getData("product/options/size");
-    if (sizes)
-      setSizeFilters(sizes.map((size) => ({ ...size, active: false })));
-    const colors = await getData("product/options/color");
-    if (colors)
-      setColorFilters(colors.map((color) => ({ ...color, active: false })));
-  };
+  useDataFetch("product/options/size", [], (data) => {
+    setSizeFilters(data.map((size) => ({ ...size, active: false })));
+  });
 
-  const getProducts = async () => {
-    const filters = sizeFilters
-      .filter((size) => size.active)
-      .map((size) => "size=" + size.name)
-      .concat(
-        colorFilters
-          .filter((color) => color.active)
-          .map((color) => "color=" + color.name)
-      )
-      .join("&");
+  useDataFetch("product/options/color", [], (data) => {
+    setColorFilters(data.map((color) => ({ ...color, active: false })));
+  });
 
-    const products = await getData(
-      "product/category/" + categoryName.replace(/-/g, " ") + "?" + filters
-    );
-    setData(products);
-  };
+  const filters = sizeFilters
+    .filter((size) => size.active)
+    .map((size) => "size=" + size.name)
+    .concat(
+      colorFilters
+        .filter((color) => color.active)
+        .map((color) => "color=" + color.name)
+    )
+    .join("&");
+
+  const { error, loading } = useDataFetch(
+    "product/category/" + categoryName.replace(/-/g, " ") + "?" + filters,
+    [],
+    (products) => setData(products)
+  );
+
+  if (loading) return <Loader />;
+
+  // const getFilters = async () => {
+  //   const sizes = await getData("product/options/size");
+  //   if (sizes)
+
+  //   const colors = await getData("product/options/color");
+  //   if (colors)
+
+  // };
+
+  // const getProducts = async () => {
+  //   const filters = sizeFilters
+  //     .filter((size) => size.active)
+  //     .map((size) => "size=" + size.name)
+  //     .concat(
+  //       colorFilters
+  //         .filter((color) => color.active)
+  //         .map((color) => "color=" + color.name)
+  //     )
+  //     .join("&");
+
+  //   const products = await getData(
+  //     "product/category/" + categoryName.replace(/-/g, " ") + "?" + filters
+  //   );
+  //   setData(products);
+  // };
 
   const handleChange = (event) => {
     const { name, checked } = event.target;
@@ -190,13 +217,13 @@ const Category = () => {
     </Box>
   );
 
-  useEffect(() => {
-    getProducts();
-  }, [sizeFilters, colorFilters, categoryName]);
+  // useEffect(() => {
+  //   getProducts();
+  // }, [sizeFilters, colorFilters, categoryName]);
 
-  useEffect(() => {
-    getFilters();
-  }, []);
+  // useEffect(() => {
+  //   getFilters();
+  // }, []);
 
   return (
     <>

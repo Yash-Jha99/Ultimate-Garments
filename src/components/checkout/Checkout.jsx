@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { postData } from "../../Services/NodeService";
+import Loader from "../General/Loader";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
@@ -51,6 +52,7 @@ const Checkout = () => {
     "/checkout/payment",
   ];
   const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
   const { items, deliveryAddress, buyNow } = useSelector((state) => state.cart);
   const cart = buyNow ?? items;
   const location = useLocation();
@@ -78,18 +80,25 @@ const Checkout = () => {
       paymentType: "Cash",
       addressId: deliveryAddress.id,
     };
+    setLoading(true);
     const res = await postData("order", reqBody1);
     if (res.status === 201) {
       const response = await postData("payment/create-checkout-session", {
         cartsId: cart.map((item) => item.id),
+        orderId: res.id,
       });
-      if (response.status === 200) window.location.replace(response.data.url);
+      if (response.status === 200) {
+        window.location.replace(response.data.url);
+        setLoading(false);
+      } else setLoading(false);
     }
   };
 
   useEffect(() => {
     setActiveStep(stepRoutes.indexOf(location.pathname));
   }, [location.pathname]);
+
+  if (loading) return <Loader />;
 
   if (cart.length === 0)
     return (
@@ -271,7 +280,8 @@ const Checkout = () => {
                   size="large"
                   onClick={() => {
                     if (activeStep === 0) navigate(stepRoutes[1]);
-                    if (activeStep === 1) navigate(stepRoutes[2]);
+                    if (activeStep === 1 && deliveryAddress)
+                      navigate(stepRoutes[2]);
                     if (activeStep === 2) handleCheckout();
                   }}
                 >

@@ -54,7 +54,7 @@ export const getData = async (url) => {
     }
     catch (error) {
         console.log("Get DATA Error: ", error.response)
-        return null
+        return { status: error.response.status, data: error.response.data }
     }
 }
 

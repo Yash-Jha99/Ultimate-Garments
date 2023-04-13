@@ -7,28 +7,78 @@ import {
   Select,
   Button,
   Avatar,
+  CircularProgress,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BoltIcon from "@mui/icons-material/Bolt";
 import { Box, Stack, Snackbar, Alert } from "@mui/material";
 import React, { useState } from "react";
-import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
-import { deleteData, getData, postData } from "../../Services/NodeService";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { deleteData, postData } from "../../Services/NodeService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, setBuyNow } from "../../store/reducers/cart";
+import useDataFetch from "../../hooks/useDataFetch";
+import Error from "../General/Error";
 
 const ProductDetails = () => {
   const { search } = useLocation();
-  const product = useLoaderData();
+  const { productName } = useParams();
   const dispatch = useDispatch();
   const {
     cart: { items: cart },
     auth: { user },
   } = useSelector((state) => state);
   const navigate = useNavigate();
+  const query = new URLSearchParams(search);
+  const [qty, setQty] = useState(1);
+  const [notify, setNotify] = useState({ open: false, message: "" });
+  const [inValid, setInValid] = useState("");
+
+  const [selectedSize, setSelectedSize] = useState({});
+  const [selectedColor, setSelectedColor] = useState({});
+  const [wishlisted, setWishlisted] = useState(false);
+  const [newWishlistId, setNewWishlistedId] = useState("");
+  const [isProductInCart, setIsProductInCart] = useState(false);
+
+  const {
+    error,
+    loading,
+    data: product,
+  } = useDataFetch("product/" + productName.replace(/-/g, " "), {}, (data) => {
+    const selectedColor =
+      data.colors.find((color) => color.label === query.get("color")) ?? {};
+    const selectedSize =
+      data.sizes.find((size) => size.name === query.get("size")) ?? {};
+    setSelectedSize(selectedSize ?? {});
+    setSelectedColor(selectedColor ?? {});
+    setWishlisted(data.wishlistId !== null);
+    setNewWishlistedId(data.wishlistId);
+    setIsProductInCart(
+      cart.findIndex(
+        (item) =>
+          item.productId === data.id &&
+          item.color === selectedColor.label &&
+          item.size === selectedSize.name
+      ) !== -1
+    );
+  });
+
+  if (loading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
+        <CircularProgress color="secondary" />
+      </Box>
+    );
+
+  if (error) return <Error>Product Not Found</Error>;
+
   const {
     id,
-    wishlistId,
     image,
     name,
     price,
@@ -39,29 +89,6 @@ const ProductDetails = () => {
     colors,
     options,
   } = product;
-
-  const query = new URLSearchParams(search);
-
-  const [qty, setQty] = useState(1);
-  const [selectedSize, setSelectedSize] = useState(
-    sizes.find((size) => size.name === query.get("size")) ?? {}
-  );
-  const [selectedColor, setSelectedColor] = useState(
-    colors.find((color) => color.label === query.get("color")) ?? {}
-  );
-
-  const [notify, setNotify] = useState({ open: false, message: "" });
-  const [wishlisted, setWishlisted] = useState(wishlistId !== null);
-  const [newWishlistId, setNewWishlistedId] = useState(wishlistId);
-  const [error, setError] = useState("");
-
-  const isProductInCart =
-    cart.findIndex(
-      (item) =>
-        item.productId === id &&
-        item.color === selectedColor.label &&
-        item.size === selectedSize.name
-    ) !== -1;
 
   const handleWishlist = async () => {
     if (!wishlisted) {
@@ -86,14 +113,14 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     if (isProductInCart) return navigate("/checkout/cart");
 
-    if (!selectedColor.id) return setError("color");
-    if (!selectedSize.id) return setError("size");
+    if (!selectedColor.id) return setInValid("color");
+    if (!selectedSize.id) return setInValid("size");
 
     const selectedOption = options.find(
       (opt) =>
         opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
     );
-    if (!selectedOption) return setError("option");
+    if (!selectedOption) return setInValid("option");
 
     setNotify({ open: true, message: "Product Added To Cart" });
     dispatch(
@@ -106,8 +133,14 @@ const ProductDetails = () => {
   };
 
   const handleBuyNow = () => {
-    if (!selectedColor.id) return setError("color");
-    if (!selectedSize.id) return setError("size");
+    if (!selectedColor.id) return setInValid("color");
+    if (!selectedSize.id) return setInValid("size");
+
+    const selectedOption = options.find(
+      (opt) =>
+        opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
+    );
+    if (!selectedOption) return setInValid("option");
 
     dispatch(setBuyNow([{ ...product, quantity: 1 }]));
     navigate("/checkout/shipping");
@@ -207,7 +240,7 @@ const ProductDetails = () => {
             <Typography
               fontWeight="medium"
               mr={2}
-              color={error === "color" && "error"}
+              color={inValid === "color" && "error"}
               sx={{ textTransform: "capitalize" }}
               variant="subtitle1"
             >
@@ -220,7 +253,7 @@ const ProductDetails = () => {
                   bgcolor: color.value,
                 }}
                 onClick={() => {
-                  setError("");
+                  setInValid("");
                   setSelectedColor(color);
                 }}
                 key={color.id}
@@ -233,7 +266,7 @@ const ProductDetails = () => {
             <Typography
               mr={2}
               fontWeight="medium"
-              color={error === "size" && "error"}
+              color={inValid === "size" && "error"}
               variant="subtitle1"
             >
               Size :{" "}
@@ -252,7 +285,7 @@ const ProductDetails = () => {
                   fontSize: "16px",
                 }}
                 onClick={() => {
-                  setError("");
+                  setInValid("");
                   setSelectedSize(size);
                 }}
                 key={size.id}
@@ -340,13 +373,6 @@ const ProductDetails = () => {
       </Snackbar>
     </Box>
   );
-};
-
-export const productLoader = async ({ params }) => {
-  const response = await getData(
-    "product/" + params.productName.replace(/-/g, " ")
-  );
-  return response;
 };
 
 export default ProductDetails;

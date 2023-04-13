@@ -4,19 +4,17 @@ import Product from "./Product/Product";
 // import ProductImage from "../images/product.jpg";
 import { getData } from "../Services/NodeService";
 import { Await, defer, useLoaderData } from "react-router-dom";
-import { Grid, Skeleton } from "@mui/material";
+import { Grid } from "@mui/material";
+import Loader from "./General/Loader";
+import Error from "./General/Error";
 
 const Home = () => {
   const { products } = useLoaderData();
+
   return (
     <>
-      <Suspense
-        fallback={<Skeleton variant="rectangular" width={210} height={60} />}
-      >
-        <Await
-          resolve={products}
-          errorElement={<p>Error loading package location!</p>}
-        >
+      <Suspense fallback={<Loader />}>
+        <Await resolve={products} errorElement={Error}>
           {(resolvedData) => (
             <>
               <Banner />

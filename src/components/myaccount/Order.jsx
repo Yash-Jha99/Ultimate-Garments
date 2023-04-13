@@ -1,6 +1,7 @@
-import React from "react";
-import { useLoaderData, NavLink } from "react-router-dom";
+import React, { Suspense } from "react";
+import { useLoaderData, NavLink, Await } from "react-router-dom";
 import { Typography, Box, Stack } from "@mui/material";
+import Loader from "../General/Loader";
 
 const OrderItem = ({ id, name, date, image, price, orderItemId }) => {
   return (
@@ -45,22 +46,28 @@ const OrderItem = ({ id, name, date, image, price, orderItemId }) => {
 };
 
 const Order = () => {
-  const data = useLoaderData();
+  const { data } = useLoaderData();
 
   return (
-    <Stack spacing={{ xs: 1, sm: 2 }}>
-      {data.map((order) => (
-        <OrderItem
-          id={order.id}
-          key={order.key}
-          name={order.name}
-          image={order.image}
-          date={order.date}
-          price={order.price}
-          orderItemId={order.orderItemId}
-        />
-      ))}
-    </Stack>
+    <Suspense fallback={<Loader />}>
+      <Await resolve={data}>
+        {(orders) => (
+          <Stack spacing={{ xs: 1, sm: 2 }}>
+            {orders.map((order) => (
+              <OrderItem
+                id={order.id}
+                key={order.orderItemId}
+                name={order.name}
+                image={order.image}
+                date={order.date}
+                price={order.price}
+                orderItemId={order.orderItemId}
+              />
+            ))}
+          </Stack>
+        )}
+      </Await>
+    </Suspense>
   );
 };
 

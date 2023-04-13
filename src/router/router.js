@@ -1,9 +1,9 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createBrowserRouter, defer, redirect } from "react-router-dom";
 import App from '../App';
 import Home from "../components/Home"
 import { loader as homeLoader } from '../components/Home';
 import Category from '../components/Category';
-import ProductDetails, { productLoader } from '../components/Product/ProductDetails';
+import ProductDetails from '../components/Product/ProductDetails';
 import store from '../store/store';
 import Cart from '../components/checkout/Cart';
 import WishList from '../components/Product/Wishlist';
@@ -18,6 +18,7 @@ import Admin from "../components/Admin/Admin"
 import { getCart, setBuyNow } from "../store/reducers/cart";
 import Order from "../components/myaccount/Order";
 import OrderDetails from "../components/myaccount/OrderDetails";
+import Error from "../components/General/Error";
 
 export default createBrowserRouter([
     {
@@ -28,6 +29,7 @@ export default createBrowserRouter([
                 store.dispatch(getCart())
             return null
         },
+        errorElement: <Error />,
         children: [
             {
                 path: "",
@@ -37,7 +39,7 @@ export default createBrowserRouter([
             {
                 path: ":productName",
                 element: <ProductDetails />,
-                loader: productLoader,
+
             },
             {
                 path: "category/:categoryName",
@@ -86,7 +88,8 @@ export default createBrowserRouter([
                         path: "/myaccount/orders",
                         element: <Order />,
                         loader: async () => {
-                            return await getData('order')
+                            const data = getData('order')
+                            return defer({ data })
                         }
                     },
                     {
@@ -109,6 +112,7 @@ export default createBrowserRouter([
     {
         path: "/checkout",
         element: <Checkout />,
+        errorElement: <Error />,
         loader: ({ request }) => {
             const { auth } = store.getState()
             if (!auth.isLoggedIn) {
@@ -137,6 +141,7 @@ export default createBrowserRouter([
     {
         path: "/admin",
         element: <Admin />,
+        errorElement: <Error />,
         loader: () => {
             const { isAdmin } = store.getState().auth.user
             store.dispatch(setBuyNow(null))
