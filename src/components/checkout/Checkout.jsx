@@ -2,11 +2,12 @@ import { Home, Payment, ShoppingCart } from "@mui/icons-material";
 import { Button, Typography, Stepper, Step, StepLabel } from "@mui/material";
 import { Box, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { postData } from "../../Services/NodeService";
 import Loader from "../General/Loader";
+import { addToCheckout } from "../../store/reducers/checkout";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
@@ -60,6 +61,7 @@ const Checkout = () => {
   } = useSelector((state) => state.checkout);
   const { items: cart } = useSelector((state) => state.cart);
   const location = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const checkoutItems = checkout ?? cart;
@@ -106,7 +108,7 @@ const Checkout = () => {
 
   if (loading) return <Loader />;
 
-  if (checkoutItems.length === 0)
+  if (checkoutItems.length === 0 || cart.length === 0)
     return (
       <Stack
         height="100vh"
@@ -285,7 +287,10 @@ const Checkout = () => {
                   fullWidth
                   size="large"
                   onClick={() => {
-                    if (activeStep === 0) navigate(stepRoutes[1]);
+                    if (activeStep === 0) {
+                      dispatch(addToCheckout(cart));
+                      navigate(stepRoutes[1]);
+                    }
                     if (activeStep === 1 && deliveryAddress)
                       navigate(stepRoutes[2]);
                     if (activeStep === 2 && paymentMethod) handleCheckout();
