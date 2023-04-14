@@ -44,9 +44,7 @@ const drawerWidth = 260;
 const AccountMenu = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { name, mobile_number: mobileNumber } = useSelector(
-    (state) => state.auth.user
-  );
+  const { name, mobileNumber } = useSelector((state) => state.auth.user);
 
   const dispatch = useDispatch();
 

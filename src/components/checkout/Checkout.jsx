@@ -64,7 +64,8 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const checkoutItems = checkout ?? cart;
+  let checkoutItems = checkout;
+  if (location.pathname === "/checkout/cart") checkoutItems = cart;
 
   const totalAmount = checkoutItems
     .map((product) => product.price * product.quantity)
@@ -92,8 +93,7 @@ const Checkout = () => {
     const res = await postData("order", reqBody1);
     if (res.status === 201) {
       const response = await postData("payment/create-checkout-session", {
-        cartsId: checkoutItems.map((item) => item.id),
-        orderId: res.id,
+        orderItemIds: res.data.map((item) => item.id),
       });
       if (response.status === 200) {
         window.location.replace(response.data.url);
@@ -108,7 +108,7 @@ const Checkout = () => {
 
   if (loading) return <Loader />;
 
-  if (checkoutItems.length === 0 || cart.length === 0)
+  if (checkoutItems.length === 0 && cart.length === 0)
     return (
       <Stack
         height="100vh"

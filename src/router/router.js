@@ -94,7 +94,7 @@ export default createBrowserRouter([
                     },
                     {
                         path: "/myaccount/address",
-                        element: <h1>addresss</h1>
+                        element: <Shipping />
                     },
                     {
                         path: "/myaccount/orders/:orderId/:orderItemId",
@@ -118,6 +118,7 @@ export default createBrowserRouter([
             if (!auth.isLoggedIn) {
                 return redirect("/login?from=" + request.url)
             }
+            else store.dispatch(getCart())
 
             return null
         },

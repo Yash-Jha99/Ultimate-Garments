@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Checkbox,
-  Grid,
-  TextField,
-  Stack,
-  Button,
-  Typography,
-  Box,
-  CircularProgress,
-} from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
 import { getData, postData } from "../../Services/NodeService";
+import AddressForm from "../myaccount/AddressForm";
+import AddressItem from "../myaccount/AddressItem";
+import Loader from "../General/Loader";
+import { useLocation } from "react-router-dom";
 
 const Shipping = () => {
   const [showForm, setShowForm] = useState(false);
@@ -55,6 +50,7 @@ const Shipping = () => {
   ];
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const { deliveryAddress } = useSelector((state) => state.checkout);
 
   const handleChange = (e) => {
@@ -121,113 +117,41 @@ const Shipping = () => {
           (address) => address.id === data[0].defaultAddressId
         );
         setDefaultAddressId(data[0].defaultAddressId);
-        if (!deliveryAddress) {
+        if (!deliveryAddress && location.pathname === "/checkout/shipping") {
           setActiveAddress(activeAddress);
           dispatch(setDeliveryAddress(activeAddress));
         } else setActiveAddress(deliveryAddress);
       }
     })();
-  }, []);
+  }, [location]);
 
-  if (loading)
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <CircularProgress />
-      </Box>
-    );
+  if (loading) return <Loader />;
 
   return (
     <>
       {showForm || address.length === 0 ? (
-        <>
-          <Grid p={2} container rowSpacing={3} columnSpacing={2}>
-            {Object.keys(formDetails).map((label, index) =>
-              index < 8 ? (
-                <Grid key={label} item xs={12} sm={6}>
-                  <TextField
-                    error={error[label]}
-                    color="text"
-                    label={formLabels[index]}
-                    required
-                    size="small"
-                    fullWidth
-                    value={formDetails[label]}
-                    onChange={handleChange}
-                    name={label}
-                  />
-                </Grid>
-              ) : (
-                <Stack pt={2} direction="row" alignItems="center" key={index}>
-                  <span>
-                    <Checkbox
-                      color="secondary"
-                      checked={formDetails.isDefault}
-                      onChange={handleChange}
-                      name="isDefault"
-                    />
-                  </span>
-                  <span>Make this my default address</span>
-                </Stack>
-              )
-            )}
-          </Grid>
-          <Button
-            variant="contained"
-            color="inherit"
-            fullWidth
-            onClick={handleAdd}
-          >
-            Add Address
-          </Button>
-        </>
+        <AddressForm
+          formDetails={formDetails}
+          formLabels={formLabels}
+          error={error}
+          onChange={handleChange}
+          onAdd={handleAdd}
+        />
       ) : (
         <Box maxWidth={{ xs: "100%", sm: "70%" }}>
           <Typography mb={2} variant="h6">
             Select Address
           </Typography>
           {address.map((item, index) => (
-            <Box
+            <AddressItem
               key={index}
-              sx={{ cursor: "pointer" }}
-              border={
-                activeAddress.id === item.id
-                  ? "2px solid #03a9f4"
-                  : "1px solid lightgray"
-              }
-              padding={2}
-              mb={2}
-              position="relative"
-              onClick={() => {
-                setActiveAddress(item);
-                dispatch(setDeliveryAddress(item));
+              {...{
+                item,
+                setActiveAddress,
+                activeAddressId: activeAddress.id,
+                defaultAddressId,
               }}
-            >
-              {item.id === defaultAddressId && (
-                <Typography
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bgcolor: "secondary.main",
-                    px: 1,
-                    color: "white",
-                  }}
-                  variant="button"
-                >
-                  Default
-                </Typography>
-              )}
-
-              <Typography fontWeight={600} variant="subtitle1" mb={1}>
-                {item.firstName} {item.lastName} {"(" + item.pinCode + ")"}
-              </Typography>
-              <Typography variant="body2">
-                {item.address}, {item.town}
-              </Typography>
-              <Typography variant="subtitle2">
-                {item.city}, {item.state}{" "}
-              </Typography>
-            </Box>
+            />
           ))}
           <Button
             sx={{ mt: 2 }}

@@ -6,11 +6,12 @@ import {
   Radio,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPaymentMethod } from "../../store/reducers/checkout";
 
 const Payment = () => {
-  const [paymentType, setPaymentType] = useState("");
+  const { paymentMethod } = useSelector((state) => state.checkout);
+  const [paymentType, setPaymentType] = useState(paymentMethod ?? "");
   const dispatch = useDispatch();
 
   const handleChange = (e) => {

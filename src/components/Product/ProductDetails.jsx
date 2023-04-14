@@ -33,7 +33,11 @@ const ProductDetails = () => {
   const location = useLocation();
   const query = new URLSearchParams(search);
   const [qty, setQty] = useState(1);
-  const [notify, setNotify] = useState({ open: false, message: "" });
+  const [notify, setNotify] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
   const [inValid, setInValid] = useState("");
 
   const [selectedSize, setSelectedSize] = useState({});
@@ -90,7 +94,11 @@ const ProductDetails = () => {
         userId: user.id,
       });
       if (response.status === 201) {
-        setNotify({ open: true, message: "Product Wishlisted" });
+        setNotify({
+          open: true,
+          message: "Product Wishlisted",
+          severity: "success",
+        });
         setWishlisted(true);
         setNewWishlistedId(response.data.wishlistId);
       }
@@ -98,7 +106,11 @@ const ProductDetails = () => {
     }
     const response = await deleteData("wishlist/" + newWishlistId);
     if (response.status === 200) {
-      setNotify({ open: true, message: "Product removed from wishlist" });
+      setNotify({
+        open: true,
+        message: "Product removed from wishlist",
+        severity: "success",
+      });
       setWishlisted(false);
     }
   };
@@ -114,9 +126,20 @@ const ProductDetails = () => {
       (opt) =>
         opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
     );
-    if (!selectedOption) return setInValid("option");
+    if (!selectedOption) {
+      setNotify({
+        open: true,
+        message: "Selected size-color combination doesn't exist",
+        severity: "info",
+      });
+      return;
+    }
 
-    setNotify({ open: true, message: "Product Added To Cart" });
+    setNotify({
+      open: true,
+      message: "Product Added To Cart",
+      severity: "success",
+    });
     dispatch(
       addToCart({
         productId: id,
@@ -135,9 +158,26 @@ const ProductDetails = () => {
       (opt) =>
         opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
     );
-    if (!selectedOption) return setInValid("option");
+    if (!selectedOption) {
+      setNotify({
+        open: true,
+        message: "Selected size-color combination doesn't exist",
+        severity: "info",
+      });
+      return;
+    }
 
-    dispatch(addToCheckout([{ ...product, quantity: 1 }]));
+    dispatch(
+      addToCheckout([
+        {
+          productId: id,
+          price,
+          product_option_id: selectedOption.productOptionId,
+          quantity: qty,
+          discount,
+        },
+      ])
+    );
     navigate("/checkout/shipping");
   };
 
@@ -145,7 +185,7 @@ const ProductDetails = () => {
     if (reason === "clickaway") {
       return;
     }
-    setNotify({ open: false, message: "" });
+    setNotify({ open: false, message: "", severity: "" });
   };
 
   return (
@@ -219,66 +259,76 @@ const ProductDetails = () => {
             <Typography variant="subtitle2">{offer}</Typography>
           </Stack>
           {colors?.length !== 0 && (
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography
-                fontWeight="medium"
-                mr={2}
-                color={inValid === "color" && "error"}
-                sx={{ textTransform: "capitalize" }}
-                variant="subtitle1"
-              >
-                Color : {selectedColor.label}{" "}
-              </Typography>
-              {colors.map((color) => (
-                <Avatar
-                  sx={{
-                    cursor: "pointer",
-                    bgcolor: color.value,
-                  }}
-                  onClick={() => {
-                    setInValid("");
-                    setSelectedColor(color);
-                  }}
-                  key={color.id}
+            <>
+              {inValid === "color" && (
+                <Typography color="error">Please select a color</Typography>
+              )}
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography
+                  fontWeight={inValid === "color" ? "bold" : "medium"}
+                  mr={2}
+                  color={inValid === "color" && "error"}
+                  sx={{ textTransform: "capitalize" }}
+                  variant="subtitle1"
                 >
-                  {selectedColor.id === color.id ? <Check /> : ""}
-                </Avatar>
-              ))}
-            </Stack>
+                  Color* : {selectedColor.label}{" "}
+                </Typography>
+                {colors.map((color) => (
+                  <Avatar
+                    sx={{
+                      cursor: "pointer",
+                      bgcolor: color.value,
+                    }}
+                    onClick={() => {
+                      setInValid("");
+                      setSelectedColor(color);
+                    }}
+                    key={color.id}
+                  >
+                    {selectedColor.id === color.id ? <Check /> : ""}
+                  </Avatar>
+                ))}
+              </Stack>
+            </>
           )}
           {sizes?.length !== 0 && (
-            <Stack direction="row" spacing={1} alignItems="center" pt={1}>
-              <Typography
-                mr={2}
-                fontWeight="medium"
-                color={inValid === "size" && "error"}
-                variant="subtitle1"
-              >
-                Size :{" "}
-              </Typography>
-              {sizes.map((size) => (
-                <Avatar
-                  sx={{
-                    cursor: "pointer",
-                    bgcolor: "white",
-                    border: "2px solid",
-                    borderColor:
-                      selectedSize.id === size.id
-                        ? "secondary.main"
-                        : "lightgray",
-                    color: "black",
-                    fontSize: "16px",
-                  }}
-                  onClick={() => {
-                    setInValid("");
-                    setSelectedSize(size);
-                  }}
-                  key={size.id}
+            <>
+              {inValid === "size" && (
+                <Typography color="error">Please select a size</Typography>
+              )}
+              <Stack direction="row" spacing={1} alignItems="center" pt={1}>
+                <Typography
+                  mr={2}
+                  fontWeight={inValid === "size" ? "bold" : "medium"}
+                  color={inValid === "size" && "error"}
+                  variant="subtitle1"
                 >
-                  {size.name}
-                </Avatar>
-              ))}
-            </Stack>
+                  Size* :{" "}
+                </Typography>
+                {sizes.map((size) => (
+                  <Avatar
+                    sx={{
+                      cursor: "pointer",
+                      bgcolor: "white",
+                      border: "2px solid",
+                      borderColor:
+                        selectedSize.id === size.id
+                          ? "secondary.main"
+                          : "lightgray",
+                      color: "black",
+                      fontSize: "16px",
+                    }}
+                    onClick={() => {
+                      setInValid("");
+                      setSelectedSize(size);
+                    }}
+                    key={size.id}
+                  >
+                    {size.name}
+                  </Avatar>
+                ))}
+              </Stack>
+            </>
           )}
           <Stack direction="row" spacing={2} alignItems="center" pt={1}>
             <Typography fontWeight="medium" variant="subtitle1">
@@ -349,7 +399,7 @@ const ProductDetails = () => {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
-          severity="success"
+          severity={notify.severity || "success"}
           sx={{ width: "100%" }}
           variant="filled"
           elevation={2}
