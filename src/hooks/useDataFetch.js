@@ -8,6 +8,7 @@ const useDataFetch = (url, initial, cb = null) => {
 
     useEffect(() => {
         (async () => {
+            setLoading(true)
             const response = await getData(url)
             setLoading(false)
             if (response.status) {

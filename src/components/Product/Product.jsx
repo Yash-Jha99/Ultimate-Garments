@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography, IconButton, Snackbar, Alert } from "@mui/material";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useSelector } from "react-redux";
@@ -17,11 +17,14 @@ const Product = ({
   const [wishlisted, setWishlisted] = useState(wishlistId !== null);
   const [newWishlistId, setNewWishlistedId] = useState(wishlistId);
   const [notify, setNotify] = React.useState({ open: false, message: "" });
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
 
   const handleClick = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
 
     if (!wishlisted) {
       const response = await postData("wishlist", {

@@ -6,12 +6,16 @@ import {
   Radio,
 } from "@mui/material";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setPaymentMethod } from "../../store/reducers/checkout";
 
 const Payment = () => {
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentType, setPaymentType] = useState("");
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    setPaymentMethod(e.target.value);
+    setPaymentType(e.target.value);
+    dispatch(setPaymentMethod(e.target.value));
   };
 
   return (
@@ -21,13 +25,13 @@ const Payment = () => {
       </Typography>
       <RadioGroup
         aria-labelledby="demo-controlled-radio-buttons-group"
-        name="paymentMethod"
-        value={paymentMethod}
+        name="paymentType"
+        value={paymentType}
         onChange={handleChange}
       >
         <FormControlLabel
           sx={{ pr: 4 }}
-          value="Cash On Delivery"
+          value="Cash"
           control={<Radio color="secondary" />}
           label="Cash On Delivery"
         />

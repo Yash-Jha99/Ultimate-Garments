@@ -183,8 +183,9 @@ const LoginPage = () => {
       bgcolor="white"
       textAlign="center"
       pt={2}
+      sx={{ width: { xs: 360, sm: 440 }, mx: "auto" }}
     >
-      <Typography variant="h4">
+      <Typography variant="h5">
         Login/Sign Up to explore great designs
       </Typography>
       <DialogTitle>

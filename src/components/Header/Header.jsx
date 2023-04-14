@@ -201,7 +201,7 @@ const Header = (props) => {
                 <MenuIcon />
               </IconButton>
               <Link to="/">
-                <img src="/logo.png" alt="logo" width={80} />
+                <img src={Logo} alt="Ultimate Garments" width={80} />
               </Link>
               <Box sx={{ display: { xs: "none", sm: "flex" } }}>
                 {categories.map((category) => (

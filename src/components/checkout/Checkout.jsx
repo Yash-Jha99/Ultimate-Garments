@@ -53,16 +53,22 @@ const Checkout = () => {
   ];
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const { items, deliveryAddress, buyNow } = useSelector((state) => state.cart);
-  const cart = buyNow ?? items;
+  const {
+    items: checkout,
+    deliveryAddress,
+    paymentMethod,
+  } = useSelector((state) => state.checkout);
+  const { items: cart } = useSelector((state) => state.cart);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const totalAmount = cart
+  const checkoutItems = checkout ?? cart;
+
+  const totalAmount = checkoutItems
     .map((product) => product.price * product.quantity)
     .reduce((total, price) => total + price, 0);
 
-  const totalDiscount = cart
+  const totalDiscount = checkoutItems
     .map(
       (product) =>
         Math.ceil((product.price * product.discount) / 100) * product.quantity
@@ -71,7 +77,7 @@ const Checkout = () => {
 
   const handleCheckout = async () => {
     const reqBody1 = {
-      products: cart.map((item) => ({
+      products: checkoutItems.map((item) => ({
         id: item.productId,
         price: item.price,
         quantity: item.quantity,
@@ -84,7 +90,7 @@ const Checkout = () => {
     const res = await postData("order", reqBody1);
     if (res.status === 201) {
       const response = await postData("payment/create-checkout-session", {
-        cartsId: cart.map((item) => item.id),
+        cartsId: checkoutItems.map((item) => item.id),
         orderId: res.id,
       });
       if (response.status === 200) {
@@ -100,7 +106,7 @@ const Checkout = () => {
 
   if (loading) return <Loader />;
 
-  if (cart.length === 0)
+  if (checkoutItems.length === 0)
     return (
       <Stack
         height="100vh"
@@ -195,7 +201,7 @@ const Checkout = () => {
                 </Typography>
               </Box>
             )}
-            {cart.length !== 0 && (
+            {checkoutItems.length !== 0 && (
               <>
                 <Typography
                   variant="h6"
@@ -282,7 +288,7 @@ const Checkout = () => {
                     if (activeStep === 0) navigate(stepRoutes[1]);
                     if (activeStep === 1 && deliveryAddress)
                       navigate(stepRoutes[2]);
-                    if (activeStep === 2) handleCheckout();
+                    if (activeStep === 2 && paymentMethod) handleCheckout();
                   }}
                 >
                   CHECKOUT SECURELY

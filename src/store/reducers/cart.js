@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegin } from "./api";
 
-let initialState = { items: [], deliveryAddress: null, loading: true, buyNow: null }
-const buyNow = localStorage.getItem("bn")
-const deliveryAddress = localStorage.getItem('da')
-if (buyNow) initialState.buyNow = JSON.parse(buyNow)
-if (deliveryAddress) initialState.deliveryAddress = JSON.parse(deliveryAddress)
+let initialState = { items: [], loading: true }
 
 const cartSlice = createSlice({
     name: "cart",
@@ -23,23 +19,10 @@ const cartSlice = createSlice({
             state.items = state.items.map(product => product.id === action.payload.id ? { ...product, quantity: action.payload.quantity } : product)
         },
 
-        setDeliveryAddress: (state, action) => {
-            state.deliveryAddress = action.payload
-            localStorage.setItem("da", JSON.stringify(action.payload))
-        },
-
         initializeCart: (state, action) => {
             state.items = action.payload
-            state.buyNow = null
-            localStorage.removeItem("bn")
             state.loading = false
         },
-
-        setBuyNow: (state, action) => {
-            state.buyNow = action.payload
-            localStorage.setItem("bn", JSON.stringify(action.payload))
-            state.items = []
-        }
     }
 })
 
@@ -72,6 +55,5 @@ export const updateCart = ({ id, quantity }) => apiCallBegin({
     data: { quantity },
     onSuccess: updatedCart.type
 })
-export const { setDeliveryAddress, setBuyNow } = cartSlice.actions
 
 export default cartSlice.reducer

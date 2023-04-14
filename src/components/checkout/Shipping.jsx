@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setDeliveryAddress } from "../../store/reducers/cart";
+import { setDeliveryAddress } from "../../store/reducers/checkout";
 import { getData, postData } from "../../Services/NodeService";
 
 const Shipping = () => {
@@ -55,7 +55,7 @@ const Shipping = () => {
   ];
 
   const dispatch = useDispatch();
-  const { deliveryAddress } = useSelector((state) => state.cart);
+  const { deliveryAddress } = useSelector((state) => state.checkout);
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;

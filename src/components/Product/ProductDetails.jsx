@@ -1,4 +1,4 @@
-import { Check, FavoriteBorder } from "@mui/icons-material";
+import { Check, FavoriteBorder, LocalOffer } from "@mui/icons-material";
 import {
   IconButton,
   Typography,
@@ -7,7 +7,6 @@ import {
   Select,
   Button,
   Avatar,
-  CircularProgress,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BoltIcon from "@mui/icons-material/Bolt";
@@ -16,9 +15,11 @@ import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, postData } from "../../Services/NodeService";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, setBuyNow } from "../../store/reducers/cart";
+import { addToCart } from "../../store/reducers/cart";
 import useDataFetch from "../../hooks/useDataFetch";
 import Error from "../General/Error";
+import Loader from "../General/Loader";
+import { addToCheckout } from "../../store/reducers/checkout";
 
 const ProductDetails = () => {
   const { search } = useLocation();
@@ -26,9 +27,10 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   const {
     cart: { items: cart },
-    auth: { user },
+    auth: { user, isLoggedIn },
   } = useSelector((state) => state);
   const navigate = useNavigate();
+  const location = useLocation();
   const query = new URLSearchParams(search);
   const [qty, setQty] = useState(1);
   const [notify, setNotify] = useState({ open: false, message: "" });
@@ -63,17 +65,7 @@ const ProductDetails = () => {
     );
   });
 
-  if (loading)
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="80vh"
-      >
-        <CircularProgress color="secondary" />
-      </Box>
-    );
+  if (loading) return <Loader />;
 
   if (error) return <Error>Product Not Found</Error>;
 
@@ -91,6 +83,7 @@ const ProductDetails = () => {
   } = product;
 
   const handleWishlist = async () => {
+    if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
     if (!wishlisted) {
       const response = await postData("wishlist", {
         productId: id,
@@ -111,6 +104,7 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = () => {
+    if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
     if (isProductInCart) return navigate("/checkout/cart");
 
     if (!selectedColor.id) return setInValid("color");
@@ -133,6 +127,7 @@ const ProductDetails = () => {
   };
 
   const handleBuyNow = () => {
+    if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
     if (!selectedColor.id) return setInValid("color");
     if (!selectedSize.id) return setInValid("size");
 
@@ -142,7 +137,7 @@ const ProductDetails = () => {
     );
     if (!selectedOption) return setInValid("option");
 
-    dispatch(setBuyNow([{ ...product, quantity: 1 }]));
+    dispatch(addToCheckout([{ ...product, quantity: 1 }]));
     navigate("/checkout/shipping");
   };
 
@@ -219,81 +214,72 @@ const ProductDetails = () => {
               Free Shipping
             </Typography>
           </Stack>
-          <Typography
-            sx={{
-              verticalAlign: "middle",
-              "::before": {
-                content: '""',
-                width: "35px",
-                height: "35px",
-                float: "left",
-                marginRight: "10px",
-                background:
-                  "url(https://www.beyoung.in/desktop/images/common/square.png) -145px -9px",
-              },
-            }}
-            variant="subtitle2"
-          >
-            {offer}
-          </Typography>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography
-              fontWeight="medium"
-              mr={2}
-              color={inValid === "color" && "error"}
-              sx={{ textTransform: "capitalize" }}
-              variant="subtitle1"
-            >
-              Color : {selectedColor.label}{" "}
-            </Typography>
-            {colors.map((color) => (
-              <Avatar
-                sx={{
-                  cursor: "pointer",
-                  bgcolor: color.value,
-                }}
-                onClick={() => {
-                  setInValid("");
-                  setSelectedColor(color);
-                }}
-                key={color.id}
-              >
-                {selectedColor.id === color.id ? <Check /> : ""}
-              </Avatar>
-            ))}
+          <Stack direction="row" spacing={1}>
+            <LocalOffer color="warning" />
+            <Typography variant="subtitle2">{offer}</Typography>
           </Stack>
-          <Stack direction="row" spacing={1} alignItems="center" pt={1}>
-            <Typography
-              mr={2}
-              fontWeight="medium"
-              color={inValid === "size" && "error"}
-              variant="subtitle1"
-            >
-              Size :{" "}
-            </Typography>
-            {sizes.map((size) => (
-              <Avatar
-                sx={{
-                  cursor: "pointer",
-                  bgcolor: "white",
-                  border: "2px solid",
-                  borderColor:
-                    selectedSize.id === size.id
-                      ? "secondary.main"
-                      : "lightgray",
-                  color: "black",
-                  fontSize: "16px",
-                }}
-                onClick={() => {
-                  setInValid("");
-                  setSelectedSize(size);
-                }}
-                key={size.id}
+          {colors?.length !== 0 && (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography
+                fontWeight="medium"
+                mr={2}
+                color={inValid === "color" && "error"}
+                sx={{ textTransform: "capitalize" }}
+                variant="subtitle1"
               >
-                {size.name}
-              </Avatar>
-            ))}
-          </Stack>
+                Color : {selectedColor.label}{" "}
+              </Typography>
+              {colors.map((color) => (
+                <Avatar
+                  sx={{
+                    cursor: "pointer",
+                    bgcolor: color.value,
+                  }}
+                  onClick={() => {
+                    setInValid("");
+                    setSelectedColor(color);
+                  }}
+                  key={color.id}
+                >
+                  {selectedColor.id === color.id ? <Check /> : ""}
+                </Avatar>
+              ))}
+            </Stack>
+          )}
+          {sizes?.length !== 0 && (
+            <Stack direction="row" spacing={1} alignItems="center" pt={1}>
+              <Typography
+                mr={2}
+                fontWeight="medium"
+                color={inValid === "size" && "error"}
+                variant="subtitle1"
+              >
+                Size :{" "}
+              </Typography>
+              {sizes.map((size) => (
+                <Avatar
+                  sx={{
+                    cursor: "pointer",
+                    bgcolor: "white",
+                    border: "2px solid",
+                    borderColor:
+                      selectedSize.id === size.id
+                        ? "secondary.main"
+                        : "lightgray",
+                    color: "black",
+                    fontSize: "16px",
+                  }}
+                  onClick={() => {
+                    setInValid("");
+                    setSelectedSize(size);
+                  }}
+                  key={size.id}
+                >
+                  {size.name}
+                </Avatar>
+              ))}
+            </Stack>
+          )}
           <Stack direction="row" spacing={2} alignItems="center" pt={1}>
             <Typography fontWeight="medium" variant="subtitle1">
               Quantity:

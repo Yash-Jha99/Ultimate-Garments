@@ -24,7 +24,7 @@ import Loader from "./General/Loader";
 
 const Category = () => {
   const { categoryName } = useParams();
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [sizeFilters, setSizeFilters] = useState([]);
   const [colorFilters, setColorFilters] = useState([]);
   const [priceFilters, setPriceFilters] = useState(null);
@@ -65,33 +65,7 @@ const Category = () => {
     (products) => setData(products)
   );
 
-  if (loading) return <Loader />;
-
-  // const getFilters = async () => {
-  //   const sizes = await getData("product/options/size");
-  //   if (sizes)
-
-  //   const colors = await getData("product/options/color");
-  //   if (colors)
-
-  // };
-
-  // const getProducts = async () => {
-  //   const filters = sizeFilters
-  //     .filter((size) => size.active)
-  //     .map((size) => "size=" + size.name)
-  //     .concat(
-  //       colorFilters
-  //         .filter((color) => color.active)
-  //         .map((color) => "color=" + color.name)
-  //     )
-  //     .join("&");
-
-  //   const products = await getData(
-  //     "product/category/" + categoryName.replace(/-/g, " ") + "?" + filters
-  //   );
-  //   setData(products);
-  // };
+  // if (loading && data === undefined) return <Loader />;
 
   const handleChange = (event) => {
     const { name, checked } = event.target;
@@ -227,6 +201,7 @@ const Category = () => {
 
   return (
     <>
+      {loading && <Loader />}
       <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} mx={{ xs: 0, sm: 4 }}>
         <Stack
           width="25%"

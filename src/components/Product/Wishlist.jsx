@@ -2,7 +2,7 @@ import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import WishlistProduct from "./WishlistProduct";
 import { useLoaderData } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 const Wishlist = () => {
   const wishlist = useLoaderData();
@@ -16,7 +16,7 @@ const Wishlist = () => {
   }, [deleteId]);
 
   return (
-    <Box display="flex" flexWrap="wrap" gap={2}>
+    <Grid container spacing={{ xs: 0.5, sm: 2 }}>
       {data.length === 0 && (
         <Typography variant="h3" mx="auto">
           No Product Found
@@ -24,18 +24,19 @@ const Wishlist = () => {
       )}
       {data.length !== 0 &&
         data.map((product) => (
-          <WishlistProduct
-            id={product.id}
-            key={product.id}
-            productId={product.productId}
-            image={product.image}
-            price={product.price}
-            discount={product.discount}
-            name={product.name}
-            onDelete={setDeleteId}
-          />
+          <Grid key={product.id} item xs={6} sm={4} md={3}>
+            <WishlistProduct
+              id={product.id}
+              productId={product.productId}
+              image={product.image}
+              price={product.price}
+              discount={product.discount}
+              name={product.name}
+              onDelete={setDeleteId}
+            />
+          </Grid>
         ))}
-    </Box>
+    </Grid>
   );
 };
 

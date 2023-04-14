@@ -15,7 +15,7 @@ import Profile from '../components/myaccount/Profile';
 import LoginPage from "../components/Auth/LoginPage";
 import { getData } from "../Services/NodeService";
 import Admin from "../components/Admin/Admin"
-import { getCart, setBuyNow } from "../store/reducers/cart";
+import { getCart } from "../store/reducers/cart";
 import Order from "../components/myaccount/Order";
 import OrderDetails from "../components/myaccount/OrderDetails";
 import Error from "../components/General/Error";
@@ -118,8 +118,6 @@ export default createBrowserRouter([
             if (!auth.isLoggedIn) {
                 return redirect("/login?from=" + request.url)
             }
-            if (!localStorage.getItem("bn"))
-                store.dispatch(getCart())
 
             return null
         },
@@ -144,7 +142,6 @@ export default createBrowserRouter([
         errorElement: <Error />,
         loader: () => {
             const { isAdmin } = store.getState().auth.user
-            store.dispatch(setBuyNow(null))
             if (!isAdmin) {
                 return redirect("/ ")
             }
