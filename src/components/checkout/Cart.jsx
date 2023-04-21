@@ -38,7 +38,13 @@ const CartItem = ({
   };
 
   return (
-    <Box border="1px solid lightgray" padding={1}>
+    <Box
+      sx={{ ":hover": { boxShadow: 2 } }}
+      border="1px solid lightgray"
+      padding={1}
+      p={2}
+      bgcolor="white"
+    >
       <Stack
         direction="row"
         spacing={2}

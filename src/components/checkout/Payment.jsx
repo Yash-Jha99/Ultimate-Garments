@@ -20,7 +20,7 @@ const Payment = () => {
   };
 
   return (
-    <Box>
+    <Box boxShadow={2} p={{ xs: 2, sm: 4 }} bgcolor="white" height="100%">
       <Typography mb={2} variant="h5">
         Select Payment Method
       </Typography>

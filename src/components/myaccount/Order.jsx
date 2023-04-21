@@ -7,6 +7,7 @@ const OrderItem = ({ id, name, date, image, price, orderItemId }) => {
   return (
     <Box
       sx={{ ":hover": { boxShadow: 3 } }}
+      bgcolor="white"
       border="1px solid lightgray"
       padding={1}
     >
@@ -53,6 +54,11 @@ const Order = () => {
       <Await resolve={data}>
         {(orders) => (
           <Stack spacing={{ xs: 1, sm: 2 }}>
+            {orders.length === 0 && (
+              <Typography variant="h4" mx="auto">
+                Yoy have not placed any order yet
+              </Typography>
+            )}
             {orders.map((order) => (
               <OrderItem
                 id={order.id}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Product from "./Product/Product";
 import useDataFetch from "../hooks/useDataFetch";
 import { useParams } from "react-router-dom";
@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CheckCircle, Circle, FilterAlt } from "@mui/icons-material";
-import { getData } from "../Services/NodeService";
 import Loader from "./General/Loader";
 
 const Category = () => {
@@ -41,11 +40,11 @@ const Category = () => {
     setOpenDrawer(!openDrawer);
   };
 
-  useDataFetch("product/options/size", [], (data) => {
+  const { error1 } = useDataFetch("product/options/size", [], (data) => {
     setSizeFilters(data.map((size) => ({ ...size, active: false })));
   });
 
-  useDataFetch("product/options/color", [], (data) => {
+  const { error2 } = useDataFetch("product/options/color", [], (data) => {
     setColorFilters(data.map((color) => ({ ...color, active: false })));
   });
 
@@ -64,6 +63,8 @@ const Category = () => {
     [],
     (products) => setData(products)
   );
+
+  if (error || error1 || error2) return null;
 
   // if (loading && data === undefined) return <Loader />;
 

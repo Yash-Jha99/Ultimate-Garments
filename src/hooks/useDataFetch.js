@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react"
-import { getData } from "../Services/NodeService"
+import { useEffect, useState } from "react";
+import { getData } from "../Services/NodeService";
 
 const useDataFetch = (url, initial, cb = null) => {
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [data, setData] = useState(initial)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(initial);
 
-    useEffect(() => {
-        (async () => {
-            setLoading(true)
-            const response = await getData(url)
-            setLoading(false)
-            if (response.status) {
-                setError(response)
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    (async () => {
+      const response = await getData(url, controller.signal);
+      if (!response?.error) setLoading(false);
+      if (response?.error) {
+        setError(response);
+      } else {
+        setError(null);
+        setData(response);
+        if (cb) cb(response);
+      }
+    })();
+    return () => controller.abort();
+  }, [url]);
 
-            }
-            else {
-                setData(response)
-                if (cb) cb(response)
+  return { data, loading, error };
+};
 
-            }
-        })()
-    }, [url])
-
-    return { data, loading, error }
-}
-
-export default useDataFetch
+export default useDataFetch;

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Box, Typography, IconButton, Snackbar, Alert } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { deleteData, postData } from "../../Services/NodeService";
+import { useSnackbar } from "notistack";
 
 const Product = ({
   id,
@@ -16,9 +17,9 @@ const Product = ({
 }) => {
   const [wishlisted, setWishlisted] = useState(wishlistId !== null);
   const [newWishlistId, setNewWishlistedId] = useState(wishlistId);
-  const [notify, setNotify] = React.useState({ open: false, message: "" });
   const navigate = useNavigate();
   const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
 
@@ -27,29 +28,28 @@ const Product = ({
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
 
     if (!wishlisted) {
+      setWishlisted(true);
       const response = await postData("wishlist", {
         productId: id,
         userId: user.id,
       });
       if (response.status === 201) {
-        setNotify({ open: true, message: "Product Wishlisted" });
-        setWishlisted(true);
+        enqueueSnackbar("Product Wishlisted", { variant: "success" });
         setNewWishlistedId(response.data.wishlistId);
+      } else {
+        setWishlisted(false);
+        enqueueSnackbar("Something went wrong", { variant: "error" });
       }
       return;
     }
+    setWishlisted(false);
     const response = await deleteData("wishlist/" + newWishlistId);
     if (response.status === 200) {
-      setNotify({ open: true, message: "Product removed from wishlist" });
-      setWishlisted(false);
+      enqueueSnackbar("Product Removed from wishlist", { variant: "success" });
+    } else {
+      setWishlisted(true);
+      enqueueSnackbar("Something went wrong", { variant: "error" });
     }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setNotify({ open: false, message: "" });
   };
 
   return (
@@ -157,21 +157,6 @@ const Product = ({
           </Typography>
         </Box>
       </Box>
-      <Snackbar
-        open={notify.open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          severity="success"
-          sx={{ width: "100%" }}
-          variant="filled"
-          elevation={2}
-        >
-          {notify.message}
-        </Alert>
-      </Snackbar>
     </Link>
   );
 };

@@ -1,6 +1,13 @@
 import { Button, Checkbox, Grid, Stack, TextField } from "@mui/material";
 
-const AddressForm = ({ formDetails, error, formLabels, onChange, onAdd }) => (
+const AddressForm = ({
+  formDetails,
+  error,
+  formLabels,
+  onChange,
+  onSave,
+  onCancel,
+}) => (
   <>
     <Grid p={2} container rowSpacing={3} columnSpacing={2}>
       {Object.keys(formDetails).map((label, index) =>
@@ -33,8 +40,17 @@ const AddressForm = ({ formDetails, error, formLabels, onChange, onAdd }) => (
         )
       )}
     </Grid>
-    <Button variant="contained" color="inherit" fullWidth onClick={onAdd}>
-      Add Address
+    <Button
+      sx={{ mb: 1 }}
+      variant="contained"
+      color="inherit"
+      fullWidth
+      onClick={onSave}
+    >
+      Save
+    </Button>
+    <Button color="inherit" fullWidth onClick={onCancel}>
+      Cancel
     </Button>
   </>
 );

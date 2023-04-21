@@ -1,28 +1,37 @@
 import { Home, Payment, ShoppingCart } from "@mui/icons-material";
-import { Button, Typography, Stepper, Step, StepLabel } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Stepper,
+  Step,
+  StepLabel,
+  Toolbar,
+  AppBar,
+} from "@mui/material";
 import { Box, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { postData } from "../../Services/NodeService";
 import Loader from "../General/Loader";
 import { addToCheckout } from "../../store/reducers/checkout";
+import Logo from "../../images/logo.png";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
   zIndex: 1,
   color: "#fff",
-  width: 40,
-  height: 40,
+  width: 32,
+  height: 32,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
   alignItems: "center",
   ...(ownerState.active && {
     background: theme.palette.secondary.main,
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    boxShadow: "0 4px 6px 0 rgba(0,0,0,.25)",
   }),
   ...(ownerState.completed && {
     background: theme.palette.secondary.main,
@@ -33,9 +42,9 @@ function CustomStepIcon(props) {
   const { active, completed, className } = props;
 
   const icons = {
-    1: <ShoppingCart />,
-    2: <Home />,
-    3: <Payment />,
+    1: <ShoppingCart fontSize="small" />,
+    2: <Home fontSize="small" />,
+    3: <Payment fontSize="small" />,
   };
 
   return (
@@ -86,19 +95,24 @@ const Checkout = () => {
         quantity: item.quantity,
         optionId: item.product_option_id,
       })),
-      paymentType: "Cash",
+      paymentType: paymentMethod,
       addressId: deliveryAddress.id,
     };
     setLoading(true);
     const res = await postData("order", reqBody1);
     if (res.status === 201) {
-      const response = await postData("payment/create-checkout-session", {
-        orderItemIds: res.data.map((item) => item.id),
-      });
-      if (response.status === 200) {
-        window.location.replace(response.data.url);
+      if (paymentMethod === "Cash") {
         setLoading(false);
-      } else setLoading(false);
+        navigate("/myaccount/orders");
+      } else {
+        const response = await postData("payment/create-checkout-session", {
+          orderItemIds: res.data.map((item) => item.id),
+        });
+        if (response.status === 200) {
+          window.location.replace(response.data.url);
+          setLoading(false);
+        } else setLoading(false);
+      }
     }
   };
 
@@ -130,8 +144,35 @@ const Checkout = () => {
 
   return (
     <Box>
+      <Box bgcolor="white" position="sticky" top={0} zIndex={100}>
+        <Box mx={8} height="62px" bgcolor="white">
+          <AppBar component="nav" color="inherit">
+            <Toolbar
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={{ xs: 0, sm: 4 }}
+                mx={5}
+              >
+                <Link to="/">
+                  <img src={Logo} alt="Ultimate Garments" width={80} />
+                </Link>
+              </Stack>
+            </Toolbar>
+          </AppBar>
+        </Box>
+      </Box>
       <Stepper
-        sx={{ my: { xs: 2, sm: 2 }, mx: { xs: 1, sm: 8 } }}
+        sx={{
+          mb: 1,
+          mt: 2,
+          mx: { xs: 1, sm: 8 },
+        }}
         activeStep={activeStep}
         alternativeLabel
       >
@@ -141,12 +182,7 @@ const Checkout = () => {
           </Step>
         ))}
       </Stepper>
-      <Box
-        p={{ xs: 1, sm: 3 }}
-        mx={{ xs: 1, sm: 10 }}
-        bgcolor="white"
-        minHeight="70vh"
-      >
+      <Box mx={{ xs: 0, sm: 10 }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           spacing={{ xs: 1, sm: 6 }}
@@ -154,16 +190,21 @@ const Checkout = () => {
           justifyContent="center"
         >
           <Stack
+            minHeight={{ xs: "none", sm: "68vh" }}
             spacing={2}
             width={{ xs: "100%", sm: "70%" }}
-            p={{ xs: 1, sm: 2 }}
           >
             <Outlet />
           </Stack>
           <Stack
             spacing={{ xs: 1, sm: 2 }}
             pb={{ xs: 2, sm: 0 }}
-            width={{ xs: "100%", sm: "30%" }}
+            width={{ xs: "95%", sm: "30%" }}
+            boxShadow={2}
+            p={{ xs: 1, sm: 3 }}
+            bgcolor="white"
+            position="sticky"
+            top={75}
           >
             {location.pathname === "/checkout/payment" && (
               <Box

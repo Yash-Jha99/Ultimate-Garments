@@ -10,6 +10,8 @@ const Dropdown = ({
   onOpen = null,
   onClose = null,
   onClick = null,
+  disableArrow = false,
+  overlap = false,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -37,9 +39,9 @@ const Dropdown = ({
         overflow: "visible",
         filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
         py: 1,
-        top: "100%",
+        top: overlap ? "0" : "100%",
         ...cn,
-        "&:before": {
+        "&:before": !disableArrow && {
           content: '""',
           display: "block",
           position: "absolute",

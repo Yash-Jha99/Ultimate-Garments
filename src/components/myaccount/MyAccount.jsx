@@ -78,8 +78,7 @@ const MyAccount = () => {
           Address
         </NavLink>
         <Button
-          variant="contained"
-          sx={{ p: 1, fontSize: 20, fontWeight: 600, color: "black" }}
+          sx={{ p: 1, fontSize: 20, fontWeight: 600 }}
           onClick={() => {
             dispatch(logout());
           }}
@@ -89,13 +88,9 @@ const MyAccount = () => {
       </Stack>
       {location.pathname !== "/myaccount" && (
         <Box
-          m={{ xs: "", sm: "0px 64px 0 16px" }}
-          height={{ xs: "none", sm: "75vh" }}
-          overflow="auto"
-          bgcolor="white"
-          boxShadow={2}
+          m={{ xs: "", sm: "0px 64px 0px 16px" }}
+          height={{ xs: "none", sm: "87vh" }}
           width="100%"
-          p={{ xs: 1, sm: 4 }}
         >
           <Outlet />
         </Box>

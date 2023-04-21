@@ -19,12 +19,16 @@ const OrderDetails = () => {
     pincode,
     address,
     town,
+    paymentType,
   } = orderDetail;
   return (
-    <Stack spacing={{ xs: 1, sm: 4 }} p={1}>
+    <Stack spacing={{ xs: 1, sm: 2 }}>
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={{ xs: 1, sm: 2 }}
+        boxShadow={2}
+        p={2}
+        bgcolor="white"
         divider={<Divider orientation="vertical" flexItem />}
       >
         <Stack
@@ -67,16 +71,22 @@ const OrderDetails = () => {
         </Stack>
         <Stack width={{ xs: "100%", sm: "50%" }}>
           <Typography variant="body2">
-            <b>Ordered on </b> {date}
+            <b>Ordered on : </b> {date}
+          </Typography>
+          <Typography variant="body2">
+            <b>Payment Type : </b> {paymentType}
           </Typography>
         </Stack>
       </Stack>
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={{ xs: 1, sm: 2 }}
+        boxShadow={2}
+        p={2}
+        bgcolor="white"
         divider={<Divider orientation="vertical" flexItem />}
       >
-        <Box width={{ xs: "100%", sm: "50%" }}>
+        <Box width={{ xs: "100%", sm: "100%" }}>
           <Typography variant="body1" fontWeight="bold">
             Delivery Address
           </Typography>

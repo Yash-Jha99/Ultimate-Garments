@@ -1,14 +1,22 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, MenuItem } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
+import { MoreVert } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
+import Dropdown from "../General/Dropdown";
 
 const AddressItem = ({
   activeAddressId,
   defaultAddressId,
   setActiveAddress,
   item,
+  onEdit = null,
+  onDelete = null,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const hasMenu = location.pathname === "/myaccount/address";
+
   return (
     <Box
       sx={{ cursor: "pointer" }}
@@ -39,6 +47,32 @@ const AddressItem = ({
         >
           Default
         </Typography>
+      )}
+      {hasMenu && (
+        <Box position="absolute" top={0} right={0}>
+          <Dropdown
+            // open={open}
+            // onOpen={handleOpen}
+            // onClose={handleClose}
+            overlap
+            disableArrow
+            position="right"
+            trigger={<MoreVert />}
+          >
+            <MenuItem
+              sx={{ display: "block", fontSize: 14 }}
+              onClick={() => onEdit(item.id)}
+            >
+              Edit
+            </MenuItem>
+            <MenuItem
+              sx={{ display: "block", fontSize: 14 }}
+              onClick={() => onDelete(item.id)}
+            >
+              Delete
+            </MenuItem>
+          </Dropdown>
+        </Box>
       )}
 
       <Typography fontWeight={600} variant="subtitle1" mb={1}>

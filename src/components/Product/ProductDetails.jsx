@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BoltIcon from "@mui/icons-material/Bolt";
-import { Box, Stack, Snackbar, Alert } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, postData } from "../../Services/NodeService";
@@ -20,6 +20,7 @@ import useDataFetch from "../../hooks/useDataFetch";
 import Error from "../General/Error";
 import Loader from "../General/Loader";
 import { addToCheckout } from "../../store/reducers/checkout";
+import { useSnackbar } from "notistack";
 
 const ProductDetails = () => {
   const { search } = useLocation();
@@ -32,14 +33,10 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(search);
-  const [qty, setQty] = useState(1);
-  const [notify, setNotify] = useState({
-    open: false,
-    message: "",
-    severity: "",
-  });
-  const [inValid, setInValid] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
 
+  const [qty, setQty] = useState(1);
+  const [inValid, setInValid] = useState("");
   const [selectedSize, setSelectedSize] = useState({});
   const [selectedColor, setSelectedColor] = useState({});
   const [wishlisted, setWishlisted] = useState(false);
@@ -71,7 +68,7 @@ const ProductDetails = () => {
 
   if (loading) return <Loader />;
 
-  if (error) return <Error>Product Not Found</Error>;
+  if (error?.status === 404) return <Error>Product Not Found</Error>;
 
   const {
     id,
@@ -89,29 +86,27 @@ const ProductDetails = () => {
   const handleWishlist = async () => {
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
     if (!wishlisted) {
+      setWishlisted(true);
       const response = await postData("wishlist", {
         productId: id,
         userId: user.id,
       });
       if (response.status === 201) {
-        setNotify({
-          open: true,
-          message: "Product Wishlisted",
-          severity: "success",
-        });
-        setWishlisted(true);
+        enqueueSnackbar("Product Wishlisted", { variant: "success" });
         setNewWishlistedId(response.data.wishlistId);
+      } else {
+        setWishlisted(false);
+        enqueueSnackbar("Something went wrong", { variant: "error" });
       }
       return;
     }
+    setWishlisted(false);
     const response = await deleteData("wishlist/" + newWishlistId);
     if (response.status === 200) {
-      setNotify({
-        open: true,
-        message: "Product removed from wishlist",
-        severity: "success",
-      });
-      setWishlisted(false);
+      enqueueSnackbar("Product Removed from wishlist", { variant: "success" });
+    } else {
+      setWishlisted(true);
+      enqueueSnackbar("Something went wrong", { variant: "error" });
     }
   };
 
@@ -127,19 +122,13 @@ const ProductDetails = () => {
         opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
     );
     if (!selectedOption) {
-      setNotify({
-        open: true,
-        message: "Selected size-color combination doesn't exist",
-        severity: "info",
+      enqueueSnackbar("Selected size-color combination doesn't exist", {
+        variant: "info",
       });
       return;
     }
 
-    setNotify({
-      open: true,
-      message: "Product Added To Cart",
-      severity: "success",
-    });
+    enqueueSnackbar("Product added to cart", { variant: "success" });
     dispatch(
       addToCart({
         productId: id,
@@ -159,10 +148,8 @@ const ProductDetails = () => {
         opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
     );
     if (!selectedOption) {
-      setNotify({
-        open: true,
-        message: "Selected size-color combination doesn't exist",
-        severity: "info",
+      enqueueSnackbar("Selected size-color combination doesn't exist", {
+        variant: "info",
       });
       return;
     }
@@ -179,13 +166,6 @@ const ProductDetails = () => {
       ])
     );
     navigate("/checkout/shipping");
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setNotify({ open: false, message: "", severity: "" });
   };
 
   return (
@@ -392,21 +372,6 @@ const ProductDetails = () => {
           </Stack>
         </Stack>
       </Stack>
-      <Snackbar
-        open={notify.open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          severity={notify.severity || "success"}
-          sx={{ width: "100%" }}
-          variant="filled"
-          elevation={2}
-        >
-          {notify.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

@@ -16,27 +16,29 @@ const Wishlist = () => {
   }, [deleteId]);
 
   return (
-    <Grid container spacing={{ xs: 0.5, sm: 2 }}>
-      {data.length === 0 && (
-        <Typography variant="h3" mx="auto">
-          No Product Found
-        </Typography>
-      )}
-      {data.length !== 0 &&
-        data.map((product) => (
-          <Grid key={product.id} item xs={6} sm={4} md={3}>
-            <WishlistProduct
-              id={product.id}
-              productId={product.productId}
-              image={product.image}
-              price={product.price}
-              discount={product.discount}
-              name={product.name}
-              onDelete={setDeleteId}
-            />
-          </Grid>
-        ))}
-    </Grid>
+    <Box boxShadow={2} p={2} bgcolor="white">
+      <Grid container spacing={{ xs: 0.5, sm: 2 }}>
+        {data.length === 0 && (
+          <Typography variant="h3" mx="auto">
+            No Product Found
+          </Typography>
+        )}
+        {data.length !== 0 &&
+          data.map((product) => (
+            <Grid key={product.id} item xs={6} sm={4} md={3}>
+              <WishlistProduct
+                id={product.id}
+                productId={product.productId}
+                image={product.image}
+                price={product.price}
+                discount={product.discount}
+                name={product.name}
+                onDelete={setDeleteId}
+              />
+            </Grid>
+          ))}
+      </Grid>
+    </Box>
   );
 };
 

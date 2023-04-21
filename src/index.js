@@ -1,21 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import './index.css';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import store from './store/store';
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import store from "./store/store";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme/theme";
-import router from './router/router';
+import router from "./router/router";
+import { SnackbarProvider } from "notistack";
 
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+          autoHideDuration={3000}
+        >
+          <RouterProvider router={router} />
+        </SnackbarProvider>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>

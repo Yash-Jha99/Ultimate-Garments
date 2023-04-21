@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Typography, Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
-import { getData, postData } from "../../Services/NodeService";
+import {
+  deleteData,
+  getData,
+  postData,
+  updateData,
+} from "../../Services/NodeService";
 import AddressForm from "../myaccount/AddressForm";
 import AddressItem from "../myaccount/AddressItem";
 import Loader from "../General/Loader";
@@ -12,6 +17,7 @@ const Shipping = () => {
   const [showForm, setShowForm] = useState(false);
   const [address, setAddress] = useState([]);
   const [defaultAddressId, setDefaultAddressId] = useState("");
+  const [editId, setEditId] = useState("");
   const [activeAddress, setActiveAddress] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -61,10 +67,23 @@ const Shipping = () => {
     setFormDetails((data) => ({ ...data, ...newData }));
   };
 
-  const handleAdd = async () => {
+  const resetForm = () => {
+    setFormDetails({
+      firstName: "",
+      lastName: "",
+      mobileNumber: "",
+      pinCode: "",
+      town: "",
+      city: "",
+      state: "",
+      address: "",
+      isDefault: false,
+    });
+  };
+
+  const validateForm = () => {
     for (let key in formDetails) {
       if (key === "isDefault") {
-        delete formLabels[key];
         continue;
       }
 
@@ -72,27 +91,61 @@ const Shipping = () => {
         key === "mobileNumber" &&
         (isNaN(formDetails[key].trim()) ||
           formDetails[key].trim().length !== 10)
-      )
-        return setError((error) => ({ ...error, [key]: true }));
+      ) {
+        setError((error) => ({ ...error, [key]: true }));
+        return false;
+      }
 
       if (
         key === "pinCode" &&
         (isNaN(formDetails[key].trim()) || formDetails[key].trim().length !== 6)
-      )
-        return setError((error) => ({ ...error, [key]: true }));
+      ) {
+        setError((error) => ({ ...error, [key]: true }));
+        return false;
+      }
 
       if (formDetails[key].trim() === "") {
         setError((error) => ({ ...error, [key]: true }));
-        break;
+        return false;
       }
     }
+    return true;
+  };
+
+  const handleAdd = async () => {
+    if (!validateForm()) return;
 
     const { status, data } = await postData("address", formDetails);
     if (status === 201) {
       setAddress([...address, { ...formDetails, id: data.id }]);
       setDefaultAddressId(data.id);
       setShowForm(false);
+      resetForm();
     }
+  };
+
+  const handleDelete = async (id) => {
+    const { status } = await deleteData("address/" + id);
+  };
+
+  const handleUpdate = async (id) => {
+    if (!validateForm()) return;
+    const { status } = await updateData("address/" + editId, formDetails);
+    if (status === 200) {
+      setShowForm(false);
+      resetForm();
+    }
+  };
+
+  const handleEdit = (id) => {
+    setShowForm(true);
+    setEditId(id);
+    const temp = { ...address.find((item) => item.id === id) };
+    temp["isDefault"] = temp.id === temp.defaultAddressId;
+    delete temp.id;
+    delete temp.user_id;
+    delete temp.defaultAddressId;
+    setFormDetails(temp);
   };
 
   useEffect(() => {
@@ -128,14 +181,15 @@ const Shipping = () => {
   if (loading) return <Loader />;
 
   return (
-    <>
+    <Box boxShadow={2} p={2} bgcolor="white">
       {showForm || address.length === 0 ? (
         <AddressForm
           formDetails={formDetails}
           formLabels={formLabels}
           error={error}
           onChange={handleChange}
-          onAdd={handleAdd}
+          onCancel={() => setShowForm(false)}
+          onSave={editId ? handleUpdate : handleAdd}
         />
       ) : (
         <Box maxWidth={{ xs: "100%", sm: "70%" }}>
@@ -145,6 +199,8 @@ const Shipping = () => {
           {address.map((item, index) => (
             <AddressItem
               key={index}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
               {...{
                 item,
                 setActiveAddress,
@@ -157,13 +213,16 @@ const Shipping = () => {
             sx={{ mt: 2 }}
             variant="contained"
             color="inherit"
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setShowForm(true);
+              resetForm();
+            }}
           >
             Add New
           </Button>
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 
