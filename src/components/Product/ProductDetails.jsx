@@ -21,6 +21,7 @@ import Error from "../General/Error";
 import Loader from "../General/Loader";
 import { addToCheckout } from "../../store/reducers/checkout";
 import { useSnackbar } from "notistack";
+import NotFound from "../General/NotFound";
 
 const ProductDetails = () => {
   const { search } = useLocation();
@@ -68,7 +69,7 @@ const ProductDetails = () => {
 
   if (loading) return <Loader />;
 
-  if (error?.status === 404) return <Error>Product Not Found</Error>;
+  if (error?.status === 404) return <NotFound message="Product Not Found" />;
 
   const {
     id,

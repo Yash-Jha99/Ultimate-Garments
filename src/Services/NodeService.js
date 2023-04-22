@@ -1,4 +1,4 @@
-import axios, { CanceledError } from "axios";
+import axios, { CanceledError, AxiosError } from "axios";
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 
@@ -48,12 +48,11 @@ export const getData = async (url, signal) => {
     const response = await axios.get(`${ServerURL}/${url}`, config);
     return response.data;
   } catch (error) {
-    if (error instanceof CanceledError) return { error: true };
+    if (error instanceof CanceledError) return { canceledError: true };
     console.log("[GET] Error: ", error.response);
     return {
-      error: true,
-      status: error.response.status,
-      data: error.response.data,
+      status: error?.response?.status,
+      data: error?.response?.data,
     };
   }
 };

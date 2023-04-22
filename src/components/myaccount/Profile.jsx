@@ -14,6 +14,8 @@ import {
 import { getData, updateData } from "../../Services/NodeService";
 import { useSelector } from "react-redux";
 import useNotify from "../../hooks/useNotify";
+import useDataFetch from "../../hooks/useDataFetch";
+import Loader from "../General/Loader";
 
 const Profile = () => {
   const [error, setError] = useState({
@@ -78,8 +80,7 @@ const Profile = () => {
     if (response.status === 200) setNotify("User updated succesfully");
   };
 
-  const fetchUser = async () => {
-    const data = await getData("user/" + id);
+  const { loading } = useDataFetch("user/" + id, null, (data) => {
     const [firstName, lastName] = data.name.split(" ");
 
     setFormDetails({
@@ -91,11 +92,9 @@ const Profile = () => {
       gender: data.gender ?? "",
       notify: data.notify === 1,
     });
-  };
+  });
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  if (loading) return <Loader />;
 
   return (
     <Box p={{ xs: 1, sm: 4 }} bgcolor="white" boxShadow={2}>

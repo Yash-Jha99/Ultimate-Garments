@@ -19,7 +19,7 @@ const Shipping = () => {
   const [defaultAddressId, setDefaultAddressId] = useState("");
   const [editId, setEditId] = useState("");
   const [activeAddress, setActiveAddress] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState({
     firstName: false,
@@ -125,23 +125,42 @@ const Shipping = () => {
   };
 
   const handleDelete = async (id) => {
+    if (defaultAddressId === id) return;
+    const prevAddress = [...address];
+    setAddress(address.filter((address) => address.id !== id));
     const { status } = await deleteData("address/" + id);
+    if (status !== 200) {
+      setAddress(prevAddress);
+    }
   };
 
-  const handleUpdate = async (id) => {
+  const handleUpdate = async () => {
     if (!validateForm()) return;
+    console.log(formDetails);
+
+    const prevAddress = [...address];
+    const prevDefaultAddressId = defaultAddressId;
+
+    setAddress(
+      address.map((address) =>
+        address.id === editId ? { id: editId, ...formDetails } : address
+      )
+    );
+    if (formDetails.isDefault) setDefaultAddressId(editId);
+    setShowForm(false);
     const { status } = await updateData("address/" + editId, formDetails);
-    if (status === 200) {
-      setShowForm(false);
-      resetForm();
+    if (status !== 200) {
+      setAddress(prevAddress);
+      setDefaultAddressId(prevDefaultAddressId);
     }
+    resetForm();
   };
 
   const handleEdit = (id) => {
     setShowForm(true);
     setEditId(id);
     const temp = { ...address.find((item) => item.id === id) };
-    temp["isDefault"] = temp.id === temp.defaultAddressId;
+    if (id !== defaultAddressId) temp.isDefault = false;
     delete temp.id;
     delete temp.user_id;
     delete temp.defaultAddressId;
@@ -150,8 +169,10 @@ const Shipping = () => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       const data = await getData("address");
-      if (data) {
+      setLoading(false);
+      if (data?.length !== 0) {
         const newData = data.map((address) => ({
           id: address.id,
           firstName: address.first_name,
@@ -162,10 +183,8 @@ const Shipping = () => {
           city: address.city,
           state: address.state,
           address: address.address,
-          defaultAddressId: address.defaultAddressId,
         }));
         setAddress(newData);
-        setLoading(false);
         const activeAddress = newData.find(
           (address) => address.id === data[0].defaultAddressId
         );
@@ -182,7 +201,8 @@ const Shipping = () => {
 
   return (
     <Box boxShadow={2} p={2} bgcolor="white">
-      {showForm || address.length === 0 ? (
+      {showForm ||
+      (address.length === 0 && location.pathname === "/checkout/shipping") ? (
         <AddressForm
           formDetails={formDetails}
           formLabels={formLabels}
@@ -193,8 +213,10 @@ const Shipping = () => {
         />
       ) : (
         <Box maxWidth={{ xs: "100%", sm: "70%" }}>
-          <Typography mb={2} variant="h6">
-            Select Address
+          <Typography mb={2} variant="h5">
+            {location.pathname === "/checkout/shipping"
+              ? "Select Address"
+              : "My addresses"}
           </Typography>
           {address.map((item, index) => (
             <AddressItem

@@ -17,6 +17,7 @@ import { postData } from "../../Services/NodeService";
 import Loader from "../General/Loader";
 import { addToCheckout } from "../../store/reducers/checkout";
 import Logo from "../../images/logo.png";
+import NotFound from "../General/NotFound";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
@@ -124,14 +125,10 @@ const Checkout = () => {
 
   if (checkoutItems.length === 0 && cart.length === 0)
     return (
-      <Stack
-        height="100vh"
-        justifyContent="center"
-        alignItems="center"
-        spacing={6}
-      >
-        <Typography variant="h1">No Product Found</Typography>
+      <Box textAlign="center">
+        <NotFound message="Your cart is empty" />
         <Button
+          sx={{ mt: -25 }}
           variant="contained"
           size="large"
           color="secondary"
@@ -139,7 +136,7 @@ const Checkout = () => {
         >
           Start Shopping
         </Button>
-      </Stack>
+      </Box>
     );
 
   return (
@@ -251,7 +248,7 @@ const Checkout = () => {
                   borderBottom="1px solid lightgray"
                   pb={1}
                 >
-                  PRICE DETAILS ({cart.length} items)
+                  PRICE DETAILS ({checkoutItems.length} items)
                 </Typography>
                 {location.pathname === "/checkout/payment" ? (
                   <Stack

@@ -11,19 +11,22 @@ const useDataFetch = (url, initial, cb = null) => {
     setLoading(true);
     (async () => {
       const response = await getData(url, controller.signal);
-      if (!response?.error) setLoading(false);
-      if (response?.error) {
+      if (response?.canceledError);
+      else if (response?.status) {
         setError(response);
+        setLoading(false);
       } else {
         setError(null);
         setData(response);
-        if (cb) cb(response);
+        setLoading(false);
+        cb?.(response);
       }
     })();
+
     return () => controller.abort();
   }, [url]);
 
-  return { data, loading, error };
+  return { data, loading, error, setData };
 };
 
 export default useDataFetch;

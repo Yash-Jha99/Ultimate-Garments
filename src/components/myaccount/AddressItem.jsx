@@ -29,6 +29,7 @@ const AddressItem = ({
       mb={2}
       position="relative"
       onClick={() => {
+        if (location.pathname === "/myaccount/address") return;
         setActiveAddress(item);
         dispatch(setDeliveryAddress(item));
       }}
@@ -65,12 +66,14 @@ const AddressItem = ({
             >
               Edit
             </MenuItem>
-            <MenuItem
-              sx={{ display: "block", fontSize: 14 }}
-              onClick={() => onDelete(item.id)}
-            >
-              Delete
-            </MenuItem>
+            {item.id !== defaultAddressId && (
+              <MenuItem
+                sx={{ display: "block", fontSize: 14 }}
+                onClick={() => onDelete(item.id)}
+              >
+                Delete
+              </MenuItem>
+            )}
           </Dropdown>
         </Box>
       )}

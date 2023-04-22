@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { useLoaderData, NavLink, Await } from "react-router-dom";
 import { Typography, Box, Stack } from "@mui/material";
 import Loader from "../General/Loader";
+import NotFound from "../General/NotFound";
 
 const OrderItem = ({ id, name, date, image, price, orderItemId }) => {
   return (
@@ -55,9 +56,7 @@ const Order = () => {
         {(orders) => (
           <Stack spacing={{ xs: 1, sm: 2 }}>
             {orders.length === 0 && (
-              <Typography variant="h4" mx="auto">
-                Yoy have not placed any order yet
-              </Typography>
+              <NotFound message="You have not placed any order yet" />
             )}
             {orders.map((order) => (
               <OrderItem
