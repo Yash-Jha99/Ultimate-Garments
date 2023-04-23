@@ -1,4 +1,4 @@
-import axios, { CanceledError, AxiosError } from "axios";
+import axios, { CanceledError } from "axios";
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
 
@@ -36,10 +36,11 @@ export const updateData = async (url, body, isFile = false) => {
   }
 };
 
-export const getData = async (url, signal) => {
+export const getData = async (url, signal, params) => {
   try {
     const config = {
       signal,
+      params,
       headers: {
         "content-type": "application/json",
       },

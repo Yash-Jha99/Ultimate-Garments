@@ -44,8 +44,8 @@ export default createBrowserRouter([
         element: <Category />,
       },
       {
-        path: "search",
-        element: <WishList />,
+        path: "search/:search",
+        element: <Category />,
       },
       {
         path: "login",
@@ -58,7 +58,6 @@ export default createBrowserRouter([
           return null;
         },
       },
-
       {
         path: "/myaccount",
         element: <MyAccount />,

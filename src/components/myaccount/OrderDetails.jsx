@@ -1,10 +1,41 @@
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Stack,
+  Typography,
+  Stepper,
+  Step,
+  StepLabel,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import React, { Suspense } from "react";
 import { Await, useLoaderData } from "react-router-dom";
 import Loader from "../General/Loader";
 
+const StepIcon = styled("div")(({ theme, ownerState }) => ({
+  backgroundColor:
+    theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
+  zIndex: 1,
+  color: "#fff",
+  width: 24,
+  height: 24,
+  borderRadius: "50%",
+  ...(ownerState.active && {
+    background: theme.palette.success.light,
+  }),
+  ...(ownerState.completed && {
+    background: theme.palette.secondary.main,
+  }),
+}));
+
+function CustomStepIcon(props) {
+  const { active, completed, className } = props;
+  return <StepIcon ownerState={{ completed, active }} className={className} />;
+}
+
 const OrderDetails = () => {
   const { data: orderDetail } = useLoaderData();
+  const steps = ["Ordered", "Packed", "Shipped", "Delivered"];
 
   return (
     <Suspense fallback={<Loader />}>
@@ -25,6 +56,8 @@ const OrderDetails = () => {
           address,
           town,
           paymentType,
+          status,
+          ...orderDetail
         }) => (
           <Stack spacing={{ xs: 1, sm: 2 }}>
             <Stack
@@ -59,7 +92,9 @@ const OrderDetails = () => {
                   </Box>
                 </Stack>
                 <Stack width="100%" overflow="hidden" textOverflow="ellipsis">
-                  <Typography variant="body2">{name}</Typography>
+                  <Typography fontWeight={500} variant="body2">
+                    {name}
+                  </Typography>
                   <Typography
                     mb={2}
                     fontWeight="bold"
@@ -78,13 +113,31 @@ const OrderDetails = () => {
                   </Typography>
                 </Stack>
               </Stack>
-              <Stack width={{ xs: "100%", sm: "50%" }}>
+              <Stack spacing={3} width={{ xs: "100%", sm: "50%" }}>
                 <Typography variant="body2">
-                  <b>Ordered on : </b> {date}
+                  <b>Payment Mode : </b> {paymentType}
                 </Typography>
-                <Typography variant="body2">
-                  <b>Payment Type : </b> {paymentType}
-                </Typography>
+                <Stepper
+                  activeStep={steps.findIndex(
+                    (step) => step.toLowerCase() === status.toLowerCase()
+                  )}
+                  alternativeLabel
+                >
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel
+                        StepIconComponent={CustomStepIcon}
+                        color="secondary"
+                      >
+                        <Stack>
+                          {label}
+                          <br />
+                          {orderDetail[label[0].toLowerCase() + "Date"]}
+                        </Stack>
+                      </StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
               </Stack>
             </Stack>
             <Stack
@@ -106,8 +159,9 @@ const OrderDetails = () => {
                   {address}, {town}
                   <br /> {city} - {pincode}, {state}{" "}
                 </Typography>
-                <Typography mt={1}>Mobile Number</Typography>
-                <Typography variant="body2">{mobileNumber}</Typography>
+                <Typography mt={1} fontWeight={500} variant="subtitle1">
+                  Mobile Number : {mobileNumber}
+                </Typography>
               </Box>
             </Stack>
           </Stack>

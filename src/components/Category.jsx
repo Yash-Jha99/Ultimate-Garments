@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Product from "./Product/Product";
 import useDataFetch from "../hooks/useDataFetch";
 import { useParams } from "react-router-dom";
@@ -22,7 +22,7 @@ import { CheckCircle, Circle, FilterAlt } from "@mui/icons-material";
 import Loader from "./General/Loader";
 
 const Category = () => {
-  const { categoryName } = useParams();
+  const { categoryName, search } = useParams();
   const [data, setData] = useState([]);
   const [sizeFilters, setSizeFilters] = useState([]);
   const [colorFilters, setColorFilters] = useState([]);
@@ -36,7 +36,6 @@ const Category = () => {
     ) {
       return;
     }
-
     setOpenDrawer(!openDrawer);
   };
 
@@ -48,20 +47,31 @@ const Category = () => {
     setColorFilters(data.map((color) => ({ ...color, active: false })));
   });
 
-  const filters = sizeFilters
-    .filter((size) => size.active)
-    .map((size) => "size=" + size.name)
-    .concat(
-      colorFilters
-        .filter((color) => color.active)
-        .map((color) => "color=" + color.name)
-    )
-    .join("&");
+  const filters = useMemo(
+    () => ({
+      size:
+        sizeFilters
+          .filter((size) => size.active)
+          .map((size) => size.name)
+          .join("+") || null,
+
+      color:
+        colorFilters
+          .filter((color) => color.active)
+          .map((color) => color.name)
+          .join("+") || null,
+
+      category: categoryName?.replace(/-/g, " "),
+      search,
+    }),
+    [sizeFilters, colorFilters, categoryName, search]
+  );
 
   const { error, loading } = useDataFetch(
-    "product/category/" + categoryName.replace(/-/g, " ") + "?" + filters,
+    "product",
     [],
-    (products) => setData(products)
+    (products) => setData(products),
+    filters
   );
 
   if (error || error1 || error2) return null;
@@ -72,7 +82,7 @@ const Category = () => {
     const { name, checked } = event.target;
     setSizeFilters(
       sizeFilters.map((size) =>
-        size.id === name ? { ...size, active: checked } : size
+        size.name === name ? { ...size, active: checked } : size
       )
     );
   };
@@ -81,7 +91,7 @@ const Category = () => {
     const { name, checked } = event.target;
     setColorFilters(
       colorFilters.map((color) =>
-        color.id === name ? { ...color, active: checked } : color
+        color.value === name ? { ...color, active: checked } : color
       )
     );
   };
@@ -116,7 +126,7 @@ const Category = () => {
                     color="secondary"
                     checked={active}
                     onChange={handleChange}
-                    name={id}
+                    name={name}
                   />
                 }
                 label={name.toUpperCase()}
@@ -141,7 +151,7 @@ const Category = () => {
               color="secondary"
               checked={active}
               onChange={handleColorChange}
-              name={id}
+              name={value}
               icon={<Circle sx={{ fontSize: 36, color: value }} />}
               checkedIcon={<CheckCircle sx={{ fontSize: 36, color: value }} />}
             />
@@ -203,16 +213,16 @@ const Category = () => {
   return (
     <>
       {loading && <Loader />}
-      <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} mx={{ xs: 0, sm: 4 }}>
+      <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} mx={{ xs: 0, sm: 1 }}>
         <Stack
-          width="25%"
+          width="20%"
           bgcolor="white"
           display={{ xs: "none", sm: "block" }}
         >
           {filterPanel}
         </Stack>
         <Grid
-          width={{ xs: "98%", sm: "75%" }}
+          width={{ xs: "98%", sm: "80%" }}
           container
           columnSpacing={{ xs: 1, sm: 2 }}
           rowSpacing={{ xs: 0.5, sm: 2 }}
@@ -224,8 +234,8 @@ const Category = () => {
               key={product.id}
               item
               xs={6}
-              sm={4}
-              height={{ xs: 280, sm: 480 }}
+              sm={3}
+              height={{ xs: 280, sm: 380 }}
             >
               <Product
                 id={product.id}

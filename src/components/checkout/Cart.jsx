@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart, updateCart } from "../../store/reducers/cart";
 import { NavLink } from "react-router-dom";
 import { postData } from "../../Services/NodeService";
+import { useSnackbar } from "notistack";
 
 const CartItem = ({
   id,
@@ -23,9 +24,11 @@ const CartItem = ({
   size = "L",
   color = "red",
   discount = 25,
+  quantityInStock,
 }) => {
   const [quantity, setQuantity] = useState(qty);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleMoveToWishlist = async () => {
     dispatch(removeFromCart({ id }));
@@ -36,6 +39,8 @@ const CartItem = ({
       // setNotify({ open: true, message: "Product Wishlisted" });
     }
   };
+
+  const outOfStock = quantityInStock === 0;
 
   return (
     <Box
@@ -88,6 +93,10 @@ const CartItem = ({
                 label="quantity"
                 value={quantity}
                 onChange={(e) => {
+                  if (e.target.value > quantityInStock)
+                    return enqueueSnackbar("Please select less quantity", {
+                      variant: "info",
+                    });
                   setQuantity(e.target.value);
                   dispatch(updateCart({ id, quantity: e.target.value }));
                 }}
@@ -133,6 +142,16 @@ const CartItem = ({
               </Typography>
             </Grid>
           </Grid>
+          {outOfStock && (
+            <Typography
+              pt={2}
+              variant="h5"
+              fontWeight="medium"
+              color="error.light"
+            >
+              Out of Stock
+            </Typography>
+          )}
         </Stack>
       </Stack>
       <Stack
@@ -192,6 +211,7 @@ const Cart = () => {
           discount={cartProduct.discount}
           color={cartProduct.color}
           size={cartProduct.size}
+          quantityInStock={cartProduct.quantityInStock}
         />
       ))}
     </>

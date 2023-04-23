@@ -17,7 +17,6 @@ import { deleteData, postData } from "../../Services/NodeService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../store/reducers/cart";
 import useDataFetch from "../../hooks/useDataFetch";
-import Error from "../General/Error";
 import Loader from "../General/Loader";
 import { addToCheckout } from "../../store/reducers/checkout";
 import { useSnackbar } from "notistack";
@@ -84,6 +83,17 @@ const ProductDetails = () => {
     options,
   } = product;
 
+  const selectedOption = options.find(
+    (opt) =>
+      opt.sizeId === selectedSize?.id && opt.colorId === selectedColor?.id
+  );
+
+  const outOfStock = selectedOption?.quantityInStock === 0;
+  const isCheckoutValid =
+    selectedOption !== undefined &&
+    !outOfStock &&
+    selectedOption.quantityInStock >= qty;
+
   const handleWishlist = async () => {
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
     if (!wishlisted) {
@@ -115,19 +125,17 @@ const ProductDetails = () => {
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
     if (isProductInCart) return navigate("/checkout/cart");
 
-    if (!selectedColor.id) return setInValid("color");
-    if (!selectedSize.id) return setInValid("size");
-
-    const selectedOption = options.find(
-      (opt) =>
-        opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
-    );
     if (!selectedOption) {
       enqueueSnackbar("Selected size-color combination doesn't exist", {
         variant: "info",
       });
       return;
     }
+
+    if (!isCheckoutValid)
+      return enqueueSnackbar("Please select less quantity", {
+        variant: "info",
+      });
 
     enqueueSnackbar("Product added to cart", { variant: "success" });
     dispatch(
@@ -141,19 +149,18 @@ const ProductDetails = () => {
 
   const handleBuyNow = () => {
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
-    if (!selectedColor.id) return setInValid("color");
-    if (!selectedSize.id) return setInValid("size");
 
-    const selectedOption = options.find(
-      (opt) =>
-        opt.sizeId === selectedSize.id && opt.colorId === selectedColor.id
-    );
     if (!selectedOption) {
       enqueueSnackbar("Selected size-color combination doesn't exist", {
         variant: "info",
       });
       return;
     }
+
+    if (!isCheckoutValid)
+      return enqueueSnackbar("Please select less quantity", {
+        variant: "info",
+      });
 
     dispatch(
       addToCheckout([
@@ -174,7 +181,7 @@ const ProductDetails = () => {
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={{ xs: 2, sm: 10 }}
-        alignItems="center"
+        alignItems={{ xs: "center", sm: "start" }}
         justifyContent="center"
         p={{ xs: 2, sm: 8 }}
       >
@@ -335,6 +342,16 @@ const ProductDetails = () => {
               </FormControl>
             </Box>
           </Stack>
+          {outOfStock && (
+            <Typography
+              pt={2}
+              variant="h5"
+              fontWeight="medium"
+              color="error.light"
+            >
+              Out of Stock
+            </Typography>
+          )}
           <Stack
             direction="row"
             justifyContent="space-around"
@@ -353,6 +370,7 @@ const ProductDetails = () => {
               color="secondary"
               startIcon={<ShoppingCartIcon />}
               onClick={handleAddToCart}
+              disabled={outOfStock}
             >
               {isProductInCart ? "GO TO CART" : "ADD TO CART"}
             </Button>
@@ -363,6 +381,7 @@ const ProductDetails = () => {
               variant="contained"
               startIcon={<BoltIcon />}
               onClick={handleBuyNow}
+              disabled={outOfStock}
             >
               BUY NOW
             </Button>

@@ -18,14 +18,15 @@ import Loader from "../General/Loader";
 import { addToCheckout } from "../../store/reducers/checkout";
 import Logo from "../../images/logo.png";
 import NotFound from "../General/NotFound";
+import { useSnackbar } from "notistack";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
   zIndex: 1,
   color: "#fff",
-  width: 32,
-  height: 32,
+  width: 36,
+  height: 36,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
@@ -62,6 +63,7 @@ const Checkout = () => {
     "/checkout/shipping",
     "/checkout/payment",
   ];
+
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const {
@@ -69,10 +71,12 @@ const Checkout = () => {
     deliveryAddress,
     paymentMethod,
   } = useSelector((state) => state.checkout);
+
   const { items: cart } = useSelector((state) => state.cart);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   let checkoutItems = checkout;
   if (location.pathname === "/checkout/cart") checkoutItems = cart;
@@ -89,30 +93,56 @@ const Checkout = () => {
     .reduce((total, discount) => total + discount, 0);
 
   const handleCheckout = async () => {
-    const reqBody1 = {
-      products: checkoutItems.map((item) => ({
-        id: item.productId,
-        price: item.price,
-        quantity: item.quantity,
-        optionId: item.product_option_id,
-      })),
-      paymentType: paymentMethod,
-      addressId: deliveryAddress.id,
-    };
-    setLoading(true);
-    const res = await postData("order", reqBody1);
-    if (res.status === 201) {
-      if (paymentMethod === "Cash") {
-        setLoading(false);
-        navigate("/myaccount/orders");
-      } else {
-        const response = await postData("payment/create-checkout-session", {
-          orderItemIds: res.data.map((item) => item.id),
+    if (activeStep === 0) {
+      if (cart.some((item) => item.quantityInStock === 0))
+        return enqueueSnackbar("Please remove out of stock item", {
+          variant: "warning",
         });
-        if (response.status === 200) {
-          window.location.replace(response.data.url);
+
+      dispatch(addToCheckout(cart));
+      navigate(stepRoutes[1]);
+    }
+
+    if (activeStep === 1) {
+      if (!deliveryAddress)
+        return enqueueSnackbar("Please select a address", {
+          variant: "warning",
+        });
+      navigate(stepRoutes[2]);
+    }
+
+    if (activeStep === 2) {
+      if (!paymentMethod)
+        return enqueueSnackbar("Please select a payment method", {
+          variant: "warning",
+        });
+
+      const reqBody1 = {
+        products: checkoutItems.map((item) => ({
+          cartId: item.id,
+          id: item.productId,
+          price: item.price,
+          quantity: item.quantity,
+          optionId: item.product_option_id,
+        })),
+        paymentType: paymentMethod,
+        addressId: deliveryAddress.id,
+      };
+      setLoading(true);
+      const res = await postData("order", reqBody1);
+      if (res.status === 201) {
+        if (paymentMethod === "Cash") {
           setLoading(false);
-        } else setLoading(false);
+          navigate("/myaccount/orders");
+        } else {
+          const response = await postData("payment/create-checkout-session", {
+            orderItemIds: res.data.map((item) => item.id),
+          });
+          if (response.status === 200) {
+            window.location.replace(response.data.url);
+            setLoading(false);
+          } else setLoading(false);
+        }
       }
     }
   };
@@ -324,15 +354,7 @@ const Checkout = () => {
                   color="secondary"
                   fullWidth
                   size="large"
-                  onClick={() => {
-                    if (activeStep === 0) {
-                      dispatch(addToCheckout(cart));
-                      navigate(stepRoutes[1]);
-                    }
-                    if (activeStep === 1 && deliveryAddress)
-                      navigate(stepRoutes[2]);
-                    if (activeStep === 2 && paymentMethod) handleCheckout();
-                  }}
+                  onClick={handleCheckout}
                 >
                   CHECKOUT SECURELY
                 </Button>

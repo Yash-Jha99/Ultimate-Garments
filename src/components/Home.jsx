@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import Banner from "./Banner";
 import Product from "./Product/Product";
-// import ProductImage from "../images/product.jpg";
 import { getData } from "../Services/NodeService";
 import { Await, defer, useLoaderData } from "react-router-dom";
 import { Grid } from "@mui/material";
@@ -21,7 +20,7 @@ const Home = () => {
               <Grid
                 container
                 rowSpacing={{ xs: 1, sm: 2 }}
-                columnSpacing={{ xs: 1, sm: 6 }}
+                columnSpacing={{ xs: 1, sm: 4 }}
                 p={{ xs: 1, sm: 2 }}
               >
                 {resolvedData.map((product) => (
@@ -30,7 +29,7 @@ const Home = () => {
                     item
                     xs={6}
                     sm={3}
-                    height={{ xs: 280, sm: 480 }}
+                    height={{ xs: 280, sm: 380 }}
                   >
                     <Product
                       id={product.id}

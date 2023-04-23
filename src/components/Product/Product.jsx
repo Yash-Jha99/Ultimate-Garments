@@ -105,7 +105,7 @@ const Product = ({
             <FavoriteBorder color="action" />
           )}
         </IconButton>
-        <Box height={{ xs: 200, md: 400 }}>
+        <Box height={{ xs: 200, md: 290 }} mb={2}>
           <img
             src={image}
             style={{

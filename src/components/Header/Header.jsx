@@ -121,8 +121,9 @@ const Header = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const searcto = useRef();
+  const searchRef = useRef();
   const classes = useStyles();
+  const navigate = useNavigate();
   const cartItemsNumber = useSelector((state) => state.cart.items.length);
 
   const getCategories = async () => {
@@ -228,14 +229,17 @@ const Header = (props) => {
               </Box>
             </Stack>
             <div className={classes.right}>
-              <Link onClick={() => setShowSearch(!showSearch)}>
-                <SearchIcon
-                  sx={{
-                    color: "black",
-                    fontSize: { xs: 20, sm: 24 },
-                  }}
-                />
-              </Link>
+              <SearchIcon
+                onClick={(e) => {
+                  setShowSearch(!showSearch);
+                }}
+                sx={{
+                  color: "black",
+                  fontSize: { xs: 20, sm: 24 },
+                  cursor: "pointer",
+                }}
+              />
+
               <Link to="myaccount/wishlist">
                 <FavoriteIcon
                   sx={{
@@ -266,16 +270,33 @@ const Header = (props) => {
                 </Button>
               )}
               {showSearch && (
-                // <Box width={{ xs: "100vw", sm: "100%" }}>
-                <div className={classes.search}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    right: { xs: "-16px", sm: 0 },
+                    padding: "10px",
+                    display: "flex",
+                    background: "whitesmoke",
+                    top: "100%",
+                    width: { xs: "95vw", sm: 340 },
+                  }}
+                >
                   <input
+                    className={classes.input}
                     type="text"
-                    ref={searcto}
+                    ref={searchRef}
                     placeholder="Search entire store here..."
                   />
-                  <button>Search</button>
-                </div>
-                // </Box>
+                  <button
+                    className={classes.button}
+                    onClick={() => {
+                      navigate("/search/" + searchRef.current.value);
+                      setShowSearch(false);
+                    }}
+                  >
+                    Search
+                  </button>
+                </Box>
               )}
             </div>
           </Toolbar>

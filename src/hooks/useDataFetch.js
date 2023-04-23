@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getData } from "../Services/NodeService";
 
-const useDataFetch = (url, initial, cb = null) => {
+const useDataFetch = (url, initial = null, cb = null, params = null) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(initial);
@@ -10,7 +10,7 @@ const useDataFetch = (url, initial, cb = null) => {
     const controller = new AbortController();
     setLoading(true);
     (async () => {
-      const response = await getData(url, controller.signal);
+      const response = await getData(url, controller.signal, params);
       if (response?.canceledError);
       else if (response?.status) {
         setError(response);
@@ -24,7 +24,7 @@ const useDataFetch = (url, initial, cb = null) => {
     })();
 
     return () => controller.abort();
-  }, [url]);
+  }, [url, params]);
 
   return { data, loading, error, setData };
 };
