@@ -29,7 +29,11 @@ const AddressItem = ({
       mb={2}
       position="relative"
       onClick={() => {
-        if (location.pathname === "/myaccount/address") return;
+        if (
+          location.pathname === "/myaccount/address" ||
+          activeAddressId === item.id
+        )
+          return;
         setActiveAddress(item);
         dispatch(setDeliveryAddress(item));
       }}

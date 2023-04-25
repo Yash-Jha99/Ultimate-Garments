@@ -1,19 +1,16 @@
 import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 
-const Loader = ({ color = "secondary" }) => {
+const Loader = ({ color = "secondary", fullscreen = false }) => {
   return (
     <Box
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height="100vh"
-      width="100vw"
-      bgcolor="rgba(255,255,255,0.8)"
+      height={fullscreen ? "100vh" : "100%"}
+      width={fullscreen ? "100wh" : "100%"}
+      position={fullscreen ? "fixed" : "static"}
       zIndex={1000}
-      position="fixed"
-      top={0}
-      left={0}
     >
       <CircularProgress color={color} />
     </Box>

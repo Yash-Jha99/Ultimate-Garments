@@ -1,4 +1,9 @@
-import { Check, FavoriteBorder, LocalOffer } from "@mui/icons-material";
+import {
+  Check,
+  Favorite,
+  FavoriteBorder,
+  LocalOffer,
+} from "@mui/icons-material";
 import {
   IconButton,
   Typography,
@@ -177,45 +182,85 @@ const ProductDetails = () => {
   };
 
   return (
-    <Box bgcolor="white">
+    <Box>
       <Stack
+        bgcolor="white"
         direction={{ xs: "column", sm: "row" }}
-        spacing={{ xs: 2, sm: 10 }}
+        spacing={{ xs: 4, sm: 2 }}
         alignItems={{ xs: "center", sm: "start" }}
         justifyContent="center"
-        p={{ xs: 2, sm: 8 }}
+        p={{ xs: 2, sm: 4 }}
+        mx={{ xs: 0, sm: 4 }}
+        boxShadow={2}
       >
-        <Box
-          height={{ xs: 400, md: "60vh" }}
-          width={{ xs: "85%", md: "40%" }}
-          p={{ xs: 1, sm: 5 }}
-          border="1px solid gray"
-        >
-          <img
-            src={image}
-            alt="product"
-            style={{
-              objectFit: "contain",
-            }}
-            width="100%"
-            height="100%"
-          />
-        </Box>
-        <Stack spacing={1} width="100%">
+        <Stack width={{ xs: "100%", sm: "40%" }} alignItems="center">
+          <Box
+            height={{ xs: 400, sm: "55vh" }}
+            width={{ xs: "85%", sm: "80%" }}
+            border="1px solid lightgray"
+            padding={{ xs: 1, sm: 2 }}
+          >
+            <img
+              src={image}
+              alt="product"
+              style={{
+                objectFit: "contain",
+              }}
+              width="100%"
+              height="100%"
+            />
+          </Box>
+          <Stack
+            direction="row"
+            spacing={2}
+            width={{ xs: "95%", sm: "88%" }}
+            py={{ xs: 1.2, sm: 2 }}
+            bgcolor="white"
+            position={{ xs: "fixed", sm: "static" }}
+            bottom={0}
+            zIndex={20}
+          >
+            <Button
+              sx={{ maxWidth: "250px", fontSize: { xs: 12, sm: 16 } }}
+              fullWidth
+              size="large"
+              variant="contained"
+              color="secondary"
+              startIcon={<ShoppingCartIcon />}
+              onClick={handleAddToCart}
+              disabled={outOfStock}
+            >
+              {isProductInCart ? "GO TO CART" : "ADD TO CART"}
+            </Button>
+            <Button
+              sx={{ maxWidth: "250px", fontSize: { xs: 12, sm: 16 } }}
+              fullWidth
+              size="large"
+              variant="contained"
+              startIcon={<BoltIcon />}
+              onClick={handleBuyNow}
+              disabled={outOfStock}
+            >
+              BUY NOW
+            </Button>
+          </Stack>
+        </Stack>
+        <Stack spacing={1} width={{ xs: "100%", sm: "60%" }}>
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h6">{name}</Typography>
             <IconButton
               onClick={handleWishlist}
               sx={{
-                width: "32px",
-                height: "32px",
-                bgcolor: wishlisted ? "primary.main" : "lightgray",
-                ":hover": {
-                  bgcolor: wishlisted ? "primary.main" : "lightgray",
-                },
+                width: "36px",
+                height: "36px",
+                border: "1px solid lightgray",
               }}
             >
-              <FavoriteBorder color="action" />
+              {wishlisted ? (
+                <Favorite color="primary" />
+              ) : (
+                <FavoriteBorder color="action" />
+              )}
             </IconButton>
           </Box>
           <Stack direction="row" spacing={2} alignItems="center">
@@ -352,40 +397,6 @@ const ProductDetails = () => {
               Out of Stock
             </Typography>
           )}
-          <Stack
-            direction="row"
-            justifyContent="space-around"
-            columnGap={1}
-            py={{ xs: 1.2, sm: 4 }}
-            bgcolor="white"
-            position={{ xs: "fixed", sm: "static" }}
-            width="91%"
-            bottom={0}
-          >
-            <Button
-              sx={{ maxWidth: "250px", fontSize: { xs: 12, sm: 18 } }}
-              fullWidth
-              size="large"
-              variant="contained"
-              color="secondary"
-              startIcon={<ShoppingCartIcon />}
-              onClick={handleAddToCart}
-              disabled={outOfStock}
-            >
-              {isProductInCart ? "GO TO CART" : "ADD TO CART"}
-            </Button>
-            <Button
-              sx={{ maxWidth: "250px", fontSize: { xs: 12, sm: 18 } }}
-              fullWidth
-              size="large"
-              variant="contained"
-              startIcon={<BoltIcon />}
-              onClick={handleBuyNow}
-              disabled={outOfStock}
-            >
-              BUY NOW
-            </Button>
-          </Stack>
           <Stack spacing={1} pt={3}>
             <Typography variant="h6">Description</Typography>
             <Typography variant="body2">{description}</Typography>

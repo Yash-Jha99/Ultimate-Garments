@@ -27,22 +27,23 @@ const MyAccount = () => {
   const { name } = useSelector((state) => state.auth.user);
   const location = useLocation();
   return (
-    <Stack direction="row" mt={2}>
+    <Stack direction="row">
       <Stack
         m={{ xs: "0 4px", sm: "0 0 0 64px" }}
-        spacing={{ xs: 1.5, sm: 0 }}
+        spacing={{ xs: 1.5, sm: 1 }}
         display={{
           xs: location.pathname === "/myaccount" ? "flex" : "none",
           sm: "flex",
         }}
         width={{ xs: "100%", sm: "30%" }}
+        height="86vh"
         boxShadow={2}
         bgcolor="white"
         divider={<Divider flexItem orientation="horizontal" />}
       >
         <Stack>
           <Box
-            p={4}
+            p={3}
             display="flex"
             flexDirection="column"
             justifyContent="center"
@@ -87,11 +88,7 @@ const MyAccount = () => {
         </Button>
       </Stack>
       {location.pathname !== "/myaccount" && (
-        <Box
-          m={{ xs: "", sm: "0px 64px 0px 16px" }}
-          height={{ xs: "none", sm: "87vh" }}
-          width="100%"
-        >
+        <Box m={{ xs: "", sm: "0px 64px 0px 16px" }} width="100%">
           <Outlet />
         </Box>
       )}

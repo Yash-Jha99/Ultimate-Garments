@@ -7,16 +7,16 @@ import NotFound from "../General/NotFound";
 const OrderItem = ({ id, name, orderedDate, image, price, orderItemId }) => {
   return (
     <Box
-      sx={{ ":hover": { boxShadow: 3 } }}
+      sx={{ ":hover": { boxShadow: 4 } }}
       bgcolor="white"
-      border="1px solid lightgray"
-      padding={1}
+      padding={{ xs: 1, sm: 2 }}
+      boxShadow={2}
     >
       <NavLink
         style={{ textDecoration: "none", color: "black", display: "block" }}
         to={`/myaccount/orders/${id}/${orderItemId}`}
       >
-        <Stack direction="row" spacing={2} pb={{ xs: 1, sm: 3 }}>
+        <Stack direction="row" spacing={2} pb={{ xs: 1, sm: 1 }}>
           <Stack alignItems="center">
             <Box
               height={{ xs: 72, sm: 120 }}
@@ -54,7 +54,7 @@ const Order = () => {
     <Suspense fallback={<Loader />}>
       <Await resolve={data}>
         {(orders) => (
-          <Stack spacing={{ xs: 1, sm: 2 }}>
+          <Stack spacing={{ xs: 1, sm: 1.5 }}>
             {orders.length === 0 && (
               <NotFound message="You have not placed any order yet" />
             )}

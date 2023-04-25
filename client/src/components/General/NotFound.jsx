@@ -5,7 +5,7 @@ import NotFoundImage from "../../images/not-found.png";
 const NotFound = ({ message }) => {
   return (
     <Box
-      height="90vh"
+      height="calc(100vh - 108px)"
       display="flex"
       flexDirection="column"
       justifyContent="center"

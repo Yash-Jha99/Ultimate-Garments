@@ -7,7 +7,7 @@ import Loader from "../General/Loader";
 import NotFound from "../General/NotFound";
 
 const Wishlist = () => {
-  const { data, loading, setData } = useDataFetch("wishlist");
+  const { data, loading, setData } = useDataFetch("wishlist", []);
   const [deleteId, setDeleteId] = useState("");
 
   useEffect(() => {
@@ -20,7 +20,10 @@ const Wishlist = () => {
 
   return (
     <Box boxShadow={2} p={2} bgcolor="white">
-      {data.length === 0 && <NotFound message="Your wishlist is empty" />}
+      {loading && <Loader />}
+      {!loading && data.length === 0 && (
+        <NotFound message="Your wishlist is empty" />
+      )}
       <Grid container spacing={{ xs: 0.5, sm: 2 }}>
         {data.length !== 0 &&
           data.map((product) => (

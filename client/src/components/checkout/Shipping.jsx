@@ -19,7 +19,7 @@ const Shipping = () => {
   const [defaultAddressId, setDefaultAddressId] = useState("");
   const [editId, setEditId] = useState("");
   const [activeAddress, setActiveAddress] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState({
     firstName: false,
@@ -200,9 +200,8 @@ const Shipping = () => {
   if (loading) return <Loader />;
 
   return (
-    <Box boxShadow={2} p={2} bgcolor="white">
-      {showForm ||
-      (address.length === 0 && location.pathname === "/checkout/shipping") ? (
+    <Box boxShadow={2} p={{ xs: 2, sm: 4 }} bgcolor="white">
+      {(showForm || address.length === 0) && (
         <AddressForm
           formDetails={formDetails}
           formLabels={formLabels}
@@ -211,39 +210,42 @@ const Shipping = () => {
           onCancel={() => setShowForm(false)}
           onSave={editId ? handleUpdate : handleAdd}
         />
-      ) : (
-        <Box maxWidth={{ xs: "100%", sm: "70%" }}>
-          <Typography mb={2} variant="h5">
-            {location.pathname === "/checkout/shipping"
-              ? "Select Address"
-              : "My addresses"}
-          </Typography>
-          {address.map((item, index) => (
-            <AddressItem
-              key={index}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
-              {...{
-                item,
-                setActiveAddress,
-                activeAddressId: activeAddress.id,
-                defaultAddressId,
-              }}
-            />
-          ))}
-          <Button
-            sx={{ mt: 2 }}
-            variant="contained"
-            color="inherit"
-            onClick={() => {
-              setShowForm(true);
-              resetForm();
-            }}
-          >
-            Add New
-          </Button>
-        </Box>
       )}
+      <Box maxWidth={{ xs: "100%", sm: "70%" }}>
+        {!showForm && address.length !== 0 && (
+          <>
+            <Typography mb={2} variant="h5">
+              {location.pathname === "/checkout/shipping"
+                ? "Select Address"
+                : "My addresses"}
+            </Typography>
+            {address.map((item, index) => (
+              <AddressItem
+                key={index}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                {...{
+                  item,
+                  setActiveAddress,
+                  activeAddressId: activeAddress?.id,
+                  defaultAddressId,
+                }}
+              />
+            ))}
+            <Button
+              sx={{ mt: 2 }}
+              variant="contained"
+              color="inherit"
+              onClick={() => {
+                setShowForm(true);
+                resetForm();
+              }}
+            >
+              Add New
+            </Button>
+          </>
+        )}
+      </Box>
     </Box>
   );
 };

@@ -50,7 +50,6 @@ const Category = () => {
 
   return (
     <>
-      {loading && <Loader />}
       <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} mx={{ xs: 0, sm: 1 }}>
         <Stack
           width="20%"
@@ -67,6 +66,7 @@ const Category = () => {
           pr={{ xs: 0.5, sm: 2 }}
           bgcolor="white"
         >
+          {loading && <Loader />}
           {data.map((product) => (
             <Grid
               key={product.id}

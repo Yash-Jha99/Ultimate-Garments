@@ -64,7 +64,6 @@ router.get("/:name", (req, res, next) => {
 
 router.get("/", (req, res, next) => {
   const { size, color, search, price, category } = req.query;
-  console.log(req.query);
 
   let sizeFilter, colorFilter;
   let query = `select distinct p.id ,p.name,p.price,p.discount,p.image,${

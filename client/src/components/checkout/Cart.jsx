@@ -13,6 +13,7 @@ import { removeFromCart, updateCart } from "../../store/reducers/cart";
 import { NavLink } from "react-router-dom";
 import { postData } from "../../Services/NodeService";
 import { useSnackbar } from "notistack";
+import Loader from "../General/Loader";
 
 const CartItem = ({
   id,
@@ -45,15 +46,14 @@ const CartItem = ({
   return (
     <Box
       sx={{ ":hover": { boxShadow: 2 } }}
-      border="1px solid lightgray"
-      padding={1}
       p={2}
       bgcolor="white"
+      boxShadow={2}
     >
       <Stack
         direction="row"
         spacing={2}
-        pb={{ xs: 1, sm: 3 }}
+        pb={{ xs: 1, sm: 1 }}
         borderBottom="1px solid lightgray"
       >
         <Stack alignItems="center">
@@ -156,9 +156,9 @@ const CartItem = ({
       </Stack>
       <Stack
         direction="row"
-        spacing={{ xs: 4, sm: 20 }}
+        justifyContent="space-around"
         px={{ xs: 2, sm: 4 }}
-        mb={-1}
+        mb={-2}
       >
         <Button
           sx={{
@@ -193,12 +193,7 @@ const Cart = () => {
   const { items: cart, loading } = useSelector((state) => state.cart);
   return (
     <>
-      {loading && <Typography variant="h2">Loading...</Typography>}
-      {!loading && cart.length === 0 && (
-        <Typography variant="h3" mx="auto">
-          No Product Found
-        </Typography>
-      )}
+      {loading && <Loader />}
       {cart.map((cartProduct) => (
         <CartItem
           id={cartProduct.id}

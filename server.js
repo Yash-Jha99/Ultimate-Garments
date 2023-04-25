@@ -26,27 +26,28 @@ if (process.env.NODE_ENV == "production") {
       next();
     }
   });
+
+  app.use(
+    "/static",
+    express.static(path.join(__dirname, "client", "build/static"))
+  );
+
+  app.use(
+    "/manifest.json",
+    express.static(path.join(__dirname, "client", "build", "manifest.json"))
+  );
+
+  app.use(
+    "/favicon.ico",
+    express.static(path.join(__dirname, "client", "build", "favicon.ico"))
+  );
+
+  app.use(express.static(path.join(__dirname, "../client/build")));
+
+  app.get("/*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
 }
-app.use(
-  "/static",
-  express.static(path.join(__dirname, "client", "build/static"))
-);
-
-app.use(
-  "/manifest.json",
-  express.static(path.join(__dirname, "client", "build", "manifest.json"))
-);
-
-app.use(
-  "/favicon.ico",
-  express.static(path.join(__dirname, "client", "build", "favicon.ico"))
-);
-
-app.use(express.static(path.join(__dirname, "../client/build")));
-
-app.get("/*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
 
 // error handler
 app.use(function (err, req, res, next) {
