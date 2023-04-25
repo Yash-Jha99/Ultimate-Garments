@@ -56,14 +56,14 @@ function CustomStepIcon(props) {
   );
 }
 
+const stepRoutes = [
+  "/checkout/cart",
+  "/checkout/shipping",
+  "/checkout/payment",
+];
+
 const Checkout = () => {
   const steps = ["My Cart", "Address", "Payment"];
-  const stepRoutes = [
-    "/checkout/cart",
-    "/checkout/shipping",
-    "/checkout/payment",
-  ];
-
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const {

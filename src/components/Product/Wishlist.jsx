@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import WishlistProduct from "./WishlistProduct";
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../General/Loader";
 import NotFound from "../General/NotFound";
@@ -14,7 +14,7 @@ const Wishlist = () => {
     if (deleteId) {
       setData((data) => data.filter((wishlist) => wishlist.id !== deleteId));
     }
-  }, [deleteId]);
+  }, [deleteId, setData]);
 
   if (loading) return <Loader />;
 

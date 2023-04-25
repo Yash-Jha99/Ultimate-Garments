@@ -195,7 +195,7 @@ const Shipping = () => {
         } else setActiveAddress(deliveryAddress);
       }
     })();
-  }, [location]);
+  }, [deliveryAddress, dispatch, location]);
 
   if (loading) return <Loader />;
 

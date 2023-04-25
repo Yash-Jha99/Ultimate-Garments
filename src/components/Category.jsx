@@ -1,32 +1,19 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Product from "./Product/Product";
 import useDataFetch from "../hooks/useDataFetch";
 import { useParams } from "react-router-dom";
-import {
-  Grid,
-  Stack,
-  Typography,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  FormControlLabel,
-  Checkbox,
-  RadioGroup,
-  Radio,
-  Box,
-  Drawer,
-  Fab,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { CheckCircle, Circle, FilterAlt } from "@mui/icons-material";
+import { Grid, Stack, Box, Drawer, Fab } from "@mui/material";
+import { FilterAlt } from "@mui/icons-material";
 import Loader from "./General/Loader";
+import FilterPanel from "./Product/FilterPanel";
+import NotFound from "./General/NotFound";
 
 const Category = () => {
   const { categoryName, search } = useParams();
-  const [data, setData] = useState([]);
-  const [sizeFilters, setSizeFilters] = useState([]);
-  const [colorFilters, setColorFilters] = useState([]);
-  const [priceFilters, setPriceFilters] = useState(null);
+  const [filters, setFilters] = useState({
+    search,
+    category: categoryName?.replace(/-/g, " "),
+  });
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
   const toggleDrawer = (anchor, open) => (event) => {
@@ -39,157 +26,16 @@ const Category = () => {
     setOpenDrawer(!openDrawer);
   };
 
-  const { error1 } = useDataFetch("product/options/size", [], (data) => {
-    setSizeFilters(data.map((size) => ({ ...size, active: false })));
-  });
+  const { error, loading, data } = useDataFetch("product", [], null, filters);
 
-  const { error2 } = useDataFetch("product/options/color", [], (data) => {
-    setColorFilters(data.map((color) => ({ ...color, active: false })));
-  });
-
-  const filters = useMemo(
-    () => ({
-      size:
-        sizeFilters
-          .filter((size) => size.active)
-          .map((size) => size.name)
-          .join("+") || null,
-
-      color:
-        colorFilters
-          .filter((color) => color.active)
-          .map((color) => color.name)
-          .join("+") || null,
-
+  useEffect(() => {
+    setFilters((filters) => ({
+      ...filters,
       category: categoryName?.replace(/-/g, " "),
-      search,
-    }),
-    [sizeFilters, colorFilters, categoryName, search]
-  );
+    }));
+  }, [categoryName]);
 
-  const { error, loading } = useDataFetch(
-    "product",
-    [],
-    (products) => setData(products),
-    filters
-  );
-
-  if (error || error1 || error2) return null;
-
-  // if (loading && data === undefined) return <Loader />;
-
-  const handleChange = (event) => {
-    const { name, checked } = event.target;
-    setSizeFilters(
-      sizeFilters.map((size) =>
-        size.name === name ? { ...size, active: checked } : size
-      )
-    );
-  };
-
-  const handleColorChange = (event) => {
-    const { name, checked } = event.target;
-    setColorFilters(
-      colorFilters.map((color) =>
-        color.value === name ? { ...color, active: checked } : color
-      )
-    );
-  };
-  const handlePriceChange = (event) => {
-    setPriceFilters(event.target.value);
-    if (event.target.value === "low to high") {
-      setData(data.sort((a, b) => a.price - b.price));
-    } else setData(data.sort((a, b) => b.price - a.price));
-  };
-
-  const filterPanel = (
-    <>
-      <Typography p={2} variant="h6" borderBottom="1px solid lightgray">
-        FILTER
-      </Typography>
-      <Accordion expanded elevation={0}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>SIZE</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Stack>
-            {sizeFilters.map(({ id, name, active }) => (
-              <FormControlLabel
-                key={id}
-                control={
-                  <Checkbox
-                    size="small"
-                    color="secondary"
-                    checked={active}
-                    onChange={handleChange}
-                    name={name}
-                  />
-                }
-                label={name.toUpperCase()}
-              />
-            ))}
-          </Stack>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion expanded elevation={0}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>COLOR</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {colorFilters.map(({ id, value, active }) => (
-            <Checkbox
-              key={id}
-              size="small"
-              color="secondary"
-              checked={active}
-              onChange={handleColorChange}
-              name={value}
-              icon={<Circle sx={{ fontSize: 36, color: value }} />}
-              checkedIcon={<CheckCircle sx={{ fontSize: 36, color: value }} />}
-            />
-          ))}
-        </AccordionDetails>
-      </Accordion>
-      <Accordion expanded elevation={0}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>PRICE</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Stack>
-            <RadioGroup
-              aria-labelledby="demo-controlled-radio-buttons-group"
-              name="controlled-radio-buttons-group"
-              value={priceFilters}
-              onChange={handlePriceChange}
-            >
-              <FormControlLabel
-                value="low to high"
-                control={<Radio size="small" color="secondary" />}
-                label="Price : Low to High"
-              />
-              <FormControlLabel
-                value="high to low"
-                control={<Radio size="small" color="secondary" />}
-                label="Price : High to Low"
-              />
-            </RadioGroup>
-          </Stack>
-        </AccordionDetails>
-      </Accordion>
-    </>
-  );
+  if (error?.status === 404) return <NotFound message="No Product Found" />;
 
   const list = (anchor) => (
     <Box
@@ -198,17 +44,9 @@ const Category = () => {
       // onClick={toggleDrawer(anchor, false)}
       // onKeyDown={toggleDrawer(anchor, false)}
     >
-      {filterPanel}
+      <FilterPanel onChange={setFilters} />
     </Box>
   );
-
-  // useEffect(() => {
-  //   getProducts();
-  // }, [sizeFilters, colorFilters, categoryName]);
-
-  // useEffect(() => {
-  //   getFilters();
-  // }, []);
 
   return (
     <>
@@ -219,7 +57,7 @@ const Category = () => {
           bgcolor="white"
           display={{ xs: "none", sm: "block" }}
         >
-          {filterPanel}
+          <FilterPanel onChange={setFilters} />
         </Stack>
         <Grid
           width={{ xs: "98%", sm: "80%" }}

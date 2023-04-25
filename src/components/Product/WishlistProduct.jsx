@@ -28,19 +28,6 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
 
-  const getSizes = async () => {
-    const result = await getData(`product/${productId}/size`);
-    if (result) {
-      setSizes(result);
-    }
-  };
-  const getColors = async () => {
-    const result = await getData(`product/${productId}/color`);
-    if (result) {
-      setColors(result);
-    }
-  };
-
   const handleAddToCart = () => {
     const sizeProductOptionId = sizes.find(
       (size) => size.id === selectedSize
@@ -63,11 +50,23 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
   };
 
   useEffect(() => {
+    const getSizes = async () => {
+      const result = await getData(`product/${productId}/size`);
+      if (result) {
+        setSizes(result);
+      }
+    };
+    const getColors = async () => {
+      const result = await getData(`product/${productId}/color`);
+      if (result) {
+        setColors(result);
+      }
+    };
     if (open) {
       getColors();
       getSizes();
     }
-  }, [open]);
+  }, [open, productId]);
 
   return (
     <Dialog

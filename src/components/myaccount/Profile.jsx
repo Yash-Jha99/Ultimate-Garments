@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Checkbox,
   Grid,
@@ -11,7 +11,7 @@ import {
   Radio,
   Box,
 } from "@mui/material";
-import { getData, updateData } from "../../Services/NodeService";
+import { updateData } from "../../Services/NodeService";
 import { useSelector } from "react-redux";
 import useNotify from "../../hooks/useNotify";
 import useDataFetch from "../../hooks/useDataFetch";
