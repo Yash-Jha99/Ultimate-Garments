@@ -6,7 +6,8 @@ const {
 } = require("./tokens");
 
 const access = (req, res, next) => {
-  if (req.app.get("env") === "development") return next();
+  if (req.app.get("env") === "development" || !req.path.includes("/api"))
+    return next();
   const token = req.headers["access-token"];
   if (token === process.env.API_KEY) return next();
   next(createError(403));
