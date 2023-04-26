@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   TextField,
   Button,
@@ -17,12 +16,16 @@ import { Stack } from "@mui/system";
 import { postData } from "../services/NodeService";
 import { useDispatch } from "react-redux";
 import { login } from "../store/reducers/auth";
+import sendOtp from "../utils/sendOtp";
+import { useSnackbar } from "notistack";
+import Loader from "../components/general/Loader";
 
 const LoginPage = () => {
   const [showOtpPanel, setShowOtpPanel] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otpTimer, setOtpTimer] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     mobileNumber: false,
     name: false,
@@ -39,6 +42,7 @@ const LoginPage = () => {
   });
 
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleDialogClose = () => {
     setOtpTimer(0);
@@ -62,31 +66,43 @@ const LoginPage = () => {
       setError({ ...error, mobileNumber: true });
       return;
     }
-
-    const response = await postData("auth/login", { mobileNumber });
-    if (response) {
-      const { otp, isRegistered } = response.data;
-      setOtpTimer(30);
-      setShowOtpPanel(true);
-      alert("Your OTP is: " + otp);
-      // setOtp(otp);
-      setShowRegisterForm(!isRegistered);
+    setLoading(true);
+    try {
+      window.otpResult = await sendOtp(mobileNumber);
+      const response = await postData("auth/login", { mobileNumber });
+      if (response) {
+        const { isRegistered } = response.data;
+        setOtpTimer(30);
+        setShowOtpPanel(true);
+        setShowRegisterForm(!isRegistered);
+      }
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar("Something went wrong...", { variant: "error" });
     }
+    setLoading(false);
   };
 
   const handleChange = async (e) => {
     const { name, value, checked } = e.target;
     error[name] = false;
+    setOtpVerified(null);
 
-    if (name === "otp" && value.length === 4) {
-      const response = await postData("auth/validate", {
-        otp: value,
-        mobileNumber: formDetails.mobileNumber,
-      });
-      if (response.status === 200) {
-        setOtpVerified(true);
-        response.data && dispatch(login({ token: response.data }));
-      } else setOtpVerified(false);
+    if (name === "otp" && value.length === 6) {
+      setFormDetails((data) => ({ ...data, otp: value }));
+      try {
+        await window.otpResult.confirm(value);
+        const response = await postData("auth/validate", {
+          otp: value,
+          mobileNumber: formDetails.mobileNumber,
+        });
+        if (response.status === 200) {
+          setOtpVerified(true);
+          response.data && dispatch(login({ token: response.data }));
+        }
+      } catch (error) {
+        setOtpVerified(false);
+      }
     }
 
     if (name === "mobileNumber" && showOtpPanel) {
@@ -176,102 +192,107 @@ const LoginPage = () => {
   );
 
   return (
-    <Box
-      width="40%"
-      boxShadow={2}
-      m="20px auto"
-      bgcolor="white"
-      textAlign="center"
-      pt={2}
-      sx={{ width: { xs: 360, sm: 440 }, mx: "auto" }}
-    >
-      <Typography variant="h5">
-        Login/Sign Up to explore great designs
-      </Typography>
-      <DialogTitle>
-        Login / Signup
-        <div style={{ fontSize: 12, fontWeight: "normal" }}>
-          Get Exciting Offers & Track Order
-        </div>
-      </DialogTitle>
-      <DialogContent>
-        <TextField
-          error={error.mobileNumber}
-          color="text"
-          inputProps={{
-            pattern: "[0-9]{10}",
-            maxLength: 10,
-          }}
-          label="Phone Number"
-          name="mobileNumber"
-          onChange={handleChange}
-          value={formDetails.mobileNumber}
-          margin="dense"
-          required
-          size="small"
-          fullWidth
-        />
-        {showOtpPanel ? (
-          <Stack spacing={2} direction="column">
-            {!otpVerified && (
-              <Box display="flex" mb={-3} justifyContent="flex-end">
-                <Button
-                  disabled={otpTimer !== 0}
-                  onClick={handleLoginOTP}
-                  color="secondary"
-                >
-                  Resend OTP{otpTimer !== 0 && ` in ${otpTimer} s`}
-                </Button>
-              </Box>
-            )}
-            <TextField
-              error={error.otp}
-              InputProps={{
-                endAdornment: formDetails.otp.length === 4 && (
-                  <InputAdornment position="end">
-                    {otpVerified ? (
-                      <CheckCircle color="success" />
-                    ) : (
-                      <Cancel color="error" />
-                    )}
-                  </InputAdornment>
-                ),
-              }}
-              inputProps={{
-                maxLength: 4,
-              }}
-              color="text"
-              label="Enter 4 Digit OTP"
-              margin="normal"
-              size="small"
-              fullWidth
-              value={formDetails.otp}
-              onChange={handleChange}
-              name="otp"
-            />
-            {showRegisterForm && registerPanel}
-            <Button
-              variant="contained"
-              sx={{ bgcolor: "black", ":hover": { bgcolor: "black" } }}
-              onClick={handleSignup}
-            >
-              {showRegisterForm ? "Sign Up" : "Verify"}
-            </Button>
-          </Stack>
-        ) : (
-          <>
-            <Stack mt={2} spacing={2} direction="column">
+    <Box>
+      <Box
+        width="40%"
+        boxShadow={2}
+        bgcolor="white"
+        textAlign="center"
+        pt={2}
+        sx={{ width: { xs: 360, sm: 440 }, mx: "auto" }}
+      >
+        <Typography variant="h5">
+          Login/Sign Up to explore great designs
+        </Typography>
+        <DialogTitle>
+          Login / Signup
+          <div style={{ fontSize: 12, fontWeight: "normal" }}>
+            Get Exciting Offers & Track Order
+          </div>
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            error={error.mobileNumber}
+            color="text"
+            inputProps={{
+              pattern: "[0-9]{10}",
+              maxLength: 10,
+            }}
+            label="Phone Number"
+            name="mobileNumber"
+            onChange={handleChange}
+            value={formDetails.mobileNumber}
+            margin="dense"
+            required
+            size="small"
+            fullWidth
+          />
+          {showOtpPanel ? (
+            <Stack spacing={2} direction="column">
+              {!otpVerified && (
+                <Box display="flex" mb={-3} justifyContent="flex-end">
+                  <Button
+                    disabled={otpTimer !== 0}
+                    onClick={handleLoginOTP}
+                    color="secondary"
+                  >
+                    Resend OTP{otpTimer !== 0 && ` in ${otpTimer} s`}
+                  </Button>
+                </Box>
+              )}
+              <TextField
+                error={error.otp}
+                InputProps={{
+                  endAdornment: formDetails.otp.length === 6 && (
+                    <InputAdornment position="end">
+                      {otpVerified ? (
+                        <CheckCircle color="success" />
+                      ) : (
+                        <Cancel color="error" />
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+                inputProps={{
+                  maxLength: 6,
+                }}
+                color="text"
+                label="Enter 6 Digit OTP"
+                margin="normal"
+                size="small"
+                fullWidth
+                value={formDetails.otp}
+                onChange={handleChange}
+                name="otp"
+              />
+              {showRegisterForm && registerPanel}
               <Button
-                sx={{ bgcolor: "black", ":hover": { bgcolor: "black" } }}
                 variant="contained"
-                onClick={handleLoginOTP}
+                sx={{ bgcolor: "black", ":hover": { bgcolor: "black" } }}
+                onClick={handleSignup}
               >
-                Send OTP
+                {showRegisterForm ? "Sign Up" : "Verify"}
               </Button>
             </Stack>
-          </>
-        )}
-      </DialogContent>
+          ) : (
+            <>
+              <Button
+                sx={{ mt: 2, bgcolor: "black", ":hover": { bgcolor: "black" } }}
+                variant="contained"
+                id="sign-in-button"
+                onClick={handleLoginOTP}
+              >
+                <Stack direction="row" spacing={2}>
+                  {loading && <Loader size={20} color="inherit" />}
+                  <Typography whiteSpace="nowrap" fontSize={14}>
+                    Login with OTP
+                  </Typography>
+                </Stack>
+              </Button>
+            </>
+          )}
+        </DialogContent>
+      </Box>
     </Box>
   );
 };

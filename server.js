@@ -3,7 +3,6 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-// const db = require("./middlewares/db");
 const useRouter = require("./routes/router");
 require("dotenv").config();
 const app = express();

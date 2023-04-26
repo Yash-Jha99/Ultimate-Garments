@@ -17,11 +17,14 @@ import LoginImage from "../../assets/login-image-final.jpg";
 import { postData } from "../../services/NodeService";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/reducers/auth";
+import sendOtp from "../../utils/sendOtp";
+import Loader from "../general/Loader";
+import { useSnackbar } from "notistack";
 
 const Login = ({ open, handleClose }) => {
   const [showOtpPanel, setShowOtpPanel] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(true);
-  // const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
   const [otpVerified, setOtpVerified] = useState(null);
   const [otpTimer, setOtpTimer] = useState(0);
   const [error, setError] = useState({
@@ -40,6 +43,7 @@ const Login = ({ open, handleClose }) => {
   });
 
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleDialogClose = () => {
     handleClose();
@@ -64,31 +68,42 @@ const Login = ({ open, handleClose }) => {
       setError({ ...error, mobileNumber: true });
       return;
     }
-
-    const response = await postData("auth/login", { mobileNumber });
-    if (response) {
-      const { otp, isRegistered } = response.data;
-      setOtpTimer(30);
-      setShowOtpPanel(true);
-      alert("Your OTP is: " + otp);
-      // setOtp(otp);
-      setShowRegisterForm(!isRegistered);
+    setLoading(true);
+    try {
+      window.otpResult = await sendOtp(mobileNumber);
+      const response = await postData("auth/login", { mobileNumber });
+      if (response) {
+        const { isRegistered } = response.data;
+        setOtpTimer(30);
+        setShowOtpPanel(true);
+        setShowRegisterForm(!isRegistered);
+      }
+    } catch (error) {
+      enqueueSnackbar("Something went wrong...", { variant: "error" });
     }
+    setLoading(false);
   };
 
   const handleChange = async (e) => {
     const { name, value, checked } = e.target;
     error[name] = false;
+    setOtpVerified(null);
 
-    if (name === "otp" && value.length === 4) {
-      const response = await postData("auth/validate", {
-        otp: value,
-        mobileNumber: formDetails.mobileNumber,
-      });
-      if (response.status === 200) {
-        setOtpVerified(true);
-        response.data && dispatch(login({ token: response.data }));
-      } else setOtpVerified(false);
+    if (name === "otp" && value.length === 6) {
+      setFormDetails((data) => ({ ...data, otp: value }));
+      try {
+        await window.otpResult.confirm(value);
+        const response = await postData("auth/validate", {
+          otp: value,
+          mobileNumber: formDetails.mobileNumber,
+        });
+        if (response.status === 200) {
+          setOtpVerified(true);
+          response.data && dispatch(login({ token: response.data }));
+        }
+      } catch (error) {
+        setOtpVerified(false);
+      }
     }
 
     if (name === "mobileNumber" && showOtpPanel) {
@@ -227,7 +242,7 @@ const Login = ({ open, handleClose }) => {
             <TextField
               error={error.otp}
               InputProps={{
-                endAdornment: formDetails.otp.length === 4 && (
+                endAdornment: formDetails.otp.length === 6 && (
                   <InputAdornment position="end">
                     {otpVerified === true && <CheckCircle color="success" />}
                     {otpVerified === false && <Cancel color="error" />}
@@ -238,7 +253,7 @@ const Login = ({ open, handleClose }) => {
                 maxLength: 6,
               }}
               color="text"
-              label="Enter 4 Digit OTP"
+              label="Enter 6 Digit OTP"
               margin="dense"
               size="small"
               fullWidth
@@ -259,32 +274,35 @@ const Login = ({ open, handleClose }) => {
           </Stack>
         ) : (
           <>
-            <Stack mt={2} spacing={2} direction="column">
-              <Button
-                id="sign-in"
-                variant="contained"
-                color="secondary"
-                fullWidth
-                onClick={handleLoginOTP}
-              >
-                Login with OTP
-              </Button>
+            <Button
+              id="sign-in-button"
+              sx={{ mt: 2 }}
+              variant="contained"
+              color="secondary"
+              fullWidth
+              onClick={handleLoginOTP}
+            >
+              <Stack direction="row" spacing={2}>
+                {loading && <Loader size={20} color="inherit" />}
+                <Typography whiteSpace="nowrap">Login with OTP</Typography>
+              </Stack>
+            </Button>
 
-              <Button
-                sx={{
-                  py: 0,
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  color: "text.secondary",
-                  ":hover": { color: "text.primary", bgcolor: "white" },
-                }}
-                color="inherit"
-                fullWidth
-                onClick={handleClose}
-              >
-                Continue as Guest
-              </Button>
-            </Stack>
+            <Button
+              sx={{
+                py: 0,
+                mt: 2,
+                fontSize: "16px",
+                fontWeight: "bold",
+                color: "text.secondary",
+                ":hover": { color: "text.primary", bgcolor: "white" },
+              }}
+              color="inherit"
+              fullWidth
+              onClick={handleClose}
+            >
+              Continue as Guest
+            </Button>
           </>
         )}
       </DialogContent>

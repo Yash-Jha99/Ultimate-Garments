@@ -1,51 +1,32 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../middlewares/db");
-var upload = require("../middlewares/multer");
 const { admin, auth } = require("../middlewares/auth");
 var uuid = require("uuid").v4;
 
-router.post("/category", [auth, admin, upload.single("icon")], (req, res) => {
-  const baseUrl = req.protocol + "://" + req.get("host");
-  const image = baseUrl + "/img/" + req.file.filename;
+router.post("/category", auth, admin, (req, res, next) => {
   db.query(
     "insert into category (id,name,icon) values (?,?,?)",
-    [uuid(), req.body.category, image],
+    [uuid(), req.body.category, req.body.image],
     (error, result) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).json({ result: error });
-      } else {
-        return res.status(200).json({ result: true });
-      }
+      if (error) return next(error);
+      else return res.status(201).send("Category created successfully");
     }
   );
 });
 
-router.post(
-  "/subcategory",
-  [auth, admin, upload.single("icon")],
-  (req, res) => {
-    const baseUrl = req.protocol + "://" + req.get("host");
-    const image = baseUrl + "/img/" + req.file.filename;
-    db.query(
-      "insert into subcategory (id,name,icon,category_id) values (?,?,?,?)",
-      [uuid(), req.body.subcategory, image, req.body.categoryid],
-      (error, result) => {
-        if (error) {
-          console.log(error);
-          return res.status(500).json({ result: error });
-        } else {
-          return res.status(200).json({ result: true });
-        }
-      }
-    );
-  }
-);
+router.post("/subcategory", auth, admin, (req, res, next) => {
+  db.query(
+    "insert into subcategory (id,name,icon,category_id) values (?,?,?,?)",
+    [uuid(), req.body.subcategory, req.body.image, req.body.categoryid],
+    (error, result) => {
+      if (error) return next(error);
+      else return res.status(201).send("Category created successfully");
+    }
+  );
+});
 
-router.post("/product", [auth, admin, upload.single("image")], (req, res) => {
-  const baseUrl = req.protocol + "://" + req.get("host");
-  const image = baseUrl + "/img/" + req.file.filename;
+router.post("/product", auth, admin, (req, res, next) => {
   const {
     name,
     price,
@@ -56,8 +37,8 @@ router.post("/product", [auth, admin, upload.single("image")], (req, res) => {
     rating,
     sizes,
     colors,
+    image,
   } = req.body;
-  console.log(sizes, colors);
   const pid = uuid();
   let query = "insert into product_options values ";
   sizes
@@ -88,16 +69,14 @@ router.post("/product", [auth, admin, upload.single("image")], (req, res) => {
       image,
     ],
     (error, result) => {
-      if (error) console.log(error);
-      console.log(result);
+      if (error) return next(error);
+      else
+        db.query(query, (error, result) => {
+          if (error) return next(error);
+          else return res.status(200).send("Category created successfully");
+        });
     }
   );
-
-  db.query(query, (err, result) => {
-    if (err) console.log(err);
-  });
-
-  return res.status(200).json({ result: true });
 });
 
 module.exports = router;

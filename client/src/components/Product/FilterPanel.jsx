@@ -10,6 +10,7 @@ import {
   Checkbox,
   RadioGroup,
   Radio,
+  Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CheckCircle, Circle } from "@mui/icons-material";
@@ -66,7 +67,7 @@ const FilterPanel = ({ onChange }) => {
   }, [sizeFilters, colorFilters, priceFilters, onChange]);
 
   return (
-    <>
+    <Box boxShadow={2} bgcolor="white">
       <Typography p={2} variant="h6" borderBottom="1px solid lightgray">
         FILTER
       </Typography>
@@ -151,7 +152,7 @@ const FilterPanel = ({ onChange }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
-    </>
+    </Box>
   );
 };
 

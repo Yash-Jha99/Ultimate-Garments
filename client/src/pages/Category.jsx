@@ -50,43 +50,53 @@ const Category = () => {
 
   return (
     <>
-      <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} mx={{ xs: 0, sm: 1 }}>
+      <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} px={{ xs: 0, sm: 2 }}>
         <Stack
           width="20%"
-          bgcolor="white"
           display={{ xs: "none", sm: "block" }}
+          position="sticky"
+          bottom={"100vh"}
         >
           <FilterPanel onChange={setFilters} />
         </Stack>
-        <Grid
-          width={{ xs: "98%", sm: "80%" }}
-          container
-          columnSpacing={{ xs: 1, sm: 2 }}
-          rowSpacing={{ xs: 0.5, sm: 2 }}
-          pr={{ xs: 0.5, sm: 2 }}
+        <Box
           bgcolor="white"
+          boxShadow={2}
+          p={2}
+          mb={2}
+          width={{ xs: "98%", sm: "80%" }}
+          pr={{ xs: 0.5, sm: 2 }}
         >
-          {loading && <Loader />}
-          {data.map((product) => (
-            <Grid
-              key={product.id}
-              item
-              xs={6}
-              sm={3}
-              height={{ xs: 280, sm: 380 }}
-            >
-              <Product
-                id={product.id}
-                image={product.image}
-                price={product.price}
-                discount={product.discount}
-                name={product.name}
-                wishlistId={product.wishlistId}
-                badge="Trending"
-              />
-            </Grid>
-          ))}
-        </Grid>
+          <Grid
+            container
+            columnSpacing={{ xs: 1, sm: 2 }}
+            rowSpacing={{ xs: 0.5, sm: 2 }}
+          >
+            {loading ? (
+              <Loader fullscreen />
+            ) : (
+              data.map((product) => (
+                <Grid
+                  key={product.id}
+                  item
+                  xs={6}
+                  sm={3}
+                  height={{ xs: 280, sm: 380 }}
+                >
+                  <Product
+                    id={product.id}
+                    image={product.image}
+                    price={product.price}
+                    discount={product.discount}
+                    name={product.name}
+                    wishlistId={product.wishlistId}
+                    badge="Trending"
+                  />
+                </Grid>
+              ))
+            )}
+          </Grid>
+        </Box>
         <Drawer
           anchor={"left"}
           open={openDrawer}

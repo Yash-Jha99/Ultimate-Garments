@@ -14,7 +14,7 @@ import {
   Drawer,
   List,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -124,6 +124,7 @@ const Header = (props) => {
   const searchRef = useRef();
   const classes = useStyles();
   const navigate = useNavigate();
+  const location = useLocation();
   const cartItemsNumber = useSelector((state) => state.cart.items.length);
 
   const getCategories = async () => {
@@ -263,7 +264,11 @@ const Header = (props) => {
               ) : (
                 <Button
                   color="inherit"
-                  sx={{ fontSize: { xs: 16, sm: 20 } }}
+                  sx={{
+                    fontSize: { xs: 16, sm: 20 },
+                    visibility:
+                      location.pathname === "/login" ? "hidden" : "visible",
+                  }}
                   onClick={() => setOpen(true)}
                 >
                   Login

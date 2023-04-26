@@ -2,6 +2,7 @@ import useStyles from "./CategoryCss";
 import React, { useState } from "react";
 import { TextField, Grid, Button, Avatar } from "@mui/material";
 import { postData } from "../../services/NodeService";
+import upload from "../../utils/storage";
 
 const Category = () => {
   const classes = useStyles();
@@ -16,11 +17,14 @@ const Category = () => {
   };
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("category", categoryName);
-    formData.append("icon", icon.bytes);
-    const result = await postData("admin/category", formData, true);
-    alert(result.data.result);
+    const imageUrl = await upload("images/product", icon.bytes);
+
+    const reqBody = {
+      category: categoryName,
+      image: imageUrl,
+    };
+    const result = await postData("admin/product", reqBody);
+    alert(result.data);
     setCategoryName("");
     setIcon({ url: "", icon: "" });
   };

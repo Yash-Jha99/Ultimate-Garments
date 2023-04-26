@@ -36,6 +36,8 @@ const MyAccount = () => {
           sm: "flex",
         }}
         width={{ xs: "100%", sm: "30%" }}
+        position={"sticky"}
+        top={78}
         height="86vh"
         boxShadow={2}
         bgcolor="white"

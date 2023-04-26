@@ -11,6 +11,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import { getData, postData } from "../../services/NodeService";
+import upload from "../../utils/storage";
 
 const SubCategory = () => {
   const classes = useStyles();
@@ -40,12 +41,15 @@ const SubCategory = () => {
   };
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("subcategory", subCategoryName);
-    formData.append("icon", icon.bytes);
-    formData.append("categoryid", category);
-    const result = await postData("admin/subcategory", formData, true);
-    alert(result.result);
+    const imageUrl = await upload("images/subcategory", icon.bytes);
+
+    const reqBody = {
+      subcategory: subCategoryName,
+      image: imageUrl,
+      categoryid: category,
+    };
+    const result = await postData("admin/subcategory", reqBody);
+    alert(result.data);
     setSubCategoryName("");
     setIcon({ url: "", icon: "" });
     setCategory("");

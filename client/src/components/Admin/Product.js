@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { getData, postData } from "../../services/NodeService";
+import upload from "../../utils/storage";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -97,24 +98,22 @@ const Product = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(image.bytes);
-    const formData = new FormData();
-    formData.append("name", productName);
-    // for (let i of image.bytes) {
-    formData.append("image", image.bytes);
-    // }
+    const imageUrl = await upload("images/product", image.bytes);
 
-    formData.append("category", category);
-    formData.append("subcategory", subCategory);
-    formData.append("price", price);
-    formData.append("discount", discount);
-    formData.append("description", description);
-    formData.append("rating", rating);
-    formData.append("sizes", selectedSizes);
-    formData.append("colors", selectedColors);
-
-    const result = await postData("admin/product", formData, true);
-    alert(result.result);
+    const reqBody = {
+      name: productName,
+      category,
+      subcategory: subCategory,
+      price,
+      discount,
+      description,
+      rating,
+      sizes: selectedSizes,
+      colors: selectedColors,
+      image: imageUrl,
+    };
+    const result = await postData("admin/product", reqBody);
+    alert(result.data);
   };
 
   const handleReset = () => {

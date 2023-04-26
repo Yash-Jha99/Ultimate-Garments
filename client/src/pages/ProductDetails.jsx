@@ -26,6 +26,7 @@ import Loader from "../components/general/Loader";
 import { addToCheckout } from "../store/reducers/checkout";
 import { useSnackbar } from "notistack";
 import NotFound from "../components/general/NotFound";
+import DeliveryOptions from "../components/product/DeliveryOptions";
 
 const ProductDetails = () => {
   const { search } = useLocation();
@@ -190,12 +191,17 @@ const ProductDetails = () => {
         alignItems={{ xs: "center", sm: "start" }}
         justifyContent="center"
         p={{ xs: 2, sm: 4 }}
-        mx={{ xs: 0, sm: 4 }}
+        mx={{ xs: 0, sm: 2 }}
         boxShadow={2}
       >
-        <Stack width={{ xs: "100%", sm: "40%" }} alignItems="center">
+        <Stack
+          width={{ xs: "100%", sm: "40%" }}
+          alignItems="center"
+          position={{ xs: "initial", sm: "sticky" }}
+          top={80}
+        >
           <Box
-            height={{ xs: 400, sm: "55vh" }}
+            height={{ xs: 400, sm: "65vh" }}
             width={{ xs: "85%", sm: "80%" }}
             border="1px solid lightgray"
             padding={{ xs: 1, sm: 2 }}
@@ -214,7 +220,8 @@ const ProductDetails = () => {
             direction="row"
             spacing={2}
             width={{ xs: "95%", sm: "88%" }}
-            py={{ xs: 1.2, sm: 2 }}
+            py={{ xs: 1.2, sm: 1 }}
+            mt={2}
             bgcolor="white"
             position={{ xs: "fixed", sm: "static" }}
             bottom={0}
@@ -245,7 +252,7 @@ const ProductDetails = () => {
             </Button>
           </Stack>
         </Stack>
-        <Stack spacing={1} width={{ xs: "100%", sm: "60%" }}>
+        <Stack spacing={2} width={{ xs: "100%", sm: "60%" }}>
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h6">{name}</Typography>
             <IconButton
@@ -263,54 +270,55 @@ const ProductDetails = () => {
               )}
             </IconButton>
           </Box>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Typography fontWeight="bold" variant="h6" color="black">
-              ₹ {price}
-            </Typography>
-            <Typography
-              sx={{ textDecoration: "line-through" }}
-              variant="subtitle1"
-              color="gray"
-            >
-              ₹ {Math.ceil(price * (1 + discount / 100))}
-            </Typography>
-            <Typography variant="body1" color="success.light">
-              ({discount}% off)
-            </Typography>
+          <Stack>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Typography fontWeight="bold" variant="h5" color="black">
+                ₹ {price}
+              </Typography>
+              <Typography
+                sx={{ textDecoration: "line-through" }}
+                variant="h6"
+                color="gray"
+              >
+                ₹ {Math.ceil(price * (1 + discount / 100))}
+              </Typography>
+              <Typography variant="subtitle1" color="success.light">
+                ({discount}% off)
+              </Typography>
+            </Stack>
+            <Stack direction="row">
+              <Typography variant="body2">
+                Inclusive of All Taxes + &nbsp;{" "}
+              </Typography>
+              <Typography variant="body2" color="orange">
+                {" "}
+                Free Shipping
+              </Typography>
+            </Stack>
           </Stack>
-          <Stack direction="row">
-            <Typography variant="subtitle2">
-              Inclusive of All Taxes +
-            </Typography>
-            <Typography variant="subtitle2" color="orange">
-              {" "}
-              Free Shipping
-            </Typography>
-          </Stack>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} py={1}>
             <LocalOffer color="warning" />
             <Typography variant="subtitle2">{offer}</Typography>
           </Stack>
           {colors?.length !== 0 && (
-            <>
-              {inValid === "color" && (
-                <Typography color="error">Please select a color</Typography>
-              )}
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography
-                  fontWeight={inValid === "color" ? "bold" : "medium"}
-                  mr={2}
-                  color={inValid === "color" && "error"}
-                  sx={{ textTransform: "capitalize" }}
-                  variant="subtitle1"
-                >
-                  Color* : {selectedColor.label}{" "}
-                </Typography>
+            <Stack>
+              <Typography
+                fontWeight={inValid === "color" ? "bold" : "medium"}
+                mr={2}
+                color={inValid === "color" && "error"}
+                sx={{ textTransform: "capitalize" }}
+                variant="subtitle1"
+              >
+                Color* : {selectedColor.label}{" "}
+              </Typography>
+              <Stack direction="row" spacing={1}>
                 {colors.map((color) => (
                   <Avatar
                     sx={{
                       cursor: "pointer",
                       bgcolor: color.value,
+                      width: 44,
+                      height: 44,
                     }}
                     onClick={() => {
                       setInValid("");
@@ -322,22 +330,19 @@ const ProductDetails = () => {
                   </Avatar>
                 ))}
               </Stack>
-            </>
+            </Stack>
           )}
           {sizes?.length !== 0 && (
-            <>
-              {inValid === "size" && (
-                <Typography color="error">Please select a size</Typography>
-              )}
-              <Stack direction="row" spacing={1} alignItems="center" pt={1}>
-                <Typography
-                  mr={2}
-                  fontWeight={inValid === "size" ? "bold" : "medium"}
-                  color={inValid === "size" && "error"}
-                  variant="subtitle1"
-                >
-                  Size* :{" "}
-                </Typography>
+            <Stack>
+              <Typography
+                mr={2}
+                fontWeight={inValid === "size" ? "bold" : "medium"}
+                color={inValid === "size" && "error"}
+                variant="subtitle1"
+              >
+                Size* :{" "}
+              </Typography>
+              <Stack direction="row" spacing={1}>
                 {sizes.map((size) => (
                   <Avatar
                     sx={{
@@ -349,7 +354,7 @@ const ProductDetails = () => {
                           ? "secondary.main"
                           : "lightgray",
                       color: "black",
-                      fontSize: "16px",
+                      fontSize: "14px",
                     }}
                     onClick={() => {
                       setInValid("");
@@ -361,7 +366,7 @@ const ProductDetails = () => {
                   </Avatar>
                 ))}
               </Stack>
-            </>
+            </Stack>
           )}
           <Stack direction="row" spacing={2} alignItems="center" pt={1}>
             <Typography fontWeight="medium" variant="subtitle1">
@@ -397,9 +402,33 @@ const ProductDetails = () => {
               Out of Stock
             </Typography>
           )}
-          <Stack spacing={1} pt={3}>
-            <Typography variant="h6">Description</Typography>
-            <Typography variant="body2">{description}</Typography>
+          <DeliveryOptions />
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <Stack
+              spacing={1}
+              border="1px solid lightgray"
+              p={2}
+              width={{ xs: "100%", sm: "50%" }}
+            >
+              <Typography variant="h6">Description</Typography>
+              <Typography variant="body2">{description}</Typography>
+            </Stack>
+            <Stack
+              spacing={1}
+              border="1px solid lightgray"
+              p={2}
+              width={{ xs: "100%", sm: "50%" }}
+            >
+              <Typography variant="h6">Delivery & Return Policy</Typography>
+              <Typography variant="body2">
+                We provide free shipping on all orders. Pay online to avoid
+                charges of ₹50/product applicable on COD orders. The return or
+                exchange can be done within 15 days after delivery. Every
+                delivery from Beyoung is processed under excellent condition and
+                in the fastest time possible. For our beloved customer’s care,
+                we give contactless delivery. Refer to FAQ for more information.
+              </Typography>
+            </Stack>
           </Stack>
         </Stack>
       </Stack>
