@@ -18,8 +18,8 @@ import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { getData } from "../../Services/NodeService";
-import Login from "../Auth/Login";
+import { getData } from "../services/NodeService";
+import Login from "./auth/Login";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
@@ -34,10 +34,10 @@ import {
   Home,
   List as ListIcon,
 } from "@mui/icons-material";
-import Dropdown from "../General/Dropdown";
-import { logout } from "../../store/reducers/auth";
-import { stringToColor } from "../../utils/utils";
-import Logo from "../../images/logo.png";
+import Dropdown from "./general/Dropdown";
+import { logout } from "../store/reducers/auth";
+import { stringToColor } from "../utils/utils";
+import Logo from "../assets/logo.png";
 
 const drawerWidth = 260;
 

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
-import NotFoundImage from "../../images/not-found.png";
+import NotFoundImage from "../../assets/not-found.png";
 
 const NotFound = ({ message }) => {
   return (

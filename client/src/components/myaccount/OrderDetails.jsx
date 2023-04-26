@@ -10,7 +10,7 @@ import {
 import { styled } from "@mui/material/styles";
 import React, { Suspense } from "react";
 import { Await, useLoaderData } from "react-router-dom";
-import Loader from "../General/Loader";
+import Loader from "../general/Loader";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:

@@ -13,13 +13,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { postData } from "../../Services/NodeService";
-import Loader from "../General/Loader";
-import { addToCheckout } from "../../store/reducers/checkout";
-import Logo from "../../images/logo.png";
-import NotFound from "../General/NotFound";
+import { postData } from "../services/NodeService";
+import Loader from "../components/general/Loader";
+import { addToCheckout } from "../store/reducers/checkout";
+import Logo from "../assets/logo.png";
+import NotFound from "../components/general/NotFound";
 import { useSnackbar } from "notistack";
-import PriceDetails from "./PriceDetails";
+import PriceDetails from "../components/checkout/PriceDetails";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:

@@ -18,14 +18,14 @@ import BoltIcon from "@mui/icons-material/Bolt";
 import { Box, Stack } from "@mui/material";
 import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteData, postData } from "../../Services/NodeService";
+import { deleteData, postData } from "../services/NodeService";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../store/reducers/cart";
-import useDataFetch from "../../hooks/useDataFetch";
-import Loader from "../General/Loader";
-import { addToCheckout } from "../../store/reducers/checkout";
+import { addToCart } from "../store/reducers/cart";
+import useDataFetch from "../hooks/useDataFetch";
+import Loader from "../components/general/Loader";
+import { addToCheckout } from "../store/reducers/checkout";
 import { useSnackbar } from "notistack";
-import NotFound from "../General/NotFound";
+import NotFound from "../components/general/NotFound";
 
 const ProductDetails = () => {
   const { search } = useLocation();

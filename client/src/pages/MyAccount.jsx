@@ -4,8 +4,8 @@ import React from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store/reducers/auth";
-import { stringToColor } from "../../utils/utils";
+import { logout } from "../store/reducers/auth";
+import { stringToColor } from "../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   link: {

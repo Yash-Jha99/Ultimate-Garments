@@ -1,10 +1,10 @@
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import WishlistProduct from "./WishlistProduct";
+import WishlistProduct from "../product/WishlistProduct";
 import { Grid } from "@mui/material";
 import useDataFetch from "../../hooks/useDataFetch";
-import Loader from "../General/Loader";
-import NotFound from "../General/NotFound";
+import Loader from "../general/Loader";
+import NotFound from "../general/NotFound";
 
 const Wishlist = () => {
   const { data, loading, setData } = useDataFetch("wishlist", []);

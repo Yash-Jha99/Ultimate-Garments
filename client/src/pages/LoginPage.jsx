@@ -14,9 +14,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Stack } from "@mui/system";
 
-import { postData } from "../../Services/NodeService";
+import { postData } from "../services/NodeService";
 import { useDispatch } from "react-redux";
-import { login } from "../../store/reducers/auth";
+import { login } from "../store/reducers/auth";
 
 const LoginPage = () => {
   const [showOtpPanel, setShowOtpPanel] = useState(false);

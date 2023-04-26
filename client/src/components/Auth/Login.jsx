@@ -13,8 +13,8 @@ import { CheckCircle, Cancel } from "@mui/icons-material";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Stack } from "@mui/system";
-import LoginImage from "../../images/login-image-final.jpg";
-import { postData } from "../../Services/NodeService";
+import LoginImage from "../../assets/login-image-final.jpg";
+import { postData } from "../../services/NodeService";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/reducers/auth";
 

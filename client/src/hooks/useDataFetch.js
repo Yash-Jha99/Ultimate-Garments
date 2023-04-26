@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getData } from "../Services/NodeService";
+import { getData } from "../services/NodeService";
 
 const useDataFetch = (url, initial = null, cb = null, params = null) => {
   const [loading, setLoading] = useState(true);

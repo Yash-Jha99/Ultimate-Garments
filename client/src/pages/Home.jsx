@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
-import Banner from "./Banner";
-import Product from "./Product/Product";
-import { getData } from "../Services/NodeService";
+import Banner from "../components/home/Banner";
+import Product from "../components/product/Product";
+import { getData } from "../services/NodeService";
 import { Await, defer, useLoaderData } from "react-router-dom";
 import { Grid } from "@mui/material";
-import Loader from "./General/Loader";
-import Error from "./General/Error";
+import Loader from "../components/general/Loader";
+import Error from "../components/general/Error";
 
 const Home = () => {
   const { products } = useLoaderData();

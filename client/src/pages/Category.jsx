@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Product from "./Product/Product";
+import Product from "../components/product/Product";
 import useDataFetch from "../hooks/useDataFetch";
 import { useParams } from "react-router-dom";
 import { Grid, Stack, Box, Drawer, Fab } from "@mui/material";
 import { FilterAlt } from "@mui/icons-material";
-import Loader from "./General/Loader";
-import FilterPanel from "./Product/FilterPanel";
-import NotFound from "./General/NotFound";
+import Loader from "../components/general/Loader";
+import FilterPanel from "../components/product/FilterPanel";
+import NotFound from "../components/general/NotFound";
 
 const Category = () => {
   const { categoryName, search } = useParams();

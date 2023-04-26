@@ -7,10 +7,10 @@ import {
   getData,
   postData,
   updateData,
-} from "../../Services/NodeService";
+} from "../../services/NodeService";
 import AddressForm from "../myaccount/AddressForm";
 import AddressItem from "../myaccount/AddressItem";
-import Loader from "../General/Loader";
+import Loader from "../general/Loader";
 import { useLocation } from "react-router-dom";
 
 const Shipping = () => {

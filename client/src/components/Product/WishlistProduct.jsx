@@ -18,7 +18,7 @@ import {
 import { Close, ShoppingBagOutlined } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/reducers/cart";
-import { deleteData, getData } from "../../Services/NodeService";
+import { deleteData, getData } from "../../services/NodeService";
 
 const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
   const [sizes, setSizes] = useState([]);

@@ -6,8 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme/theme";
-import router from "./router/router";
+import theme from "./theme";
+import router from "./router";
 import { SnackbarProvider } from "notistack";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

@@ -1,24 +1,24 @@
 import { createBrowserRouter, defer, redirect } from "react-router-dom";
-import App from "../App";
-import Home from "../components/Home";
-import { loader as homeLoader } from "../components/Home";
-import Category from "../components/Category";
-import ProductDetails from "../components/Product/ProductDetails";
-import store from "../store/store";
-import Cart from "../components/checkout/Cart";
-import WishList from "../components/Product/Wishlist";
-import Shipping from "../components/checkout/Shipping";
-import Checkout from "../components/checkout/Checkout";
-import Payment from "../components/checkout/Payment";
-import MyAccount from "../components/myaccount/MyAccount";
-import Profile from "../components/myaccount/Profile";
-import LoginPage from "../components/Auth/LoginPage";
-import { getData } from "../Services/NodeService";
-import Admin from "../components/Admin/Admin";
-import { getCart } from "../store/reducers/cart";
-import Order from "../components/myaccount/Order";
-import OrderDetails from "../components/myaccount/OrderDetails";
-import Error from "../components/General/Error";
+import App from "./App";
+import Home from "./pages/Home";
+import { loader as homeLoader } from "./pages/Home";
+import Category from "./pages/Category";
+import ProductDetails from "./pages/ProductDetails";
+import store from "./store/store";
+import Cart from "./components/checkout/Cart";
+import WishList from "./components/myaccount/Wishlist";
+import Shipping from "./components/checkout/Shipping";
+import Checkout from "./pages/Checkout";
+import Payment from "./components/checkout/Payment";
+import MyAccount from "./pages/MyAccount";
+import Profile from "./components/myaccount/Profile";
+import LoginPage from "./pages/LoginPage";
+import { getData } from "./services/NodeService";
+import Admin from "./components/admin/Admin";
+import { getCart } from "./store/reducers/cart";
+import Order from "./components/myaccount/Order";
+import OrderDetails from "./components/myaccount/OrderDetails";
+import Error from "./components/general/Error";
 
 export default createBrowserRouter([
   {

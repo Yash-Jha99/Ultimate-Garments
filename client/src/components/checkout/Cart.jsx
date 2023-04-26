@@ -11,9 +11,9 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart, updateCart } from "../../store/reducers/cart";
 import { NavLink } from "react-router-dom";
-import { postData } from "../../Services/NodeService";
+import { postData } from "../../services/NodeService";
 import { useSnackbar } from "notistack";
-import Loader from "../General/Loader";
+import Loader from "../general/Loader";
 
 const CartItem = ({
   id,

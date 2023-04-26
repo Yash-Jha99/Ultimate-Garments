@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
 import { MoreVert } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
-import Dropdown from "../General/Dropdown";
+import Dropdown from "../general/Dropdown";
 
 const AddressItem = ({
   activeAddressId,

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography, IconButton } from "@mui/material";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useSelector } from "react-redux";
-import { deleteData, postData } from "../../Services/NodeService";
+import { deleteData, postData } from "../../services/NodeService";
 import { useSnackbar } from "notistack";
 
 const Product = ({

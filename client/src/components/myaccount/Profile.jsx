@@ -11,11 +11,11 @@ import {
   Radio,
   Box,
 } from "@mui/material";
-import { updateData } from "../../Services/NodeService";
+import { updateData } from "../../services/NodeService";
 import { useSelector } from "react-redux";
 import useNotify from "../../hooks/useNotify";
 import useDataFetch from "../../hooks/useDataFetch";
-import Loader from "../General/Loader";
+import Loader from "../general/Loader";
 
 const Profile = () => {
   const [error, setError] = useState({

@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import { useLoaderData, NavLink, Await } from "react-router-dom";
 import { Typography, Box, Stack } from "@mui/material";
-import Loader from "../General/Loader";
-import NotFound from "../General/NotFound";
+import Loader from "../general/Loader";
+import NotFound from "../general/NotFound";
 
 const OrderItem = ({ id, name, orderedDate, image, price, orderItemId }) => {
   return (
