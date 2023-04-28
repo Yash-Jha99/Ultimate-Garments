@@ -1,8 +1,6 @@
 import { createBrowserRouter, defer, redirect } from "react-router-dom";
 import App from "./App";
 import Home from "./pages/Home";
-import { loader as homeLoader } from "./pages/Home";
-import Category from "./pages/Category";
 import ProductDetails from "./pages/ProductDetails";
 import store from "./store/store";
 import Cart from "./components/checkout/Cart";
@@ -19,6 +17,7 @@ import { getCart } from "./store/reducers/cart";
 import Order from "./components/myaccount/Order";
 import OrderDetails from "./components/myaccount/OrderDetails";
 import Error from "./components/general/Error";
+import ProductsPage from "./pages/ProductsPage";
 
 export default createBrowserRouter([
   {
@@ -33,19 +32,22 @@ export default createBrowserRouter([
       {
         path: "",
         element: <Home />,
-        loader: homeLoader,
+      },
+      {
+        path: "category/:category/:subcategory",
+        element: <ProductsPage />,
+      },
+      {
+        path: "category/:category",
+        element: <ProductsPage />,
       },
       {
         path: ":productName",
         element: <ProductDetails />,
       },
       {
-        path: "category/:categoryName",
-        element: <Category />,
-      },
-      {
         path: "search/:search",
-        element: <Category />,
+        element: <ProductsPage />,
       },
       {
         path: "login",

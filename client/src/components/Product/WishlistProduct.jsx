@@ -181,6 +181,7 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
 const WishlistProduct = ({
   id,
   wishlistId,
+  handler,
   productId,
   image,
   price,
@@ -225,7 +226,7 @@ const WishlistProduct = ({
       }}
     >
       <Link
-        to={`/${name.replace(/\s+/g, "-")}`}
+        to={`/${handler}`}
         style={{ textDecoration: "none", color: "black" }}
       >
         <Box

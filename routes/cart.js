@@ -16,7 +16,7 @@ router.post("/", auth, (req, res, next) => {
       if (err) return next(err);
       else
         db.query(
-          "select P.id as productId, P.name,P.price,P.discount,P.image,C.quantity,C.product_option_id,C.id from products P join cart C on C.product_id=P.id and C.id=? join product_options PO on PO.id=C.product_option_id join options O on O.id=PO.size_option_id or O.id=PO.color_option_id ",
+          "select P.id as productId, P.name,P.price,P.discount,P.image,C.quantity,C.product_option_id,C.id from products P join cart C on C.product_id=P.id and C.id=? join product_options PO on PO.id=C.product_option_id ",
           [id],
           (err, result) => {
             if (err) return next(err);
@@ -29,7 +29,7 @@ router.post("/", auth, (req, res, next) => {
 router.get("/", auth, (req, res, next) => {
   const { id: userId } = req.user;
   db.query(
-    "select  P.id as productId, PO.quantity_in_stock as quantityInStock ,P.name,P.price,P.discount,P.image,C.quantity,C.product_option_id,C.id,(select upper(name) from options where size_option_id = id) as size,(select name from options where color_option_id = id) as color from products P join cart C on C.product_id=P.id and C.user_id=? join product_options PO on PO.id=C.product_option_id ",
+    "select P.id as productId, PO.stock as quantityInStock, PO.size, PO.color ,PO.material ,P.name,P.price,P.discount,P.image,C.quantity,C.product_option_id,C.id from products P join cart C on C.product_id=P.id and C.user_id=? join product_options PO on PO.id=C.product_option_id ",
     [userId],
     (err, result) => {
       if (err) return next(err);

@@ -53,11 +53,11 @@ const ProductDetails = () => {
     error,
     loading,
     data: product,
-  } = useDataFetch("product/" + productName.replace(/-/g, " "), {}, (data) => {
+  } = useDataFetch("product/" + productName, {}, (data) => {
     const selectedColor =
-      data.colors.find((color) => color.label === query.get("color")) ?? {};
+      data.colors.find((color) => color.handler === productName) ?? {};
     const selectedSize =
-      data.sizes.find((size) => size.name === query.get("size")) ?? {};
+      data.options.find((size) => size.size === query.get("size")) ?? {};
     setSelectedSize(selectedSize ?? {});
     setSelectedColor(selectedColor ?? {});
     setWishlisted(data.wishlistId !== null);
@@ -82,17 +82,22 @@ const ProductDetails = () => {
     name,
     price,
     description,
-    sizes,
     discount,
     offer = "FLAT ₹100 OFF On ₹999 (Code:SHIRT100)",
-    colors,
     options,
+    colors,
   } = product;
 
   const selectedOption = options.find(
     (opt) =>
-      opt.sizeId === selectedSize?.id && opt.colorId === selectedColor?.id
+      opt.size === selectedSize?.name && opt.color === selectedColor?.label
   );
+  console.log(selectedOption, selectedColor, selectedSize);
+
+  const sizes = options.map((option) => ({
+    name: option.size,
+    id: option.sku,
+  }));
 
   const outOfStock = selectedOption?.quantityInStock === 0;
   const isCheckoutValid =
@@ -148,7 +153,7 @@ const ProductDetails = () => {
       addToCart({
         productId: id,
         quantity: qty,
-        productOptionId: selectedOption.productOptionId,
+        productOptionId: selectedOption.id,
       })
     );
   };
@@ -173,7 +178,7 @@ const ProductDetails = () => {
         {
           productId: id,
           price,
-          product_option_id: selectedOption.productOptionId,
+          product_option_id: selectedOption.id,
           quantity: qty,
           discount,
         },
@@ -316,17 +321,18 @@ const ProductDetails = () => {
                   <Avatar
                     sx={{
                       cursor: "pointer",
-                      bgcolor: color.value,
+                      bgcolor: color.label.toLowerCase(),
                       width: 44,
                       height: 44,
                     }}
                     onClick={() => {
                       setInValid("");
                       setSelectedColor(color);
+                      navigate("/" + color.handler);
                     }}
-                    key={color.id}
+                    key={color.label}
                   >
-                    {selectedColor.id === color.id ? <Check /> : ""}
+                    {selectedColor.label === color.label ? <Check /> : ""}
                   </Avatar>
                 ))}
               </Stack>
@@ -411,7 +417,13 @@ const ProductDetails = () => {
               width={{ xs: "100%", sm: "50%" }}
             >
               <Typography variant="h6">Description</Typography>
-              <Typography variant="body2">{description}</Typography>
+              <Typography variant="body2">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: description,
+                  }}
+                ></div>
+              </Typography>
             </Stack>
             <Stack
               spacing={1}

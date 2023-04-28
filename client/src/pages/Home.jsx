@@ -1,11 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import Banner from "../components/home/Banner";
-import { getData } from "../services/NodeService";
-import { Await, defer, useLoaderData } from "react-router-dom";
-import { Box } from "@mui/material";
-import Loader from "../components/general/Loader";
-import Error from "../components/general/Error";
+import { Stack } from "@mui/material";
 import ProductRow from "../components/home/ProductRow";
+import CategoryRow from "../components/home/CategoryRow";
 
 const images = [
   {
@@ -21,27 +18,39 @@ const images = [
 ];
 
 const Home = () => {
-  const { products } = useLoaderData();
-
   return (
     <>
       <Banner images={images} />
-      <Suspense fallback={<Loader fullscreen />}>
-        <Await resolve={products} errorElement={Error}>
-          {(resolvedData) => (
-            <Box px={6}>
-              <ProductRow products={resolvedData} />
-            </Box>
-          )}
-        </Await>
-      </Suspense>
+      <Stack px={{ xs: 1, sm: 4.5 }} spacing={2}>
+        <ProductRow title="Men" category="men" />
+        <ProductRow title="Women" category="women" />
+        <CategoryRow
+          title="CATEGORY FOR MEN"
+          category="men"
+          showItems={[
+            "shirts",
+            "shorts",
+            "t-shirts",
+            "denim",
+            "trousers",
+            "coats & jackets",
+          ]}
+        />
+        <CategoryRow
+          title="CATEGORY FOR WOMEN"
+          category="women"
+          showItems={[
+            "tops",
+            "dresses",
+            "t-shirts",
+            "outerwear",
+            "skirts",
+            "cardigans",
+          ]}
+        />
+      </Stack>
     </>
   );
-};
-
-export const loader = async () => {
-  const response = getData("product");
-  return defer({ products: response });
 };
 
 export default Home;

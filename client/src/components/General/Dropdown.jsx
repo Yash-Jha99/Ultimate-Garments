@@ -12,6 +12,7 @@ const Dropdown = ({
   onClick = null,
   disableArrow = false,
   overlap = false,
+  transitionProps = {},
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -76,7 +77,9 @@ const Dropdown = ({
       onMouseLeave={onClose || handleClose}
     >
       <Box py={1}>{trigger}</Box>
-      <TransitionComponent in={open || menuOpen}>{menu}</TransitionComponent>
+      <TransitionComponent {...transitionProps} in={open || menuOpen}>
+        {menu}
+      </TransitionComponent>
     </Box>
   );
 };

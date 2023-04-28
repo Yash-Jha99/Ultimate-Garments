@@ -13,6 +13,7 @@ import {
   ListItemButton,
   Drawer,
   List,
+  Grid,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -38,6 +39,7 @@ import Dropdown from "./general/Dropdown";
 import { logout } from "../store/reducers/auth";
 import { stringToColor } from "../utils/utils";
 import Logo from "../assets/logo.png";
+import useDataFetch from "../hooks/useDataFetch";
 
 const drawerWidth = 260;
 
@@ -116,25 +118,91 @@ const AccountMenu = () => {
   );
 };
 
+const CategoryDropdown = ({ category, subcategories, index }) => {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Dropdown
+      open={open}
+      onOpen={handleOpen}
+      onClose={handleClose}
+      position={index === 0 ? "left" : "center"}
+      disableArrow
+      transitionProps={{ timeout: 50 }}
+      trigger={
+        <Typography
+          sx={{
+            textTransform: "uppercase",
+            fontSize: "14px",
+            padding: "8px 14px",
+            fontWeight: "500",
+            "&:hover": {
+              bgcolor: "primary.main",
+              cursor: "pointer",
+            },
+          }}
+        >
+          {category}
+        </Typography>
+      }
+    >
+      <Box width={subcategories.length > 10 ? 350 : 175} px={2}>
+        <Grid container>
+          {subcategories.map((subcategory) => (
+            <Grid
+              item
+              key={subcategory.id}
+              xs={subcategories.length > 10 ? 6 : 12}
+            >
+              <MenuItem
+                sx={{
+                  textTransform: "capitalize",
+                  ":hover": { color: "secondary.main" },
+                }}
+                onClick={() => {
+                  handleClose();
+                  navigate(`/category/${category}/${subcategory.name}`);
+                }}
+              >
+                {subcategory.name}
+              </MenuItem>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Dropdown>
+  );
+};
+
 const Header = (props) => {
   const [categories, setCategories] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [open, setOpen] = useState(false);
 
   const searchRef = useRef();
-  const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
+  const classes = useStyles();
   const cartItemsNumber = useSelector((state) => state.cart.items.length);
 
   const getCategories = async () => {
     const result = await getData("product/category");
-    if (result.result) {
+    if (result) {
       setCategories(
-        result.result.map((item, index) => ({ id: item.id, name: item.name }))
+        result.map((item, index) => ({ id: item.id, name: item.name }))
       );
     }
   };
+
+  const { data: subcategories } = useDataFetch("product/subcategory", []);
 
   const auth = useSelector((state) => state.auth);
 
@@ -204,28 +272,15 @@ const Header = (props) => {
                 <img src={Logo} alt="Ultimate Garments" width={80} />
               </Link>
               <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-                {categories.map((category) => (
-                  <Link
+                {categories.map((category, index) => (
+                  <CategoryDropdown
                     key={category.id}
-                    className={classes.category}
-                    to={`/category/${category.name.replace(/\s+/g, "-")}`}
-                  >
-                    <Typography
-                      sx={{
-                        textTransform: "uppercase",
-                        fontSize: "14px",
-                        padding: "8px 14px",
-                        fontWeight: "500",
-                        color: "black !important",
-                        textDecoration: "initial",
-                        "&:hover": {
-                          bgcolor: "primary.main",
-                        },
-                      }}
-                    >
-                      {category.name}
-                    </Typography>
-                  </Link>
+                    index={index}
+                    category={category.name}
+                    subcategories={subcategories.filter(
+                      (item) => item.category_id === category.id
+                    )}
+                  />
                 ))}
               </Box>
             </Stack>

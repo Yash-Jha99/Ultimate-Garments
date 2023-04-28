@@ -10,6 +10,7 @@ const Product = ({
   id,
   image,
   price,
+  handler,
   name,
   discount,
   wishlistId,
@@ -53,10 +54,7 @@ const Product = ({
   };
 
   return (
-    <Link
-      to={`/${name.replace(/\s+/g, "-")}`}
-      style={{ textDecoration: "none" }}
-    >
+    <Link to={`/${handler}`} style={{ textDecoration: "none" }}>
       <Box
         sx={{
           position: "relative",
@@ -76,7 +74,7 @@ const Product = ({
             top: 0,
             left: 0,
             bgcolor: "error.main",
-            p: "2px 8px",
+
             fontSize: 16,
             fontWeight: "normal",
             color: "white",
@@ -105,7 +103,7 @@ const Product = ({
             <FavoriteBorder color="action" />
           )}
         </IconButton>
-        <Box height={{ xs: 200, md: 290 }} mb={2}>
+        <Box height={{ xs: 200, md: 340 }} mb={2}>
           <img
             src={image}
             style={{

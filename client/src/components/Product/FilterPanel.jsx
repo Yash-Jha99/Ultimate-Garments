@@ -11,27 +11,40 @@ import {
   RadioGroup,
   Radio,
   Box,
+  AccordionActions,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { CheckCircle, Circle } from "@mui/icons-material";
 
-const FilterPanel = ({ onChange }) => {
+const FilterPanel = ({ onChange, subcategory, category }) => {
   const [priceFilters, setPriceFilters] = useState(null);
+  const [visibleFilterLength, setVisibleFilterLength] = useState({
+    size: 6,
+    color: 6,
+  });
+  const [params, setParams] = useState({
+    category,
+    subcategory,
+  });
   const { data: sizeFilters, setData: setSizeFilters } = useDataFetch(
-    "product/options/size",
-    []
+    `product/options/size`,
+    [],
+    null,
+    params
   );
 
   const { data: colorFilters, setData: setColorFilters } = useDataFetch(
-    "product/options/color",
-    []
+    `product/options/color`,
+    [],
+    null,
+    params
   );
 
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setSizeFilters(
       sizeFilters.map((size) =>
-        size.name === name ? { ...size, active: checked } : size
+        size.size === name ? { ...size, active: checked } : size
       )
     );
   };
@@ -40,7 +53,7 @@ const FilterPanel = ({ onChange }) => {
     const { name, checked } = event.target;
     setColorFilters(
       colorFilters.map((color) =>
-        color.value === name ? { ...color, active: checked } : color
+        color.color === name ? { ...color, active: checked } : color
       )
     );
   };
@@ -49,29 +62,70 @@ const FilterPanel = ({ onChange }) => {
     setPriceFilters(event.target.value);
   };
 
+  const handleSeeMore = (option) => {
+    if (option === "size")
+      setVisibleFilterLength((data) => ({ ...data, size: sizeFilters.length }));
+    else
+      setVisibleFilterLength((data) => ({
+        ...data,
+        color: colorFilters.length,
+      }));
+  };
+
+  const handleSeeLess = (option) => {
+    if (option === "size")
+      setVisibleFilterLength((data) => ({ ...data, size: 6 }));
+    else
+      setVisibleFilterLength((data) => ({
+        ...data,
+        color: 6,
+      }));
+  };
+
+  const handleClearFilters = () => {
+    setColorFilters(colorFilters.map((color) => ({ ...color, active: false })));
+    setSizeFilters(sizeFilters.map((size) => ({ ...size, active: false })));
+    setPriceFilters(null);
+  };
+
   useEffect(() => {
     onChange((filters) => ({
       ...filters,
       color:
         colorFilters
           .filter((color) => color.active)
-          .map((color) => color.name)
+          .map((color) => color.color)
           .join("+") || null,
       size:
         sizeFilters
           .filter((size) => size.active)
-          .map((size) => size.name)
+          .map((size) => size.size)
           .join("+") || null,
       price: priceFilters,
     }));
   }, [sizeFilters, colorFilters, priceFilters, onChange]);
 
+  useEffect(() => {
+    setParams({
+      category,
+      subcategory,
+    });
+  }, [category, subcategory]);
+
   return (
     <Box boxShadow={2} bgcolor="white">
-      <Typography p={2} variant="h6" borderBottom="1px solid lightgray">
-        FILTER
-      </Typography>
-      <Accordion expanded elevation={0}>
+      <Stack
+        p={2}
+        direction="row"
+        justifyContent="space-between"
+        borderBottom="1px solid lightgray"
+      >
+        <Typography variant="h6">FILTER</Typography>
+        <Button size="small" color="secondary" onClick={handleClearFilters}>
+          Clear filters
+        </Button>
+      </Stack>
+      <Accordion defaultExpanded disableGutters elevation={0}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -81,25 +135,38 @@ const FilterPanel = ({ onChange }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Stack>
-            {sizeFilters.map(({ id, name, active }) => (
-              <FormControlLabel
-                key={id}
-                control={
-                  <Checkbox
-                    size="small"
-                    color="secondary"
-                    checked={active ?? false}
-                    onChange={handleChange}
-                    name={name}
-                  />
-                }
-                label={name.toUpperCase()}
-              />
-            ))}
+            {sizeFilters
+              .slice(0, visibleFilterLength.size)
+              .map(({ size, active }) => (
+                <FormControlLabel
+                  key={size}
+                  control={
+                    <Checkbox
+                      size="small"
+                      color="secondary"
+                      checked={active ?? false}
+                      onChange={handleChange}
+                      name={size}
+                    />
+                  }
+                  label={size.toUpperCase()}
+                />
+              ))}
           </Stack>
         </AccordionDetails>
+        <AccordionActions>
+          {visibleFilterLength.size === 6 ? (
+            <Button color="secondary" onClick={() => handleSeeMore("size")}>
+              See More
+            </Button>
+          ) : (
+            <Button color="secondary" onClick={() => handleSeeLess("size")}>
+              See Less
+            </Button>
+          )}
+        </AccordionActions>
       </Accordion>
-      <Accordion expanded elevation={0}>
+      <Accordion defaultExpanded disableGutters elevation={0}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -108,21 +175,39 @@ const FilterPanel = ({ onChange }) => {
           <Typography>COLOR</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          {colorFilters.map(({ id, value, active }) => (
-            <Checkbox
-              key={id}
-              size="small"
-              color="secondary"
-              checked={active ?? false}
-              onChange={handleColorChange}
-              name={value}
-              icon={<Circle sx={{ fontSize: 36, color: value }} />}
-              checkedIcon={<CheckCircle sx={{ fontSize: 36, color: value }} />}
-            />
-          ))}
+          <Stack>
+            {colorFilters
+              .slice(0, visibleFilterLength.color)
+              .map(({ color, active }) => (
+                <FormControlLabel
+                  key={color}
+                  control={
+                    <Checkbox
+                      size="small"
+                      color="secondary"
+                      checked={active ?? false}
+                      onChange={handleColorChange}
+                      name={color}
+                    />
+                  }
+                  label={color}
+                />
+              ))}
+          </Stack>
         </AccordionDetails>
+        <AccordionActions>
+          {visibleFilterLength.color === 6 ? (
+            <Button color="secondary" onClick={() => handleSeeMore("color")}>
+              See More
+            </Button>
+          ) : (
+            <Button color="secondary" onClick={() => handleSeeLess("color")}>
+              See Less
+            </Button>
+          )}
+        </AccordionActions>
       </Accordion>
-      <Accordion expanded elevation={0}>
+      <Accordion defaultExpanded disableGutters elevation={0}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"

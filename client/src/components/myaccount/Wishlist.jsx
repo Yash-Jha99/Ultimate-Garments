@@ -35,6 +35,7 @@ const Wishlist = () => {
                 price={product.price}
                 discount={product.discount}
                 name={product.name}
+                handler={product.handler}
                 onDelete={setDeleteId}
               />
             </Grid>
