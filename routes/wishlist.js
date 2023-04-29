@@ -4,7 +4,7 @@ const db = require("../middlewares/db");
 const { auth } = require("../middlewares/auth");
 var uuid = require("uuid").v4;
 
-router.post("/", auth, (req, res) => {
+router.post("/", auth, (req, res, next) => {
   const { productId } = req.body;
   const id = uuid();
 
@@ -12,20 +12,20 @@ router.post("/", auth, (req, res) => {
     "select id from wishlist where product_id=? and user_id=?",
     [productId, req.user.id],
     (error, result) => {
-      if (error) console.log(error);
+      if (error) next(error);
       else if (result[0]) res.status(400).send("Product already wishlisted");
       else
         db.query(
           "insert into wishlist values (?,?,?) ",
           [id, req.user.id, productId],
           (err, result) => {
-            if (err) console.log(err);
+            if (err) next(err);
             else
               db.query(
                 "select id, name,price,discount,image from products where id= ? ",
                 [productId],
                 (err, result) => {
-                  if (err) console.log(err);
+                  if (err) next(err);
                   else res.status(201).json({ ...result[0], wishlistId: id });
                 }
               );
@@ -35,7 +35,7 @@ router.post("/", auth, (req, res) => {
   );
 });
 
-router.get("/", auth, (req, res) => {
+router.get("/", auth, (req, res, next) => {
   const { id: userId } = req.user;
 
   db.query(
@@ -48,13 +48,12 @@ router.get("/", auth, (req, res) => {
   );
 });
 
-router.delete("/:id", auth, (req, res) => {
+router.delete("/:id", auth, (req, res, next) => {
   const { id } = req.params;
 
   db.query("delete from wishlist where id=? ", [id], (err, result) => {
-    if (err) {
-      res.status(500).json({ result: false });
-    } else
+    if (err) next(err);
+    else
       res
         .status(200)
         .json({ id: id, message: "Product removed from wishlist" });

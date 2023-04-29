@@ -92,7 +92,6 @@ const ProductDetails = () => {
     (opt) =>
       opt.size === selectedSize?.name && opt.color === selectedColor?.label
   );
-  console.log(selectedOption, selectedColor, selectedSize);
 
   const sizes = options.map((option) => ({
     name: option.size,
@@ -188,7 +187,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <Box>
+    <Box pb={{ xs: 8, sm: 2 }}>
       <Stack
         bgcolor="white"
         direction={{ xs: "column", sm: "row" }}
@@ -224,8 +223,10 @@ const ProductDetails = () => {
           <Stack
             direction="row"
             spacing={2}
-            width={{ xs: "95%", sm: "88%" }}
+            boxShadow={{ xs: 4, sm: 0 }}
+            width={{ xs: "96%", sm: "88%" }}
             py={{ xs: 1.2, sm: 1 }}
+            px={{ xs: 1, sm: 0 }}
             mt={2}
             bgcolor="white"
             position={{ xs: "fixed", sm: "static" }}
@@ -409,12 +410,16 @@ const ProductDetails = () => {
             </Typography>
           )}
           <DeliveryOptions />
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+          <Stack
+            width={{ xs: "100%", sm: "100%" }}
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+          >
             <Stack
               spacing={1}
               border="1px solid lightgray"
               p={2}
-              width={{ xs: "100%", sm: "50%" }}
+              width={{ xs: "90%", sm: "50%" }}
             >
               <Typography variant="h6">Description</Typography>
               <Typography variant="body2">
@@ -429,7 +434,7 @@ const ProductDetails = () => {
               spacing={1}
               border="1px solid lightgray"
               p={2}
-              width={{ xs: "100%", sm: "50%" }}
+              width={{ xs: "90%", sm: "50%" }}
             >
               <Typography variant="h6">Delivery & Return Policy</Typography>
               <Typography variant="body2">

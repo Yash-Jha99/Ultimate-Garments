@@ -9,7 +9,7 @@ import {
   AppBar,
 } from "@mui/material";
 import { Box, Stack } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -17,6 +17,7 @@ import { postData } from "../services/NodeService";
 import Loader from "../components/general/Loader";
 import { addToCheckout } from "../store/reducers/checkout";
 import Logo from "../assets/logo.png";
+import ShieldSVG from "../assets/shield.svg";
 import NotFound from "../components/general/NotFound";
 import { useSnackbar } from "notistack";
 import PriceDetails from "../components/checkout/PriceDetails";
@@ -76,6 +77,8 @@ const Checkout = () => {
   const { items: cart, loading: cartLoading } = useSelector(
     (state) => state.cart
   );
+
+  const priceDetailsRef = useRef();
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -135,18 +138,18 @@ const Checkout = () => {
       const res = await postData("order", reqBody1);
       if (res.status === 201) {
         if (paymentMethod === "Cash") {
-          setLoading(false);
-          navigate("/myaccount/orders");
+          navigate("/myaccount/orders/success");
         } else {
           const response = await postData("payment/create-checkout-session", {
-            orderItemIds: res.data.map((item) => item.id),
+            orderItemIds: res.data.orderItemIds.map((item) => item.id),
+            orderId: res.data.orderId,
           });
           if (response.status === 200) {
             window.location.replace(response.data.url);
-            setLoading(false);
-          } else setLoading(false);
+          }
         }
       }
+      setLoading(false);
     }
   };
 
@@ -168,14 +171,31 @@ const Checkout = () => {
               }}
             >
               <Stack
+                width="100%"
                 direction="row"
                 alignItems="center"
+                justifyContent="space-between"
                 spacing={{ xs: 0, sm: 4 }}
-                mx={5}
+                mx={{ xs: 1, sm: 5 }}
               >
                 <Link to="/">
                   <img src={Logo} alt="Ultimate Garments" width={80} />
                 </Link>
+                <Stack
+                  width={{ xs: 170, sm: "initial" }}
+                  direction="row"
+                  alignItems="center"
+                  spacing={1.5}
+                >
+                  <img width={50} src={ShieldSVG} alt="" />
+                  <Typography
+                    fontWeight={500}
+                    fontSize={{ xs: 14, sm: 24 }}
+                    variant="h5"
+                  >
+                    100% SECURE PAYMENT
+                  </Typography>
+                </Stack>
               </Stack>
             </Toolbar>
           </AppBar>
@@ -213,91 +233,133 @@ const Checkout = () => {
               </Step>
             ))}
           </Stepper>
-
-          <Box mx={{ xs: 0, sm: 10 }}>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={{ xs: 1, sm: 6 }}
-              alignItems={{ xs: "center", sm: "flex-start" }}
-              justifyContent="center"
-            >
-              <Stack
-                height={{ xs: "none", sm: "68vh" }}
-                spacing={2}
-                width={{ xs: "100%", sm: "70%" }}
-              >
-                <Outlet />
-              </Stack>
-
-              <Stack
-                spacing={{ xs: 1, sm: 2 }}
-                pb={{ xs: 2, sm: 0 }}
-                width={{ xs: "95%", sm: "30%" }}
-                boxShadow={2}
-                p={{ xs: 1, sm: 3 }}
-                bgcolor="white"
-                position="sticky"
-                top={75}
-              >
-                {location.pathname === "/checkout/payment" && (
-                  <Box
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                    border="1px solid lightgray"
-                    padding={2}
-                    mb={2}
-                  >
-                    <Stack
-                      mb={1}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      direction="row"
-                    >
-                      <Typography variant="body1">Deliver To:</Typography>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        size="small"
-                        onClick={() => navigate("/checkout/shipping")}
-                      >
-                        Change
-                      </Button>
-                    </Stack>
-                    <Typography fontWeight={500} variant="subtitle1" mb={1}>
-                      {deliveryAddress.firstName} {deliveryAddress.lastName}{" "}
-                      {"(" + deliveryAddress.pinCode + ")"}
-                    </Typography>
-                    <Typography variant="body2">
-                      {deliveryAddress.address}, {deliveryAddress.town},{" "}
-                      {deliveryAddress.city}, {deliveryAddress.state}{" "}
-                    </Typography>
-                    <Typography variant="subtitle2">
-                      {deliveryAddress.mobileNumber}
-                    </Typography>
-                  </Box>
-                )}
-
-                <>
-                  <PriceDetails
-                    itemsCount={checkoutItems.length}
-                    totalDiscount={totalDiscount}
-                    totalAmount={totalAmount}
-                  />
-                  <Button
-                    sx={{ p: 1, fontSize: 20 }}
-                    variant="contained"
-                    color="secondary"
-                    fullWidth
-                    size="large"
-                    onClick={handleCheckout}
-                  >
-                    CHECKOUT SECURELY
-                  </Button>
-                </>
-              </Stack>
+          <Stack
+            mx={{ xs: 0, sm: 10 }}
+            mb={{ xs: 1, sm: 0 }}
+            direction={{ xs: "column", sm: "row" }}
+            spacing={{ xs: 1, sm: 6 }}
+            alignItems={{ xs: "center", sm: "flex-start" }}
+            justifyContent="center"
+          >
+            <Stack mb={{ xs: 0, sm: 2 }} width={{ xs: "100%", sm: "70%" }}>
+              <Outlet />
             </Stack>
-          </Box>
+
+            <Stack
+              spacing={{ xs: 1, sm: 2 }}
+              width={{ xs: "95%", sm: "30%" }}
+              boxShadow={2}
+              p={{ xs: 1, sm: 3 }}
+              bgcolor="white"
+              position={{ xs: "static", sm: "sticky" }}
+              top={75}
+            >
+              {location.pathname === "/checkout/payment" && (
+                <Box
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                  border="1px solid lightgray"
+                  padding={2}
+                  mb={2}
+                >
+                  <Stack
+                    mb={1}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    direction="row"
+                  >
+                    <Typography variant="body1">Deliver To:</Typography>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      size="small"
+                      onClick={() => navigate("/checkout/shipping")}
+                    >
+                      Change
+                    </Button>
+                  </Stack>
+                  <Typography fontWeight={500} variant="subtitle1" mb={1}>
+                    {deliveryAddress.firstName} {deliveryAddress.lastName}{" "}
+                    {"(" + deliveryAddress.pinCode + ")"}
+                  </Typography>
+                  <Typography variant="body2">
+                    {deliveryAddress.address}, {deliveryAddress.town},{" "}
+                    {deliveryAddress.city}, {deliveryAddress.state}{" "}
+                  </Typography>
+                  <Typography variant="subtitle2">
+                    {deliveryAddress.mobileNumber}
+                  </Typography>
+                </Box>
+              )}
+              <Box ref={priceDetailsRef}>
+                <PriceDetails
+                  itemsCount={checkoutItems.length}
+                  totalDiscount={totalDiscount}
+                  totalAmount={totalAmount}
+                />
+              </Box>
+              <Button
+                sx={{
+                  p: 1,
+                  fontSize: 20,
+                  display: { xs: "none", sm: "initial" },
+                }}
+                variant="contained"
+                color="secondary"
+                fullWidth
+                size="large"
+                onClick={handleCheckout}
+              >
+                CHECKOUT SECURELY
+              </Button>
+            </Stack>
+          </Stack>
+
+          <Stack
+            bgcolor="white"
+            boxShadow={4}
+            zIndex={20}
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            px={3}
+            py={1}
+            display={{ xs: "flex", sm: "none" }}
+            position="sticky"
+            bottom={0}
+          >
+            <Stack justifyContent="center">
+              <Typography lineHeight={1} fontWeight={500} fontSize={18}>
+                ₹{totalAmount}
+              </Typography>
+              <Button
+                sx={{
+                  p: 0,
+                  fontWeight: 400,
+                  fontSize: 13,
+                  textTransform: "initial",
+                }}
+                color="secondary"
+                onClick={() =>
+                  priceDetailsRef?.current.scrollIntoView({
+                    behaviour: "smooth",
+                    block: "start",
+                  })
+                }
+              >
+                View price details
+              </Button>
+            </Stack>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={handleCheckout}
+            >
+              CHECKOUT SECURELY
+            </Button>
+          </Stack>
         </>
       )}
     </Box>

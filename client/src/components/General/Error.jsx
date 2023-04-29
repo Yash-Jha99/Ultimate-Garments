@@ -1,19 +1,43 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import React from "react";
-import { useRouteError } from "react-router-dom";
+import { useNavigate, useRouteError } from "react-router-dom";
+import NotFoundImage from "../../assets/page-not-found.webp";
+import { ErrorRounded } from "@mui/icons-material";
 
 const Error = ({ children }) => {
   const error = useRouteError();
+  const navigate = useNavigate();
   error && console.log("Route Error", error);
+
   return (
-    <Box
-      display="flex"
+    <Stack
+      bgcolor="white"
+      height="100vh"
+      spacing={3}
       justifyContent="center"
       alignItems="center"
-      height="100vh"
     >
-      <Typography variant="h4">{children ?? "Something Went Wrong"}</Typography>
-    </Box>
+      {error?.status === 404 ? (
+        <img
+          style={{ width: "800px", maxWidth: "100%" }}
+          src={NotFoundImage}
+          alt="Page Not Found"
+        />
+      ) : (
+        <>
+          <ErrorRounded sx={{ fontSize: 150 }} color="error" />
+          <Typography variant="h4">Something went wrong !</Typography>
+        </>
+      )}
+      <Button
+        style={{ backgroundColor: "#2874f0" }}
+        variant="contained"
+        color="primary"
+        onClick={() => navigate("/", { replace: true })}
+      >
+        GO TO HOMEPAGE
+      </Button>
+    </Stack>
   );
 };
 

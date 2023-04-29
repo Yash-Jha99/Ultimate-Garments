@@ -18,6 +18,8 @@ import Order from "./components/myaccount/Order";
 import OrderDetails from "./components/myaccount/OrderDetails";
 import Error from "./components/general/Error";
 import ProductsPage from "./pages/ProductsPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import OrderFailedPage from "./pages/OrderFailedPage";
 
 export default createBrowserRouter([
   {
@@ -81,6 +83,10 @@ export default createBrowserRouter([
             element: <WishList />,
           },
           {
+            path: "/myaccount/address",
+            element: <Shipping />,
+          },
+          {
             path: "/myaccount/orders",
             element: <Order />,
             loader: async () => {
@@ -89,8 +95,12 @@ export default createBrowserRouter([
             },
           },
           {
-            path: "/myaccount/address",
-            element: <Shipping />,
+            path: "/myaccount/orders/success",
+            element: <OrderSuccessPage />,
+          },
+          {
+            path: "/myaccount/orders/failed",
+            element: <OrderFailedPage />,
           },
           {
             path: "/myaccount/orders/:orderId/:orderItemId",

@@ -61,21 +61,6 @@ const ProductsPage = () => {
 
   if (error?.status === 404) return <NotFound message="No Product Found" />;
 
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-      // onClick={toggleDrawer(anchor, false)}
-      // onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <FilterPanel
-        onChange={setFilters}
-        subcategory={subcategory}
-        category={category}
-      />
-    </Box>
-  );
-
   return (
     <>
       <Stack
@@ -147,7 +132,22 @@ const ProductsPage = () => {
           open={openDrawer}
           onClose={toggleDrawer("left", false)}
         >
-          {list("left")}
+          {
+            <Box
+              sx={{
+                width: 250,
+              }}
+              role="presentation"
+              // onClick={toggleDrawer(anchor, false)}
+              // onKeyDown={toggleDrawer(anchor, false)}
+            >
+              <FilterPanel
+                onChange={setFilters}
+                subcategory={subcategory}
+                category={category}
+              />
+            </Box>
+          }
         </Drawer>
       </Stack>
       <Fab

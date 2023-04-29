@@ -40,11 +40,11 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
       >
         {title}
       </Typography>
-      {loading && <Loader height={210} />}
+      {loading && <Loader height={{ xs: 160, sm: 210 }} />}
       <SwipeableViews
         axis={theme.direction === "rtl" ? "x-reverse" : "x"}
         index={activeStep}
-        slideStyle={{ width: 200, padding: "0px 6.5px" }}
+        slideStyle={{ width: "max-content", padding: "0px 6.5px" }}
         onChangeIndex={handleStepChange}
         enableMouseEvents
       >
@@ -60,8 +60,8 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
                 sx={{
                   display: "block",
                   overflow: "hidden",
-                  width: 200,
-                  height: 200,
+                  width: { xs: 150, sm: 200 },
+                  height: { xs: 150, sm: 200 },
                   objectFit: "cover",
                 }}
                 src={category.icon || FallbackImage}

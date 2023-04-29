@@ -4,7 +4,15 @@ import { Typography, Box, Stack } from "@mui/material";
 import Loader from "../general/Loader";
 import NotFound from "../general/NotFound";
 
-const OrderItem = ({ id, name, orderedDate, image, price, orderItemId }) => {
+const OrderItem = ({
+  id,
+  name,
+  orderedDate,
+  image,
+  price,
+  orderItemId,
+  status,
+}) => {
   return (
     <Box
       sx={{ ":hover": { boxShadow: 4 } }}
@@ -39,7 +47,15 @@ const OrderItem = ({ id, name, orderedDate, image, price, orderItemId }) => {
             <Typography mb={2} fontWeight="bold" variant="h6" color="black">
               ₹ {price}
             </Typography>
-            <Typography variant="body2">Ordered on {orderedDate}</Typography>
+            {status === "FAILED" ? (
+              <Typography fontWeight={500} color="error">
+                Order Failed
+              </Typography>
+            ) : (
+              <Typography fontWeight={500} variant="body2">
+                Ordered on {orderedDate}
+              </Typography>
+            )}
           </Stack>
         </Stack>
       </NavLink>
@@ -67,6 +83,7 @@ const Order = () => {
                 orderedDate={order.orderedDate}
                 price={order.price}
                 orderItemId={order.orderItemId}
+                status={order.status}
               />
             ))}
           </Stack>

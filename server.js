@@ -56,7 +56,7 @@ app.use(function (err, req, res, next) {
 
   if (err.status) res.status(err.status).send(err);
   else {
-    console.log("{ERROR}", err);
+    console.log("[ERROR]:", err);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

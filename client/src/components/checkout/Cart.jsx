@@ -192,7 +192,7 @@ const CartItem = ({
 const Cart = () => {
   const { items: cart, loading } = useSelector((state) => state.cart);
   return (
-    <>
+    <Stack spacing={{ xs: 1, sm: 2 }}>
       {loading && <Loader />}
       {cart.map((cartProduct) => (
         <CartItem
@@ -209,7 +209,7 @@ const Cart = () => {
           quantityInStock={cartProduct.quantityInStock}
         />
       ))}
-    </>
+    </Stack>
   );
 };
 

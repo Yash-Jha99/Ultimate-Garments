@@ -1,17 +1,8 @@
-var mysql = require("mysql");
 require("dotenv").config();
-
-var db = mysql.createConnection(process.env.MYSQL_URI);
-
-const cb = (err) => {
-  if (!err) console.log("Connected to MySQL");
-  else console.log(err);
-};
-
-db.connect(cb);
-
-db.on("error", (error) => {
-  console.log(error);
-});
+const db = require("serverless-mysql")(process.env.MYSQL_URI);
+db.connect()
+  .then(() => console.log("Connected to MySQL"))
+  .catch(() => console.log("MySQL connection error"))
+  .finally(() => db.end());
 
 module.exports = db;

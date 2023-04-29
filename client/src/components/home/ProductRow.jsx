@@ -44,11 +44,11 @@ const ProductRow = ({ category, title = null }) => {
       >
         {title}
       </Typography>
-      {loading && <Loader height={320} />}
+      {loading && <Loader height={{ xs: 270, sm: 310 }} />}
       <SwipeableViews
         axis={theme.direction === "rtl" ? "x-reverse" : "x"}
         index={activeStep}
-        slideStyle={{ width: 240, padding: "0px 6.5px" }}
+        slideStyle={{ width: "max-content", padding: "0px 6.5px" }}
         onChangeIndex={handleStepChange}
       >
         {products.map((product) => (
@@ -57,14 +57,18 @@ const ProductRow = ({ category, title = null }) => {
             to={`/${product.handler}`}
             style={{ textDecoration: "none", color: "black" }}
           >
-            <Stack justifyContent="center" width={240} bgcolor="white">
+            <Stack
+              justifyContent="center"
+              width={{ xs: 160, sm: 240 }}
+              bgcolor="white"
+            >
               <Box
                 component="img"
                 sx={{
                   display: "block",
                   overflow: "hidden",
                   width: "100%",
-                  height: 260,
+                  height: { xs: 200, sm: 260 },
                   objectFit: "contain",
                 }}
                 src={product.image}
@@ -96,6 +100,7 @@ const ProductRow = ({ category, title = null }) => {
       </SwipeableViews>
       <IconButton
         sx={{
+          display: { xs: "none", sm: "initial" },
           position: "absolute",
           zIndex: 100,
           border: "1px solid gray",
@@ -115,6 +120,7 @@ const ProductRow = ({ category, title = null }) => {
       </IconButton>
       <IconButton
         sx={{
+          display: { xs: "none", sm: "initial" },
           position: "absolute",
           zIndex: 100,
           border: "1px solid gray",

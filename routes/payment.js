@@ -6,15 +6,13 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 router.post("/create-checkout-session", auth, (req, res, next) => {
-  const { orderItemIds } = req.body;
-  console.log(orderItemIds);
+  const { orderItemIds, orderId } = req.body;
   const ids = orderItemIds.map((id) => `'${id}'`).join(",");
   const query = `select p.name,p.price,oi.quantity from order_items oi join products p on oi.product_id=p.id where oi.id in (${ids})`;
   db.query(query, async (err, result) => {
     if (err) next(err);
     else {
       try {
-        console.log(result, query);
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ["card"],
           line_items: result.map((product) => ({
@@ -28,8 +26,10 @@ router.post("/create-checkout-session", auth, (req, res, next) => {
             quantity: product.quantity,
           })),
           mode: "payment",
-          success_url: process.env.PAYMENT_SUCCESS_URL + "?success=true",
-          cancel_url: process.env.PAYMENT_CANCEL_URL + "?success=false",
+          success_url:
+            process.env.PAYMENT_SUCCESS_URL + "?success=true&oid=" + orderId,
+          cancel_url:
+            process.env.PAYMENT_CANCEL_URL + "?success=false&oid=" + orderId,
         });
         res.status(200).json({ url: session.url });
       } catch (error) {

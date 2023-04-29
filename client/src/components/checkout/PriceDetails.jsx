@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 const PriceDetails = ({ itemsCount, totalDiscount, totalAmount }) => {
   const location = useLocation();
   return (
-    <>
+    <Stack spacing={{ xs: 1, sm: 2 }}>
       <Typography variant="h6" borderBottom="1px solid lightgray" pb={1}>
         PRICE DETAILS ({itemsCount} items)
       </Typography>
@@ -51,13 +51,13 @@ const PriceDetails = ({ itemsCount, totalDiscount, totalAmount }) => {
       <Typography
         variant="body1"
         color="white"
-        bgcolor="success.main"
+        bgcolor="success.light"
         p={0.5}
         textAlign="center"
       >
         You Saved ₹{totalDiscount} on this order
       </Typography>
-    </>
+    </Stack>
   );
 };
 

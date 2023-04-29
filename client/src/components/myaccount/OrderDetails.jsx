@@ -117,27 +117,31 @@ const OrderDetails = () => {
                 <Typography variant="body2">
                   <b>Payment Mode : </b> {paymentType}
                 </Typography>
-                <Stepper
-                  activeStep={steps.findIndex(
-                    (step) => step.toLowerCase() === status.toLowerCase()
-                  )}
-                  alternativeLabel
-                >
-                  {steps.map((label) => (
-                    <Step key={label}>
-                      <StepLabel
-                        StepIconComponent={CustomStepIcon}
-                        color="secondary"
-                      >
-                        <Stack>
-                          {label}
-                          <br />
-                          {orderDetail[label[0].toLowerCase() + "Date"]}
-                        </Stack>
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
+                {status === "FAILED" ? (
+                  <Typography color="error">Your order failed</Typography>
+                ) : (
+                  <Stepper
+                    activeStep={steps.findIndex(
+                      (step) => step.toLowerCase() === status.toLowerCase()
+                    )}
+                    alternativeLabel
+                  >
+                    {steps.map((label) => (
+                      <Step key={label}>
+                        <StepLabel
+                          StepIconComponent={CustomStepIcon}
+                          color="secondary"
+                        >
+                          <Stack>
+                            {label}
+                            <br />
+                            {orderDetail[label[0].toLowerCase() + "Date"]}
+                          </Stack>
+                        </StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                )}
               </Stack>
             </Stack>
             <Stack
