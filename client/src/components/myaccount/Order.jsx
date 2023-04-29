@@ -70,7 +70,7 @@ const Order = () => {
     <Suspense fallback={<Loader />}>
       <Await resolve={data}>
         {(orders) => (
-          <Stack spacing={{ xs: 1, sm: 1.5 }} mb={2}>
+          <Stack spacing={{ xs: 1, sm: 1.5 }}>
             {orders.length === 0 && (
               <NotFound message="You have not placed any order yet" />
             )}

@@ -20,29 +20,24 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/reducers/cart";
 import { deleteData, getData } from "../../services/NodeService";
 
-const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
+const AddToCartDialog = ({
+  productId,
+  handler,
+  open,
+  handleClose,
+  onAddToCart,
+}) => {
   const [sizes, setSizes] = useState([]);
-  const [colors, setColors] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    const sizeProductOptionId = sizes.find(
-      (size) => size.id === selectedSize
-    ).productOptionId;
-    const colorProductOptionId = colors.find(
-      (color) => color.id === selectedColor
-    ).productOptionId;
-    if (sizeProductOptionId !== colorProductOptionId)
-      return alert("This size-color combination not available");
-
     dispatch(
       addToCart({
         productId,
         quantity,
-        productOptionId: sizeProductOptionId,
+        productOptionId: selectedSize.id,
       })
     );
     onAddToCart();
@@ -51,22 +46,15 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
 
   useEffect(() => {
     const getSizes = async () => {
-      const result = await getData(`product/${productId}/size`);
+      const result = await getData(`product/${handler}/size`);
       if (result) {
         setSizes(result);
       }
     };
-    const getColors = async () => {
-      const result = await getData(`product/${productId}/color`);
-      if (result) {
-        setColors(result);
-      }
-    };
     if (open) {
-      getColors();
       getSizes();
     }
-  }, [open, productId]);
+  }, [open, handler]);
 
   return (
     <Dialog
@@ -79,7 +67,7 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
     >
       <DialogContent sx={{ p: { xs: 4, sm: 6 } }}>
         <Grid container rowSpacing={{ xs: 3, sm: 6 }} columnSpacing={2}>
-          <Grid item xs={6} sm={4}>
+          <Grid item xs={6} sm={6}>
             <FormControl fullWidth>
               <InputLabel
                 color="secondary"
@@ -99,16 +87,16 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
                 {sizes.map((size) => (
                   <MenuItem
                     sx={{ textTransform: "uppercase" }}
-                    key={size.productOptionId}
-                    value={size.id}
+                    key={size.size}
+                    value={size.size}
                   >
-                    {size.name}
+                    {size.size}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={6} sm={4}>
+          {/* <Grid item xs={6} sm={4}>
             <FormControl fullWidth>
               <InputLabel
                 color="secondary"
@@ -136,8 +124,8 @@ const AddToCartDialog = ({ productId, open, handleClose, onAddToCart }) => {
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={6} sm={4}>
+          </Grid> */}
+          <Grid item xs={6} sm={6}>
             <FormControl fullWidth>
               <InputLabel
                 color="secondary"
@@ -330,7 +318,7 @@ const WishlistProduct = ({
         size="small"
         variant="contained"
         startIcon={<ShoppingBagOutlined />}
-        onClick={async () => {
+        onClick={() => {
           setOpen(true);
         }}
       >
@@ -356,6 +344,7 @@ const WishlistProduct = ({
         handleClose={handleDialogClose}
         productId={productId}
         onAddToCart={handleClick}
+        handler={handler}
       />
     </Box>
   );

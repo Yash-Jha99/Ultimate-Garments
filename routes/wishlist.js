@@ -39,7 +39,7 @@ router.get("/", auth, (req, res, next) => {
   const { id: userId } = req.user;
 
   db.query(
-    "select W.id,P.id as productId, P.name,P.price,P.discount,P.image  from products P  join wishlist W on P.id=W.product_id and W.user_id=? ",
+    "select W.id,P.id as productId, P.name,P.price,P.discount,P.image,P.handler  from products P  join wishlist W on P.id=W.product_id and W.user_id=? ",
     [userId],
     (err, result) => {
       if (err) next(err);

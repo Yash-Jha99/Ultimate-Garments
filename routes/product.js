@@ -25,7 +25,7 @@ router.get("/:handler", (req, res, next) => {
   const { handler } = req.params;
   const rawhandler = handler.replace(/-/gi, " ");
 
-  const colorQuery = `SELECT distinct handler,color as label FROM product_options where handler like ?`;
+  const colorQuery = `SELECT distinct PO.handler,PO.color  as label,(select po.image from product_options po where po.handler=PO.handler limit 1 ) as image FROM product_options PO where PO.handler like ?`;
 
   db.query(
     "select * from products where handler=?",
@@ -40,29 +40,24 @@ router.get("/:handler", (req, res, next) => {
         (err, result) => {
           if (err) return next(err);
           product.options = result;
-          db.query(
-            colorQuery,
-            [
-              `${rawhandler
-                .replace(result[0].color.toLowerCase(), "")
-                .replace(/\s/gi, "-")}%`,
-            ],
-            (err, result) => {
-              if (err) next(err);
-              else product.colors = result;
-              if (req.user)
-                db.query(
-                  "select id from wishlist where product_id=? and user_id=?",
-                  [product.id, req.user.id],
-                  (error, result) => {
-                    if (error) next(error);
-                    else if (result[0]) product.wishlistId = result[0].id;
-                    return res.status(200).send(product);
-                  }
-                );
-              else return res.status(200).send(product);
-            }
-          );
+          const colorHandler = `${rawhandler
+            .replace(result[0].color.toLowerCase(), "")
+            .replace(/\s/gi, "-")}%`;
+          db.query(colorQuery, [handler, colorHandler], (err, result) => {
+            if (err) next(err);
+            else product.colors = result;
+            if (req.user)
+              db.query(
+                "select id from wishlist where product_id=? and user_id=?",
+                [product.id, req.user.id],
+                (error, result) => {
+                  if (error) next(error);
+                  else if (result[0]) product.wishlistId = result[0].id;
+                  return res.status(200).send(product);
+                }
+              );
+            else return res.status(200).send(product);
+          });
         }
       );
     }
@@ -165,13 +160,13 @@ router.get("/options/:option", (req, res, next) => {
   );
 });
 
-router.get("/:id/:option", (req, res) => {
-  const { option, id } = req.params;
+router.get("/:handler/:option", (req, res, next) => {
+  const { option, handler } = req.params;
   db.query(
-    `select o.*,po.id as productOptionId from product_options po join options o on po.${option}_option_id=o.id and po.product_id=? `,
-    [id],
+    `select distinct ${option} , id from product_options po where ${option} is not null and handler=? `,
+    [handler],
     (error, result) => {
-      if (error) console.log(error);
+      if (error) next(error);
       else res.status(200).send(result);
     }
   );

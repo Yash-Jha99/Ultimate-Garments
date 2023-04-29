@@ -89,8 +89,7 @@ const FilterPanel = ({ onChange, subcategory, category }) => {
   };
 
   useEffect(() => {
-    onChange((filters) => ({
-      ...filters,
+    const filters = {
       color:
         colorFilters
           .filter((color) => color.active)
@@ -102,8 +101,10 @@ const FilterPanel = ({ onChange, subcategory, category }) => {
           .map((size) => size.size)
           .join("+") || null,
       price: priceFilters,
-    }));
-  }, [sizeFilters, colorFilters, priceFilters, onChange]);
+    };
+
+    onChange(filters);
+  }, [sizeFilters, colorFilters, priceFilters]);
 
   useEffect(() => {
     setParams({

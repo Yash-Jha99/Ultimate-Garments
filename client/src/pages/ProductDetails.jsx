@@ -72,7 +72,7 @@ const ProductDetails = () => {
     );
   });
 
-  if (loading) return <Loader />;
+  if (loading) return <Loader fullscreen />;
 
   if (error?.status === 404) return <NotFound message="Product Not Found" />;
 
@@ -88,10 +88,7 @@ const ProductDetails = () => {
     colors,
   } = product;
 
-  const selectedOption = options.find(
-    (opt) =>
-      opt.size === selectedSize?.name && opt.color === selectedColor?.label
-  );
+  const selectedOption = options.find((opt) => opt.size === selectedSize?.name);
 
   const sizes = options.map((option) => ({
     name: option.size,
@@ -258,7 +255,11 @@ const ProductDetails = () => {
             </Button>
           </Stack>
         </Stack>
-        <Stack spacing={2} width={{ xs: "100%", sm: "60%" }}>
+        <Stack
+          spacing={2}
+          width={{ xs: "100%", sm: "60%" }}
+          position="relative"
+        >
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h6">{name}</Typography>
             <IconButton
@@ -320,11 +321,18 @@ const ProductDetails = () => {
               <Stack direction="row" spacing={1}>
                 {colors.map((color) => (
                   <Avatar
+                    src={color.image.concat("&height=100")}
                     sx={{
                       cursor: "pointer",
-                      bgcolor: color.label.toLowerCase(),
-                      width: 44,
-                      height: 44,
+                      border: "2px solid",
+                      borderColor:
+                        color.label === selectedColor.label
+                          ? "secondary.main"
+                          : "transparent",
+                      width: 72,
+                      height: 100,
+                      borderRadius: 0,
+                      objectFit: "contain",
                     }}
                     onClick={() => {
                       setInValid("");

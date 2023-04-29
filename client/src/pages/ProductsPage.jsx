@@ -22,7 +22,7 @@ const ProductsPage = () => {
   });
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = () => (event) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -48,6 +48,16 @@ const ProductsPage = () => {
     setFilters((filters) => ({ ...filters, pageNumber: pageNumber + 1 }));
   };
 
+  const handleFilterChange = (filters) => {
+    setFilters((prevfilters) => ({
+      ...prevfilters,
+      ...filters,
+      pageNumber: 1,
+    }));
+    setPageNumber(1);
+    setHasMore(true);
+  };
+
   useEffect(() => {
     setFilters((filters) => ({
       ...filters,
@@ -59,7 +69,8 @@ const ProductsPage = () => {
     setItems([]);
   }, [category, subcategory]);
 
-  if (error?.status === 404) return <NotFound message="No Product Found" />;
+  if (items.length === 0 && !loading)
+    return <NotFound message="No Product Found" />;
 
   return (
     <>
@@ -76,7 +87,7 @@ const ProductsPage = () => {
           bottom={"100vh"}
         >
           <FilterPanel
-            onChange={setFilters}
+            onChange={handleFilterChange}
             subcategory={subcategory}
             category={category}
           />
@@ -90,7 +101,7 @@ const ProductsPage = () => {
           pr={{ xs: 0.5, sm: 2 }}
         >
           <InfiniteScroll
-            dataLength={items.length} //This is important field to render the next data
+            dataLength={items.length}
             next={fetchData}
             hasMore={hasMore}
           >
@@ -132,22 +143,18 @@ const ProductsPage = () => {
           open={openDrawer}
           onClose={toggleDrawer("left", false)}
         >
-          {
-            <Box
-              sx={{
-                width: 250,
-              }}
-              role="presentation"
-              // onClick={toggleDrawer(anchor, false)}
-              // onKeyDown={toggleDrawer(anchor, false)}
-            >
-              <FilterPanel
-                onChange={setFilters}
-                subcategory={subcategory}
-                category={category}
-              />
-            </Box>
-          }
+          <Box
+            sx={{
+              width: 250,
+            }}
+            role="presentation"
+          >
+            <FilterPanel
+              onChange={handleFilterChange}
+              subcategory={subcategory}
+              category={category}
+            />
+          </Box>
         </Drawer>
       </Stack>
       <Fab

@@ -100,9 +100,12 @@ const ProductRow = ({ category, title = null }) => {
       </SwipeableViews>
       <IconButton
         sx={{
-          display: { xs: "none", sm: "initial" },
+          display: { xs: "none", sm: "flex" },
           position: "absolute",
-          zIndex: 100,
+          borderRadius: 0,
+          zIndex: 10,
+          width: 40,
+          height: 70,
           border: "1px solid gray",
           ":hover": { bgcolor: "white" },
           bgcolor: "white",
@@ -120,9 +123,12 @@ const ProductRow = ({ category, title = null }) => {
       </IconButton>
       <IconButton
         sx={{
-          display: { xs: "none", sm: "initial" },
+          display: { xs: "none", sm: "flex" },
           position: "absolute",
-          zIndex: 100,
+          borderRadius: 0,
+          zIndex: 10,
+          width: 40,
+          height: 70,
           border: "1px solid gray",
           ":hover": { bgcolor: "white" },
           bgcolor: "white",

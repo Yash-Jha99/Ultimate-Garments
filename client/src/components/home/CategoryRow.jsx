@@ -22,7 +22,6 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
     ? data.filter((item) => showItems.includes(item.name))
     : data;
   const steps = categories.length - 5;
-  console.log(categories);
 
   const handleStepChange = (step) => {
     if (activeStep === STEP_INC * steps) return;

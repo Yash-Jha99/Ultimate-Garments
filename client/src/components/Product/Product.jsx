@@ -5,6 +5,7 @@ import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { deleteData, postData } from "../../services/NodeService";
 import { useSnackbar } from "notistack";
+import FallbackImage from "../../assets/image-placeholder.jpg";
 
 const Product = ({
   id,
@@ -105,7 +106,7 @@ const Product = ({
         </IconButton>
         <Box height={{ xs: 200, md: 340 }} mb={2}>
           <img
-            src={image}
+            src={FallbackImage}
             style={{
               objectFit: "contain",
               display: "block",
@@ -114,6 +115,7 @@ const Product = ({
             width="100%"
             alt="product"
             loading="lazy"
+            onLoad={(e) => (e.target.src = image)}
           />
         </Box>
         <Box
