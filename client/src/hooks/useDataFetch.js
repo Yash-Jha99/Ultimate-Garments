@@ -11,7 +11,7 @@ const useDataFetch = (url, initial = null, cb = null, params = null) => {
     setLoading(true);
     (async () => {
       const response = await getData(url, controller.signal, params);
-      if (response?.canceledError);
+      if (response?.canceledError) return;
       else if (response?.status) {
         setError(response);
         setLoading(false);
@@ -24,6 +24,7 @@ const useDataFetch = (url, initial = null, cb = null, params = null) => {
     })();
 
     return () => controller.abort();
+    // eslint-disable-next-line
   }, [url, params]);
 
   return { data, loading, error, setData };

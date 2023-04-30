@@ -11,7 +11,13 @@ import {
 import { Box, Stack } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  ScrollRestoration,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { postData } from "../services/NodeService";
 import Loader from "../components/general/Loader";
@@ -161,6 +167,7 @@ const Checkout = () => {
 
   return (
     <Box>
+      <ScrollRestoration />
       <Box position="sticky" top={0} zIndex={100}>
         <Box mx={8} height="62px" bgcolor="white">
           <AppBar component="nav" color="inherit">

@@ -1,5 +1,6 @@
 {
-  "name": "ultimate_garments",
+  "name": "ultimate-garments",
+  "homepage": "https://ultimate-garment.vercel.app",
   "version": "0.1.1",
   "private": true,
   "dependencies": {
@@ -39,7 +40,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "react-hooks/exhaustive-deps": "off"
+    }
   },
   "browserslist": {
     "production": [

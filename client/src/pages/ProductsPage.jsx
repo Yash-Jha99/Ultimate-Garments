@@ -32,7 +32,7 @@ const ProductsPage = () => {
     setOpenDrawer(!openDrawer);
   };
 
-  const { error, loading } = useDataFetch(
+  const { loading } = useDataFetch(
     "product",
     null,
     (data) => {
@@ -74,12 +74,7 @@ const ProductsPage = () => {
 
   return (
     <>
-      <Stack
-        direction="row"
-        spacing={{ xs: 0.5, sm: 2 }}
-        px={{ xs: 0, sm: 2 }}
-        pb={2}
-      >
+      <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} px={{ xs: 0, sm: 2 }}>
         <Stack
           width="20%"
           display={{ xs: "none", sm: "block" }}
@@ -96,7 +91,6 @@ const ProductsPage = () => {
           bgcolor="white"
           boxShadow={2}
           p={1}
-          mb={2}
           width={{ xs: "98%", sm: "80%" }}
           pr={{ xs: 0.5, sm: 2 }}
         >
@@ -104,6 +98,7 @@ const ProductsPage = () => {
             dataLength={items.length}
             next={fetchData}
             hasMore={hasMore}
+            loader={<Loader height={100} />}
           >
             <Grid
               container

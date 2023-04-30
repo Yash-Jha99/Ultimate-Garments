@@ -25,7 +25,7 @@ router.get("/:handler", (req, res, next) => {
   const { handler } = req.params;
   const rawhandler = handler.replace(/-/gi, " ");
 
-  const colorQuery = `SELECT distinct PO.handler,PO.color  as label,(select po.image from product_options po where po.handler=PO.handler limit 1 ) as image FROM product_options PO where PO.handler like ?`;
+  const colorQuery = `SELECT distinct handler,color as label,(select image from product_options where handler like ?  limit 1) as image FROM product_options where handler like ?`;
 
   db.query(
     "select * from products where handler=?",
@@ -43,7 +43,7 @@ router.get("/:handler", (req, res, next) => {
           const colorHandler = `${rawhandler
             .replace(result[0].color.toLowerCase(), "")
             .replace(/\s/gi, "-")}%`;
-          db.query(colorQuery, [handler, colorHandler], (err, result) => {
+          db.query(colorQuery, [colorHandler, colorHandler], (err, result) => {
             if (err) next(err);
             else product.colors = result;
             if (req.user)
