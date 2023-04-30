@@ -1,9 +1,5 @@
 var createError = require("http-errors");
-const {
-  verifyAccessToken,
-  verifyAuthToken,
-  generateAccessToken,
-} = require("./tokens");
+const { verifyAuthToken } = require("./tokens");
 
 const access = (req, res, next) => {
   if (req.app.get("env") === "development" || !req.path.includes("/api"))
@@ -11,14 +7,6 @@ const access = (req, res, next) => {
   const token = req.headers["access-token"];
   if (token === process.env.API_KEY) return next();
   next(createError(403));
-
-  // const token = generateAccessToken({ apiKey: process.env.API_KEY })
-  // try {
-  //     verifyAccessToken(token)
-  //     next()
-  // } catch (error) {
-  //     next(createError(403))
-  // }
 };
 
 const user = (req, res, next) => {
