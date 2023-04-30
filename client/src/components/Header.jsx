@@ -226,9 +226,8 @@ const Header = (props) => {
       <List>
         {categories.map((category) => (
           <Link
-            style={{ color: "black" }}
+            style={{ color: "black", textDecoration: "none" }}
             key={category.id}
-            className={classes.category}
             to={`/category/${category.name.replace(/\s+/g, "-")}`}
           >
             <ListItem key={category.id} disablePadding>
@@ -284,7 +283,16 @@ const Header = (props) => {
                 ))}
               </Box>
             </Stack>
-            <div className={classes.right}>
+            <Box
+              sx={{
+                marginLeft: 20,
+                position: "relative",
+                display: "flex",
+                listStyle: "none",
+                alignItems: "center",
+                columnGap: 16,
+              }}
+            >
               <SearchIcon
                 onClick={(e) => {
                   setShowSearch(!showSearch);
@@ -341,24 +349,37 @@ const Header = (props) => {
                     width: { xs: "95vw", sm: 340 },
                   }}
                 >
-                  <input
-                    className={classes.input}
+                  <TextField
+                    sx={{
+                      padding: "10px 10px",
+                      width: "100%",
+                      border: "1px solid black",
+                      borderRadius: 0,
+                      outline: "none",
+                    }}
                     type="text"
                     ref={searchRef}
                     placeholder="Search entire store here..."
                   />
-                  <button
-                    className={classes.button}
+                  <Button
+                    sx={{
+                      padding: "10px 20px",
+                      background: "black",
+                      color: "white",
+                      border: "1px solid black",
+                      outline: "none",
+                      cursor: "pointer",
+                    }}
                     onClick={() => {
                       navigate("/search/" + searchRef.current.value);
                       setShowSearch(false);
                     }}
                   >
                     Search
-                  </button>
+                  </Button>
                 </Box>
               )}
-            </div>
+            </Box>
           </Toolbar>
         </AppBar>
         <Box component="nav">
