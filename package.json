@@ -1,0 +1,38 @@
+{
+  "name": "ultimate-garments",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
+  },
+  "dependencies": {
+    "@emotion/cache": "latest",
+    "@emotion/react": "latest",
+    "@emotion/server": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "firebase": "^9.21.0",
+    "jwt-decode": "^3.1.2",
+    "next": "latest",
+    "next-redux-wrapper": "^8.1.0",
+    "notistack": "^3.0.1",
+    "prop-types": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-redux": "^8.0.5",
+    "swiper": "^9.2.4"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^13.3.4",
+    "eslint": "latest",
+    "eslint-config-next": "latest"
+  }
+}
