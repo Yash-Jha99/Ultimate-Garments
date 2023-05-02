@@ -17,14 +17,14 @@ sample shopify products data.
 
 ## Tech Stack
 * **Client** : React, Redux Toolkit, Material UI, React Router V6
-* **Server**  : Node, Express, MySQL, JWT ,Serverless-mysql, Stripe 
+* **Server**  : Node, Express, MySQL, JWT, Serverless-mysql, Stripe 
 
 ## Live App
 [https://ultimate-garments.vercel.app](https://ultimate-garments.vercel.app)
 
 ## Environment Variables
 **Server**
-  `DB_URI`
+  `MYSQL_URI`
   `JWT_SECRET_AUTH_KEY`
   `API_KEY`
   `STRIPE_SECRET_KEY`
