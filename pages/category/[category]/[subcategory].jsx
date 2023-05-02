@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import Product from "../../../components/Product/Product";
-import useDataFetch from "../../../hooks/useDataFetch";
+import Product from "@/components/product/Product";
+import useDataFetch from "@/hooks/useDataFetch";
 import { Grid, Stack, Box, Drawer, Fab } from "@mui/material";
 import FilterAlt from "@mui/icons-material/FilterAlt";
-import Loader from "../../../components/general/Loader";
-import FilterPanel from "../../../components/product/FilterPanel";
-import NotFound from "../../../components/general/NotFound";
+import Loader from "@/components/general/Loader";
+import FilterPanel from "@/components/product/FilterPanel";
+import NotFound from "@/components/general/NotFound";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouter } from "next/router";
 import Layout from "@/components/layouts/Layout";
