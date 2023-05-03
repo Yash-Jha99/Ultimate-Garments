@@ -7,7 +7,7 @@ const useRouter = require("./routes/router");
 require("dotenv").config();
 const app = express();
 
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: ['http://localhost:3000', 'https://ultimate-garments.vercel.app', "http://localhost:4173", "http://localhost:5173"] }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,23 +29,23 @@ if (process.env.NODE_ENV == "production") {
 
   app.use(
     "/static",
-    express.static(path.join(__dirname, "client", "build/static"))
+    express.static(path.join(__dirname, "client", "dist/static"))
   );
 
   app.use(
     "/manifest.json",
-    express.static(path.join(__dirname, "client", "build", "manifest.json"))
+    express.static(path.join(__dirname, "client", "dist", "manifest.json"))
   );
 
   app.use(
     "/favicon.ico",
-    express.static(path.join(__dirname, "client", "build", "favicon.ico"))
+    express.static(path.join(__dirname, "client", "dist", "favicon.ico"))
   );
 
-  app.use(express.static(path.join(__dirname, "../client/build")));
+  app.use(express.static(path.join(__dirname, "../client/dist")));
 
   app.get("/*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
   });
 }
 

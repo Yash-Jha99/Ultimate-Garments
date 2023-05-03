@@ -33,7 +33,7 @@ router.post("/login", async (req, res, next) => {
   );
 });
 
-router.post("/logout", async (req, res, next) => {
+router.get("/logout", async (req, res, next) => {
   res.status(200).cookie('token', null, { httpOnly: true, maxAge: 0 })
 });
 
