@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Checkbox,
   Grid,
@@ -12,10 +12,10 @@ import {
   Box,
 } from "@mui/material";
 import { updateData } from "../../services/NodeService";
-import { useSelector } from "react-redux";
-import useNotify from "../../hooks/useNotify";
+import { useSelector } from "react-redux"
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../general/Loader";
+import { useSnackbar } from "notistack";
 
 const Profile = () => {
   const [error, setError] = useState({
@@ -47,7 +47,7 @@ const Profile = () => {
   ];
 
   const { id } = useSelector((state) => state.auth.user);
-  const [notify, setNotify] = useNotify();
+  const { enqueueSnackbar } = useSnackbar()
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -77,7 +77,7 @@ const Profile = () => {
     }
 
     const response = await updateData("user/" + id, formDetails);
-    if (response.status === 200) setNotify("User updated succesfully");
+    if (response.status === 200) enqueueSnackbar("Profile Updated", { variant: "success" })
   };
 
   const { loading } = useDataFetch("user/" + id, null, (data) => {
@@ -171,7 +171,6 @@ const Profile = () => {
             );
           })}
         </Grid>
-        {notify}
         <Button
           sx={{ mt: 2, color: "black" }}
           fullWidth

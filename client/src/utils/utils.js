@@ -17,3 +17,10 @@ export function stringToColor(string) {
 
     return color;
 }
+
+
+export const randomBadge = (key) => {
+    const badges = ["Trending", "Bestseller", "Exclusive", "Bestvalue"]
+    const index = (key * 4) % 10
+    return badges[index] ?? ""
+}

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { useLoaderData, NavLink, Await } from "react-router-dom";
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, Divider } from "@mui/material";
 import Loader from "../general/Loader";
 import NotFound from "../general/NotFound";
 
@@ -71,6 +71,9 @@ const Order = () => {
       <Await resolve={data}>
         {(orders) => (
           <Stack spacing={{ xs: 1, sm: 1.5 }}>
+            <Box bgcolor="white" p={2} boxShadow={2}>
+              <Typography variant="h5" >My Orders</Typography>
+            </Box>
             {orders.length === 0 && (
               <NotFound message="You have not placed any order yet" />
             )}

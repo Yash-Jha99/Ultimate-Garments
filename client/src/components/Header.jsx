@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import useStyles from "./HeaderCss";
 import {
   Box,
   Badge,
@@ -25,16 +24,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@mui/material/Avatar";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Home from "@mui/icons-material/Home";
+import ListIcon from "@mui/icons-material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Logout from "@mui/icons-material/Logout";
-import {
-  AccountCircle,
-  Favorite,
-  Home,
-  List as ListIcon,
-} from "@mui/icons-material";
 import Dropdown from "./general/Dropdown";
 import { logout } from "../store/reducers/auth";
 import { stringToColor } from "../utils/utils";
@@ -60,7 +56,7 @@ const AccountMenu = () => {
   const menuItems = [
     { label: "My Profile", icon: AccountCircle, path: "myaccount/profile" },
     { label: "Orders", icon: ListIcon, path: "myaccount/orders" },
-    { label: "Wishlist", icon: Favorite, path: "myaccount/wishlist" },
+    { label: "Wishlist", icon: FavoriteIcon, path: "myaccount/wishlist" },
     { label: "Address", icon: Home, path: "myaccount/address" },
   ];
 
@@ -190,7 +186,6 @@ const Header = (props) => {
   const searchRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
-  const classes = useStyles();
   const cartItemsNumber = useSelector((state) => state.cart.items.length);
 
   const getCategories = async () => {
@@ -285,12 +280,12 @@ const Header = (props) => {
             </Stack>
             <Box
               sx={{
-                marginLeft: 20,
+                marginLeft: { xs: 6, sm: 20 },
                 position: "relative",
                 display: "flex",
                 listStyle: "none",
                 alignItems: "center",
-                columnGap: 16,
+                columnGap: 2,
               }}
             >
               <SearchIcon

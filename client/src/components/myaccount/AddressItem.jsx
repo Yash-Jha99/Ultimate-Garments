@@ -1,7 +1,7 @@
 import { Box, Typography, MenuItem } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
-import { MoreVert } from "@mui/icons-material";
+import MoreVert from "@mui/icons-material/MoreVert";
 import { useLocation } from "react-router-dom";
 import Dropdown from "../general/Dropdown";
 

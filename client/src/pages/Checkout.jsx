@@ -1,4 +1,6 @@
-import { Home, Payment, ShoppingCart } from "@mui/icons-material";
+import Home from "@mui/icons-material/Home";
+import Payment from "@mui/icons-material/Payment";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import {
   Button,
   Typography,
@@ -268,7 +270,6 @@ const Checkout = () => {
                   }}
                   border="1px solid lightgray"
                   padding={2}
-                  mb={2}
                 >
                   <Stack
                     mb={1}

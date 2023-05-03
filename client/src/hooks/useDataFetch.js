@@ -1,33 +1,57 @@
 import { useEffect, useState } from "react";
-import { getData } from "../services/NodeService";
+import axios from "../config/axios";
+import { CanceledError } from "axios";
 
-const useDataFetch = (url, initial = null, cb = null, params = null) => {
+const useDataFetch = (
+  url,
+  initial = null,
+  cb = null,
+  params = {},
+  deps = []
+) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(initial);
+  const [hasMore, setHasMore] = useState(false)
+
 
   useEffect(() => {
-    const controller = new AbortController();
+    const abortController = new AbortController();
+    let response;
     setLoading(true);
     (async () => {
-      const response = await getData(url, controller.signal, params);
-      if (response?.canceledError) return;
-      else if (response?.status) {
-        setError(response);
-        setLoading(false);
-      } else {
+      try {
+        if (typeof url === "string") {
+          response = await axios.get(url, {
+            signal: abortController.signal,
+            params,
+          });
+          setHasMore(response.data.length >= 12);
+        }
+        else
+          response = await Promise.all(
+            url.map((url) =>
+              axios.get(url, {
+                signal: abortController.signal,
+                params,
+              })
+            )
+          );
         setError(null);
-        setData(response);
+        if (initial) setData(response.data ?? response.map(res => res.data));
         setLoading(false);
-        cb?.(response);
+        cb?.(response.data ?? response.map(res => res.data));
+      } catch (error) {
+        if (error instanceof CanceledError) return;
+        setError(error.message);
+        setLoading(false);
       }
     })();
 
-    return () => controller.abort();
-    // eslint-disable-next-line
-  }, [url, params]);
+    return () => abortController.abort();
+  }, [...deps]);
 
-  return { data, loading, error, setData };
+  return { data, loading, error, setData, hasMore, setHasMore };
 };
 
 export default useDataFetch;

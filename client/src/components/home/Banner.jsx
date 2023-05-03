@@ -1,35 +1,39 @@
 import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 import { Box } from "@mui/material";
-import SwipeableViews from "react-swipeable-views";
-import { autoPlay } from "react-swipeable-views-utils";
-import { useTheme } from "@emotion/react";
-
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const Banner = ({ images }) => {
-  const theme = useTheme();
-
   return (
-    <AutoPlaySwipeableViews
-      axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-      enableMouseEvents
-      direction="incremental"
-    >
-      {images.map((step, index) => (
-        <div key={step.label}>
-          <Box
-            component="img"
-            sx={{
-              display: "block",
-              overflow: "hidden",
-              width: "100%",
-            }}
-            src={step.image}
-            alt={step.label}
-          />
-        </div>
-      ))}
-    </AutoPlaySwipeableViews>
+    <Box height={{ xs: 320, sm: 460 }}>
+      <Swiper
+        spaceBetween={0}
+        loop
+        centeredSlides={true}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        pagination={{
+          clickable: true,
+        }}
+        modules={[Autoplay, Pagination]}
+        className="mySwiper"
+      >
+        {images.map(({ image, label }) => (
+          <SwiperSlide key={label}>
+            <img
+              src={image}
+              alt="label"
+              style={{ objectFit: "contain" }}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </Box>
   );
 };
 

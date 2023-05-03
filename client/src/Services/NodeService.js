@@ -1,8 +1,4 @@
-import axios, { CanceledError } from "axios";
-
-const ServerURL = process.env.REACT_APP_SERVER_URL;
-
-axios.defaults.headers.common["access-token"] = process.env.REACT_APP_API_KEY;
+import axios from "../config/axios";
 
 export const postData = async (url, body, isFile = false) => {
   try {
@@ -12,7 +8,7 @@ export const postData = async (url, body, isFile = false) => {
       },
     };
 
-    const response = await axios.post(`${ServerURL}/${url}`, body, headers);
+    const response = await axios.post(url, body, headers);
     return response;
   } catch (error) {
     console.log("[POST] Error: ", error?.response?.data);
@@ -28,7 +24,7 @@ export const updateData = async (url, body, isFile = false) => {
       },
     };
 
-    const response = await axios.put(`${ServerURL}/${url}`, body, headers);
+    const response = await axios.put(url, body, headers);
     return response;
   } catch (error) {
     console.log("[PUT] Error: ", error.response.data);
@@ -36,25 +32,20 @@ export const updateData = async (url, body, isFile = false) => {
   }
 };
 
-export const getData = async (url, signal, params) => {
+export const getData = async (url, params = {}) => {
   try {
     const config = {
-      signal,
       params,
       headers: {
         "content-type": "application/json",
       },
     };
-
-    const response = await axios.get(`${ServerURL}/${url}`, config);
+    const response = await axios.get(url, config);
     return response.data;
   } catch (error) {
-    if (error instanceof CanceledError) return { canceledError: true };
-    console.log("[GET] Error: ", error.response);
-    return {
-      status: error?.response?.status,
-      data: error?.response?.data,
-    };
+    console.log("[GET] Error: ", error.message);
+    if (error.response) throw error
+    return error.response;
   }
 };
 
@@ -66,7 +57,7 @@ export const deleteData = async (url) => {
       },
     };
 
-    const response = await axios.delete(`${ServerURL}/${url}`, headers);
+    const response = await axios.delete(url, headers);
     return response;
   } catch (error) {
     console.log("[Delete] Error: ", error.response.data);

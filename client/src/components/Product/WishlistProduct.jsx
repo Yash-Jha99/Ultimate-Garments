@@ -15,7 +15,8 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { Close, ShoppingBagOutlined } from "@mui/icons-material";
+import Close from "@mui/icons-material/Close";
+import ShoppingBagOutlined from "@mui/icons-material/ShoppingBagOutlined";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/reducers/cart";
 import { deleteData, getData } from "../../services/NodeService";
@@ -96,35 +97,7 @@ const AddToCartDialog = ({
               </Select>
             </FormControl>
           </Grid>
-          {/* <Grid item xs={6} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel
-                color="secondary"
-                size="small"
-                id="select-label-colors"
-              >
-                Color
-              </InputLabel>
-              <Select
-                color="secondary"
-                size="small"
-                label="colors"
-                labelId="select-label"
-                value={selectedColor}
-                onChange={(e) => setSelectedColor(e.target.value)}
-              >
-                {colors.map((color) => (
-                  <MenuItem
-                    sx={{ textTransform: "capitalize" }}
-                    key={color.productOptionId}
-                    value={color.id}
-                  >
-                    {color.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid> */}
+
           <Grid item xs={6} sm={6}>
             <FormControl fullWidth>
               <InputLabel
@@ -168,7 +141,6 @@ const AddToCartDialog = ({
 
 const WishlistProduct = ({
   id,
-  wishlistId,
   handler,
   productId,
   image,
@@ -178,14 +150,12 @@ const WishlistProduct = ({
   onDelete,
   badge = "",
 }) => {
-  const [notify, setNotify] = useState({ open: false, message: "" });
   const [open, setOpen] = useState(false);
 
   const handleClick = async (e) => {
     if (e) e.preventDefault();
     const response = await deleteData("wishlist/" + id);
     if (response.status === 200) {
-      setNotify({ open: true, message: "Product removed from wishlist" });
       onDelete(id);
     }
   };
@@ -269,12 +239,12 @@ const WishlistProduct = ({
               maxWidth: 170,
               display: "block",
               margin: "0 auto",
+              paddingBottom: 8
             }}
             alt="product"
             width="100%"
           />
           <Typography
-            mt={1}
             fontWeight="bold"
             variant="caption"
             color="text.light"
@@ -290,19 +260,19 @@ const WishlistProduct = ({
           >
             <Typography
               fontWeight="bold"
-              fontSize={{ xs: 12, sm: 18 }}
+              fontSize={{ xs: 12, sm: 16 }}
               color="error.light"
             >
               ₹{price}
             </Typography>
             <Typography
               sx={{ textDecoration: "line-through" }}
-              fontSize={{ xs: 12, sm: 18 }}
+              fontSize={{ xs: 12, sm: 16 }}
               color="text.main"
             >
               ₹{Math.ceil(price * (1 + discount / 100))}
             </Typography>
-            <Typography fontSize={{ xs: 12, sm: 18 }} color="success.light">
+            <Typography fontSize={{ xs: 12, sm: 16 }} color="success.light">
               ({discount}% off)
             </Typography>
           </Box>
@@ -312,9 +282,9 @@ const WishlistProduct = ({
         sx={{
           maxWidth: "250px",
           bgcolor: "gray",
-          fontSize: { xs: 12, sm: 16 },
+          fontSize: { xs: 10, sm: 12 },
         }}
-        fullWidth
+
         size="small"
         variant="contained"
         startIcon={<ShoppingBagOutlined />}
@@ -324,21 +294,6 @@ const WishlistProduct = ({
       >
         ADD TO CART
       </Button>
-      <Snackbar
-        open={notify.open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          severity="success"
-          sx={{ width: "100%" }}
-          variant="filled"
-          elevation={2}
-        >
-          {notify.message}
-        </Alert>
-      </Snackbar>
       <AddToCartDialog
         open={open}
         handleClose={handleDialogClose}

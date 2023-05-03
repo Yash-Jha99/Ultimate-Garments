@@ -3,22 +3,26 @@ import Product from "../components/product/Product";
 import useDataFetch from "../hooks/useDataFetch";
 import { useParams } from "react-router-dom";
 import { Grid, Stack, Box, Drawer, Fab } from "@mui/material";
-import { FilterAlt } from "@mui/icons-material";
+import FilterAlt from "@mui/icons-material/FilterAlt";
 import Loader from "../components/general/Loader";
 import FilterPanel from "../components/product/FilterPanel";
 import NotFound from "../components/general/NotFound";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { randomBadge } from "../utils/utils";
 
 const ProductsPage = () => {
   const { category, subcategory, search } = useParams();
   const [items, setItems] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [filters, setFilters] = useState({
     search,
+    category,
+    subcategory,
     pageSize: 12,
-    category: category,
-    subcategory: subcategory,
+    pageNumber: 1,
+    size: "",
+    color: "",
+    price: ""
   });
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
@@ -36,16 +40,16 @@ const ProductsPage = () => {
     "product",
     null,
     (data) => {
-      if (pageNumber === 1) setItems(data);
+      if (filters.pageNumber === 1) setItems(data);
       else setItems((items) => [...items, ...data]);
-      if (data.length < 12) setHasMore(false);
+      setHasMore(data.length >= 12);
     },
-    filters
+    filters,
+    [filters]
   );
 
   const fetchData = () => {
-    setPageNumber(pageNumber + 1);
-    setFilters((filters) => ({ ...filters, pageNumber: pageNumber + 1 }));
+    setFilters((filters) => ({ ...filters, pageNumber: filters.pageNumber + 1 }));
   };
 
   const handleFilterChange = (filters) => {
@@ -54,8 +58,7 @@ const ProductsPage = () => {
       ...filters,
       pageNumber: 1,
     }));
-    setPageNumber(1);
-    setHasMore(true);
+    window.scrollTo({ top: 0, behavior: "auto" })
   };
 
   useEffect(() => {
@@ -65,8 +68,6 @@ const ProductsPage = () => {
       category: category,
       subcategory: subcategory,
     }));
-    setPageNumber(1);
-    setItems([]);
   }, [category, subcategory]);
 
   if (items.length === 0 && !loading)
@@ -106,10 +107,10 @@ const ProductsPage = () => {
               rowSpacing={{ xs: 0.5, sm: 2 }}
               p={1}
             >
-              {loading && items.length === 0 ? (
+              {loading && filters.pageNumber === 1 ? (
                 <Loader fullscreen />
               ) : (
-                items.map((product) => (
+                items.map((product, index) => (
                   <Grid
                     key={product.id}
                     item
@@ -125,7 +126,7 @@ const ProductsPage = () => {
                       name={product.name}
                       handler={product.handler}
                       wishlistId={product.wishlistId}
-                      badge="Trending"
+                      badge={randomBadge(index)}
                     />
                   </Grid>
                 ))

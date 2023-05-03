@@ -1,18 +1,16 @@
-import {
-  Facebook,
-  Instagram,
-  LinkedIn,
-  Pinterest,
-  Twitter,
-  YouTube,
-} from "@mui/icons-material";
+import Facebook from "@mui/icons-material/Facebook";
+import Twitter from "@mui/icons-material/Twitter";
+import Instagram from "@mui/icons-material/Instagram";
+import Pinterest from "@mui/icons-material/Pinterest";
+import YouTube from "@mui/icons-material/YouTube";
+import LinkedIn from "@mui/icons-material/LinkedIn";
 import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 
 const Footer = () => {
   return (
     <Box
-      width="100%"
+      // width="100%"
       bgcolor="white"
       color="#434343"
       boxShadow={2}

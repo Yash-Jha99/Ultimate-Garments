@@ -1,25 +1,26 @@
 import { createBrowserRouter, defer, redirect } from "react-router-dom";
-import App from "./App";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import store from "./store/store";
 import Cart from "./components/checkout/Cart";
 import WishList from "./components/myaccount/Wishlist";
 import Shipping from "./components/checkout/Shipping";
-import Checkout from "./pages/Checkout";
 import Payment from "./components/checkout/Payment";
-import MyAccount from "./pages/MyAccount";
 import Profile from "./components/myaccount/Profile";
 import LoginPage from "./pages/LoginPage";
 import { getData } from "./services/NodeService";
-import Admin from "./components/admin/Admin";
 import { getCart } from "./store/reducers/cart";
 import Order from "./components/myaccount/Order";
 import OrderDetails from "./components/myaccount/OrderDetails";
-import Error from "./components/general/Error";
-import ProductsPage from "./pages/ProductsPage";
-import OrderSuccessPage from "./pages/OrderSuccessPage";
-import OrderFailedPage from "./pages/OrderFailedPage";
+const App = await import("./App")
+const Checkout = await import("./pages/Checkout")
+const ProductsPage = React.lazy(() => import("./pages/ProductsPage"))
+const ProductDetails = await import("./pages/ProductDetails")
+const MyAccount = await import("./pages/MyAccount")
+const Error = await import("./pages/Error")
+const LoginPage = await import("./pages/LoginPage")
+const OrderSuccessPage = await import("./pages/OrderSuccessPage")
+const OrderFailedPage = await import("./pages/OrderFailedPage")
 
 export default createBrowserRouter([
   {
@@ -37,10 +38,6 @@ export default createBrowserRouter([
       },
       {
         path: "category/:category/:subcategory",
-        element: <ProductsPage />,
-      },
-      {
-        path: "category/:category",
         element: <ProductsPage />,
       },
       {
@@ -145,16 +142,16 @@ export default createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/admin",
-    element: <Admin />,
-    errorElement: <Error />,
-    loader: () => {
-      const { isAdmin } = store.getState().auth.user;
-      if (!isAdmin) {
-        return redirect("/ ");
-      }
-      return null;
-    },
-  },
+  // {
+  //   path: "/admin",
+  //   element: <Admin />,
+  //   errorElement: <Error />,
+  //   loader: () => {
+  //     const { isAdmin } = store.getState().auth.user;
+  //     if (!isAdmin) {
+  //       return redirect("/ ");
+  //     }
+  //     return null;
+  //   },
+  // },
 ]);

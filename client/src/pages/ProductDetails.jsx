@@ -1,9 +1,7 @@
-import {
-  Check,
-  Favorite,
-  FavoriteBorder,
-  LocalOffer,
-} from "@mui/icons-material";
+import Favorite from "@mui/icons-material/Favorite";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Check from "@mui/icons-material/Check";
+import LocalOffer from "@mui/icons-material/LocalOffer";
 import {
   IconButton,
   Typography,

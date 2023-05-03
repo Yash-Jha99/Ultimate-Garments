@@ -1,14 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import jwtDecode from "jwt-decode";
 
 let initialState = { isLoggedIn: false, token: null, user: {} };
 const token = localStorage.getItem("token");
-
 if (token) {
   const user = jwtDecode(token);
   initialState = { isLoggedIn: true, token, user };
-  axios.defaults.headers.common["Authorization"] = token;
 }
 
 const authSlice = createSlice({
@@ -19,7 +16,6 @@ const authSlice = createSlice({
       const { token } = action.payload;
       state.isLoggedIn = true;
       state.token = token;
-      axios.defaults.headers.common["Authorization"] = token;
       state.user = jwtDecode(token);
       localStorage.setItem("token", token);
       const params = new URLSearchParams(window.location.search);

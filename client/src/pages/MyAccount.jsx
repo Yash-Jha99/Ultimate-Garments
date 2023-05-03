@@ -1,28 +1,10 @@
-import { makeStyles } from "@mui/styles";
 import { Stack, Avatar, Divider, Box, Button } from "@mui/material";
-import React from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/reducers/auth";
 import { stringToColor } from "../utils/utils";
-
-const useStyles = makeStyles((theme) => ({
-  link: {
-    textDecoration: "none",
-    fontSize: 20,
-    fontWeight: 600,
-    padding: 16,
-    textAlign: "center",
-    color: theme.palette.grey[900],
-    "&.active": {
-      color: theme.palette.secondary.main,
-    },
-  },
-}));
-
 const MyAccount = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const { name } = useSelector((state) => state.auth.user);
   const location = useLocation();
@@ -68,16 +50,52 @@ const MyAccount = () => {
             </Typography>
           </Box>
         </Stack>
-        <NavLink className={classes.link} to="/myaccount/profile">
+        <NavLink style={{
+          textDecoration: "none",
+          fontSize: 20,
+          fontWeight: 500,
+          padding: 16,
+          textAlign: "center",
+          color: "black",
+        }}
+          className="link"
+          to="/myaccount/profile">
           My Profile
         </NavLink>
-        <NavLink className={classes.link} to="/myaccount/orders">
+        <NavLink style={{
+          textDecoration: "none",
+          fontSize: 20,
+          fontWeight: 500,
+          padding: 16,
+          textAlign: "center",
+          color: "black",
+        }}
+          className="link"
+          to="/myaccount/orders">
           Orders
         </NavLink>
-        <NavLink className={classes.link} to="/myaccount/wishlist">
+        <NavLink style={{
+          textDecoration: "none",
+          fontSize: 20,
+          fontWeight: 500,
+          padding: 16,
+          textAlign: "center",
+          color: "black",
+        }}
+          className="link"
+          to="/myaccount/wishlist">
           Wishlist
         </NavLink>
-        <NavLink className={classes.link} to="/myaccount/address">
+        <NavLink style={{
+          textDecoration: "none",
+          fontSize: 20,
+          fontWeight: 500,
+          padding: 16,
+          textAlign: "center",
+          color: "black",
+        }}
+          className="link"
+          to="/myaccount/address">
           Address
         </NavLink>
         <Button

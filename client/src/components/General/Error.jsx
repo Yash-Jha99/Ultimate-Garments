@@ -1,13 +1,12 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import React from "react";
-import { useNavigate, useRouteError } from "react-router-dom";
+import { Button, Stack, Typography } from "@mui/material";
+import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom";
 import NotFoundImage from "../../assets/page-not-found.webp";
-import { ErrorRounded } from "@mui/icons-material";
+import ErrorRounded from "@mui/icons-material/ErrorRounded";
 
-const Error = ({ children }) => {
+const Error = () => {
   const error = useRouteError();
-  const navigate = useNavigate();
-  error && console.log("Route Error", error);
+  const navigate = useNavigate()
+  if (error) console.log(error)
 
   return (
     <Stack
@@ -17,7 +16,7 @@ const Error = ({ children }) => {
       justifyContent="center"
       alignItems="center"
     >
-      {error?.status === 404 ? (
+      {isRouteErrorResponse(error) ? (
         <img
           style={{ width: "800px", maxWidth: "100%" }}
           src={NotFoundImage}
@@ -26,6 +25,7 @@ const Error = ({ children }) => {
       ) : (
         <>
           <ErrorRounded sx={{ fontSize: 150 }} color="error" />
+          <Typography>Error : {error.message}</Typography>
           <Typography variant="h4">Something went wrong !</Typography>
         </>
       )}

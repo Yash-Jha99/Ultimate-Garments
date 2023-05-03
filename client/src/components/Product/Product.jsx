@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography, IconButton } from "@mui/material";
-import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import Favorite from "@mui/icons-material/Favorite";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { useSelector } from "react-redux";
 import { deleteData, postData } from "../../services/NodeService";
 import { useSnackbar } from "notistack";
@@ -69,20 +70,21 @@ const Product = ({
           height: "100%",
         }}
       >
-        <Box
+        {badge && <Box
           sx={{
             position: "absolute",
             top: 0,
             left: 0,
             bgcolor: "error.main",
 
-            fontSize: 16,
+            fontSize: 14,
+            p: "3px 6px",
             fontWeight: "normal",
             color: "white",
           }}
         >
           {badge}
-        </Box>
+        </Box>}
         <IconButton
           disableRipple
           onClick={handleClick}

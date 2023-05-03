@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Typography, Box } from "@mui/material";
+import { Button, Typography, Box, Divider, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
 import {
@@ -200,7 +200,7 @@ const Shipping = () => {
   if (loading) return <Loader />;
 
   return (
-    <Box boxShadow={2} p={{ xs: 2, sm: 4 }} bgcolor="white">
+    <Box boxShadow={2} p={{ xs: 2, sm: 2 }} bgcolor="white">
       {(showForm || address.length === 0) && (
         <AddressForm
           formDetails={formDetails}
@@ -214,24 +214,27 @@ const Shipping = () => {
       <Box maxWidth={{ xs: "100%", sm: "70%" }}>
         {!showForm && address.length !== 0 && (
           <>
-            <Typography mb={2} variant="h5">
+            <Typography mb={1} variant="h5">
               {location.pathname === "/checkout/shipping"
                 ? "Select Address"
-                : "My addresses"}
+                : "Saved Addresses"}
             </Typography>
-            {address.map((item, index) => (
-              <AddressItem
-                key={index}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-                {...{
-                  item,
-                  setActiveAddress,
-                  activeAddressId: activeAddress?.id,
-                  defaultAddressId,
-                }}
-              />
-            ))}
+            <Divider />
+            <Stack mt={3}>
+              {address.map((item, index) => (
+                <AddressItem
+                  key={index}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                  {...{
+                    item,
+                    setActiveAddress,
+                    activeAddressId: activeAddress?.id,
+                    defaultAddressId,
+                  }}
+                />
+              ))}
+            </Stack>
             <Button
               sx={{ mt: 2 }}
               variant="contained"

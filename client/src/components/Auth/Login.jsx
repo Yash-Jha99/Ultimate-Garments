@@ -9,7 +9,9 @@ import {
   Box,
   InputAdornment,
 } from "@mui/material";
-import { CheckCircle, Cancel } from "@mui/icons-material";
+
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import Cancel from "@mui/icons-material/Cancel";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Stack } from "@mui/system";

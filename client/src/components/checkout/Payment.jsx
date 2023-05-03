@@ -4,6 +4,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Divider,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,11 +21,13 @@ const Payment = () => {
   };
 
   return (
-    <Box boxShadow={2} p={{ xs: 2, sm: 4 }} bgcolor="white" height="100%">
-      <Typography mb={2} variant="h5">
+    <Box boxShadow={2} p={{ xs: 2, sm: 3 }} bgcolor="white" height="100%">
+      <Typography mb={1} variant="h5">
         Select Payment Method
       </Typography>
+      <Divider />
       <RadioGroup
+        sx={{ mt: 2 }}
         aria-labelledby="demo-controlled-radio-buttons-group"
         name="paymentType"
         value={paymentType}

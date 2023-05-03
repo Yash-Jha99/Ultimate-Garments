@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -8,7 +8,8 @@ import {
   Box,
   InputAdornment,
 } from "@mui/material";
-import { CheckCircle, Cancel } from "@mui/icons-material";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import Cancel from "@mui/icons-material/Cancel";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Stack } from "@mui/system";
@@ -145,7 +146,6 @@ const LoginPage = () => {
 
   const registerPanel = (
     <>
-      {" "}
       <TextField
         error={error.name}
         color="text"
@@ -192,7 +192,7 @@ const LoginPage = () => {
   );
 
   return (
-    <Box>
+    <Stack justifyContent="center" alignItems="center" height="75vh">
       <Box
         width="40%"
         boxShadow={2}
@@ -293,7 +293,7 @@ const LoginPage = () => {
           )}
         </DialogContent>
       </Box>
-    </Box>
+    </Stack>
   );
 };
 
