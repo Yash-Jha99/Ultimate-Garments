@@ -33,6 +33,10 @@ router.post("/login", async (req, res, next) => {
   );
 });
 
+router.post("/logout", async (req, res, next) => {
+  res.status(200).cookie('token', null, { httpOnly: true, maxAge: 0 })
+});
+
 router.post("/validate", (req, res, next) => {
   const { error } = validateOtp(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -47,12 +51,11 @@ router.post("/validate", (req, res, next) => {
         const token = generateAuthToken({
           id,
           mobileNumber,
-          email,
           name,
           isAdmin,
         });
-        return res.status(200).send(token);
-      } else return res.status(200).send(null);
+        return res.status(200).cookie('token', token, { httpOnly: true, maxAge: 604_800_800 }).send(token);
+      } else return res.status(404).json({ message: "User doesn't exists!" })
     }
   );
 });

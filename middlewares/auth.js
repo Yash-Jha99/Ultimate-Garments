@@ -10,18 +10,20 @@ const access = (req, res, next) => {
 };
 
 const user = (req, res, next) => {
-  const token = req.headers.authorization;
+  const { token } = req.cookies;
   if (token)
     try {
       req.user = verifyAuthToken(token);
     } catch (error) {
       console.log(error);
+      res.send(401).json({ message: "Invalid token" })
     }
   return next();
 };
 
 const auth = (req, res, next) => {
-  const token = req.headers.authorization;
+  const { token } = req.cookies;
+  console.log(req.cookies)
   if (token) return next();
   next(createError(401));
 };

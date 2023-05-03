@@ -58,6 +58,7 @@ router.put("/:cartId", auth, (req, res, next) => {
 router.delete("/:cartId", auth, (req, res, next) => {
   const { cartId } = req.params;
 
+
   db.query("delete from cart where id=? ", [cartId], (err, result) => {
     if (err) return next(err);
     else

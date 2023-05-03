@@ -24,8 +24,8 @@ router.post("/", (req, res, next) => {
         (error, result) => {
           if (error) return res.status(500).json({ result: error });
           else {
-            const token = generateAuthToken({ id, mobileNumber, email, name });
-            return res.status(200).send(token);
+            const token = generateAuthToken({ id, mobileNumber, name });
+            return res.status(201).cookie('token', token, { httpOnly: true, maxAge: 604_800_800 }).send(token);;
           }
         }
       );
