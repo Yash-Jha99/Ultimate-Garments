@@ -55,7 +55,7 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
           {categories.map((category) => (
             <SwiperSlide key={category.id}>
               <Link
-                to={`/category/${category.category}/${category.name}`}
+                to={`/products/${category.category}/${category.name}`}
                 style={{ textDecoration: "none", color: "black" }}
               >
                 <Box>

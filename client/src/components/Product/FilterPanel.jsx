@@ -16,29 +16,16 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const FilterPanel = ({ onChange, subcategory, category }) => {
+const FilterPanel = ({ onChange, filterData }) => {
+  const { size, color } = filterData
   const [priceFilters, setPriceFilters] = useState(null);
+  const [sizeFilters, setSizeFilters] = useState([]);
+  const [colorFilters, setColorFilters] = useState([]);
   const [visibleFilterLength, setVisibleFilterLength] = useState({
     size: 6,
     color: 6,
   });
-  const [params, setParams] = useState({
-    category,
-    subcategory,
-  });
-  const { data: sizeFilters, setData: setSizeFilters } = useDataFetch(
-    `product/options/size`,
-    [],
-    null,
-    params
-  );
 
-  const { data: colorFilters, setData: setColorFilters } = useDataFetch(
-    `product/options/color`,
-    [],
-    null,
-    params
-  );
 
   const handleChange = (event) => {
     const { name, checked } = event.target;
@@ -107,11 +94,9 @@ const FilterPanel = ({ onChange, subcategory, category }) => {
   }, [sizeFilters, colorFilters, priceFilters]);
 
   useEffect(() => {
-    setParams({
-      category,
-      subcategory,
-    });
-  }, [category, subcategory]);
+    setColorFilters(color)
+    setSizeFilters(size)
+  }, [size, color]);
 
   return (
     <Box boxShadow={2} bgcolor="white">

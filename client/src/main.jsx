@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react-refresh/only-export-components */
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import "./globals.css";
@@ -7,71 +8,67 @@ import store from "./store/store";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { SnackbarProvider } from "notistack";
+import { createBrowserRouter, redirect } from "react-router-dom";
+import { getCart } from "./store/reducers/cart";
 import App from "./App";
-import { createBrowserRouter, defer, redirect } from "react-router-dom";
 import Home from "./pages/Home";
-import ProductDetails from "./pages/ProductDetails";
 import Cart from "./components/checkout/Cart";
 import WishList from "./components/myaccount/Wishlist";
 import Shipping from "./components/checkout/Shipping";
-import Checkout from "./pages/Checkout";
 import Payment from "./components/checkout/Payment";
-import MyAccount from "./pages/MyAccount";
 import Profile from "./components/myaccount/Profile";
-import LoginPage from "./pages/LoginPage";
-import { getData } from "./services/NodeService";
-import { getCart } from "./store/reducers/cart";
 import Order from "./components/myaccount/Order";
 import OrderDetails from "./components/myaccount/OrderDetails";
-import Error from "./components/general/Error";
-import ProductsPage from "./pages/ProductsPage";
+import Error from "./pages/Error"
+import Loader from "./components/general/Loader";
+import { orderDetailsLoader, ordersLoader, productDetailsLoader, productsLoader } from "./loaders";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderFailedPage from "./pages/OrderFailedPage";
+const ProductsPage = lazy(() => import("./pages/ProductsPage"))
+const ProductDetails = lazy(() => import("./pages/ProductDetails"))
+const Checkout = lazy(() => import("./pages/Checkout"))
+const MyAccount = lazy(() => import("./pages/MyAccount"))
+const LoginPage = lazy(() => import("./pages/LoginPage"))
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    loader: () => {
-      if (store.getState().auth.isLoggedIn) store.dispatch(getCart());
-      return null;
-    },
     errorElement: <Error />,
     children: [
       {
-        path: "",
+        index: true,
         element: <Home />,
       },
       {
-        path: "category/:category/:subcategory",
-        element: <ProductsPage />,
-      },
-      {
-        path: "category/:category",
-        element: <ProductsPage />,
-      },
-      {
-        path: ":productName",
-        element: <ProductDetails />,
-      },
-      {
-        path: "search/:search",
-        element: <ProductsPage />,
-      },
-      {
         path: "login",
-        element: <LoginPage />,
+        element: <Suspense fallback={<Loader fullscreen />}> <LoginPage /></Suspense>,
         loader: () => {
           const { auth } = store.getState();
           if (auth.isLoggedIn) {
             throw window.history.back();
           }
           return null;
-        },
+        }
+      },
+      {
+        path: ":handler",
+        element: <Suspense fallback={<Loader fullscreen />}> <ProductDetails /></Suspense>,
+        loader: productDetailsLoader
+      },
+      {
+        path: "search/:search",
+        element: <Suspense fallback={<Loader fullscreen />}><ProductsPage /> </Suspense>,
+        loader: productsLoader
+      },
+      {
+        path: "products/:category/:subcategory",
+        element: <Suspense fallback={<Loader fullscreen />}> <ProductsPage /></Suspense>,
+        loader: productsLoader
       },
       {
         path: "/myaccount",
-        element: <MyAccount />,
+        element: <Suspense fallback={<Loader fullscreen />}> <MyAccount /></Suspense>,
         loader: ({ request }) => {
           const { auth } = store.getState();
           if (!auth.isLoggedIn) {
@@ -79,7 +76,6 @@ const router = createBrowserRouter([
           }
           return null;
         },
-
         children: [
           {
             path: "/myaccount/profile",
@@ -96,29 +92,20 @@ const router = createBrowserRouter([
           {
             path: "/myaccount/orders",
             element: <Order />,
-            loader: async () => {
-              const data = getData("order");
-              return defer({ data });
-            },
+            loader: ordersLoader
           },
           {
-            path: "/myaccount/orders/success",
-            element: <OrderSuccessPage />,
+            path: "/myaccount/order/success",
+            element: <OrderSuccessPage />
           },
           {
-            path: "/myaccount/orders/failed",
-            element: <OrderFailedPage />,
+            path: "/myaccount/order/failed",
+            element: <OrderFailedPage />
           },
           {
-            path: "/myaccount/orders/:orderId/:orderItemId",
+            path: "/myaccount/order_details",
             element: <OrderDetails />,
-            loader: async ({ params }) => {
-              return defer({
-                data: getData(
-                  "order/" + params.orderId + "/" + params.orderItemId
-                ),
-              });
-            },
+            loader: orderDetailsLoader
           },
         ],
       },
@@ -127,7 +114,7 @@ const router = createBrowserRouter([
 
   {
     path: "/checkout",
-    element: <Checkout />,
+    element: <Suspense fallback={<Loader fullscreen />}> <Checkout /></Suspense>,
     errorElement: <Error />,
     loader: ({ request }) => {
       const { auth } = store.getState();
@@ -157,19 +144,19 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider
-          maxSnack={3}
-          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-          autoHideDuration={3000}
-        >
-          <RouterProvider router={router}>
-            <App />
-          </RouterProvider>
-        </SnackbarProvider>
-      </ThemeProvider>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        autoHideDuration={3000}
+      >
+        <RouterProvider router={router} fallbackElement={<Loader />}>
+          <App />
+        </RouterProvider>
+      </SnackbarProvider>
+    </ThemeProvider>
+  </Provider>
+  // </React.StrictMode>
 );

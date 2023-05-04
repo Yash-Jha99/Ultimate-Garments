@@ -15,15 +15,12 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BoltIcon from "@mui/icons-material/Bolt";
 import { Box, Stack } from "@mui/material";
 import React, { useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLoaderData, useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteData, postData } from "../services/NodeService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/reducers/cart";
-import useDataFetch from "../hooks/useDataFetch";
-import Loader from "../components/general/Loader";
 import { addToCheckout } from "../store/reducers/checkout";
 import { useSnackbar } from "notistack";
-import NotFound from "../components/general/NotFound";
 import DeliveryOptions from "../components/product/DeliveryOptions";
 
 const ProductDetails = () => {
@@ -38,41 +35,7 @@ const ProductDetails = () => {
   const location = useLocation();
   const query = new URLSearchParams(search);
   const { enqueueSnackbar } = useSnackbar();
-
-  const [qty, setQty] = useState(1);
-  const [inValid, setInValid] = useState("");
-  const [selectedSize, setSelectedSize] = useState({});
-  const [selectedColor, setSelectedColor] = useState({});
-  const [wishlisted, setWishlisted] = useState(false);
-  const [newWishlistId, setNewWishlistedId] = useState("");
-  const [isProductInCart, setIsProductInCart] = useState(false);
-
-  const {
-    error,
-    loading,
-    data: product,
-  } = useDataFetch("product/" + productName, {}, (data) => {
-    const selectedColor =
-      data.colors.find((color) => color.handler === productName) ?? {};
-    const selectedSize =
-      data.options.find((size) => size.size === query.get("size")) ?? {};
-    setSelectedSize(selectedSize ?? {});
-    setSelectedColor(selectedColor ?? {});
-    setWishlisted(data.wishlistId !== null);
-    setNewWishlistedId(data.wishlistId);
-    setIsProductInCart(
-      cart.findIndex(
-        (item) =>
-          item.productId === data.id &&
-          item.color === selectedColor.label &&
-          item.size === selectedSize.name
-      ) !== -1
-    );
-  });
-
-  if (loading) return <Loader fullscreen />;
-
-  if (error?.status === 404) return <NotFound message="Product Not Found" />;
+  const { product } = useLoaderData()
 
   const {
     id,
@@ -84,7 +47,21 @@ const ProductDetails = () => {
     offer = "FLAT ₹100 OFF On ₹999 (Code:SHIRT100)",
     options,
     colors,
+    wishlistId
   } = product;
+
+  const [qty, setQty] = useState(1);
+  const [inValid, setInValid] = useState("");
+  const [selectedSize, setSelectedSize] = useState(colors.find((color) => color.handler === productName) ?? {});
+  const [selectedColor, setSelectedColor] = useState(options.find((size) => size.size === query.get("size")) ?? {});
+  const [wishlisted, setWishlisted] = useState(wishlistId !== null);
+  const [newWishlistId, setNewWishlistedId] = useState("");
+  const isProductInCart = cart.findIndex(
+    (item) =>
+      item.productId === id &&
+      item.color === selectedColor.label &&
+      item.size === selectedSize.name
+  ) !== -1
 
   const selectedOption = options.find((opt) => opt.size === selectedSize?.name);
 

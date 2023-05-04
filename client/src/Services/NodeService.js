@@ -43,9 +43,9 @@ export const getData = async (url, params = {}) => {
     const response = await axios.get(url, config);
     return response.data;
   } catch (error) {
-    console.log("[GET] Error: ", error.message);
-    if (error.response) throw error
-    return error.response;
+    if (error?.response) return error.response
+    else console.log("[GET] Error: ", err?.response || err?.message || err)
+      ;
   }
 };
 

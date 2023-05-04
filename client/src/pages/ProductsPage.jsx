@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Product from "../components/product/Product";
 import useDataFetch from "../hooks/useDataFetch";
-import { useParams } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import { Grid, Stack, Box, Drawer, Fab } from "@mui/material";
 import FilterAlt from "@mui/icons-material/FilterAlt";
 import Loader from "../components/general/Loader";
@@ -12,6 +12,7 @@ import { randomBadge } from "../utils/utils";
 
 const ProductsPage = () => {
   const { category, subcategory, search } = useParams();
+  const { products, filters: filterData } = useLoaderData()
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [filters, setFilters] = useState({
@@ -70,11 +71,15 @@ const ProductsPage = () => {
     }));
   }, [category, subcategory]);
 
+  useEffect(() => {
+    setItems(products)
+  }, [products])
+
   if (items.length === 0 && !loading)
     return <NotFound message="No Product Found" />;
 
   return (
-    <>
+    <Box>
       <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} px={{ xs: 0, sm: 2 }}>
         <Stack
           width="20%"
@@ -84,8 +89,7 @@ const ProductsPage = () => {
         >
           <FilterPanel
             onChange={handleFilterChange}
-            subcategory={subcategory}
-            category={category}
+            filterData={filterData}
           />
         </Stack>
         <Box
@@ -108,7 +112,7 @@ const ProductsPage = () => {
               p={1}
             >
               {loading && filters.pageNumber === 1 ? (
-                <Loader fullscreen />
+                <Loader />
               ) : (
                 items.map((product, index) => (
                   <Grid
@@ -147,8 +151,7 @@ const ProductsPage = () => {
           >
             <FilterPanel
               onChange={handleFilterChange}
-              subcategory={subcategory}
-              category={category}
+              filterData={filterData}
             />
           </Box>
         </Drawer>
@@ -166,8 +169,7 @@ const ProductsPage = () => {
       >
         <FilterAlt />
       </Fab>
-    </>
+    </Box>
   );
-};
-
+}
 export default ProductsPage;

@@ -165,7 +165,7 @@ const CategoryDropdown = ({ category, subcategories, index }) => {
                 }}
                 onClick={() => {
                   handleClose();
-                  navigate(`/category/${category}/${subcategory.name}`);
+                  navigate(`/products/${category}/${subcategory.name}`);
                 }}
               >
                 {subcategory.name}
@@ -223,7 +223,7 @@ const Header = (props) => {
           <Link
             style={{ color: "black", textDecoration: "none" }}
             key={category.id}
-            to={`/category/${category.name.replace(/\s+/g, "-")}`}
+            to={`/products/${category.name.replace(/\s+/g, "-")}`}
           >
             <ListItem key={category.id} disablePadding>
               <ListItemButton sx={{ textAlign: "center" }}>

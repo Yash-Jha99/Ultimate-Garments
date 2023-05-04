@@ -7,7 +7,7 @@ const useDataFetch = (
   initial = null,
   cb = null,
   params = {},
-  deps = []
+  deps = [],
 ) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,7 +48,9 @@ const useDataFetch = (
       }
     })();
 
-    return () => abortController.abort();
+    return () => {
+      abortController.abort()
+    };
   }, [...deps]);
 
   return { data, loading, error, setData, hasMore, setHasMore };

@@ -32,7 +32,7 @@ router.get("/:handler", (req, res, next) => {
     [handler],
     (error, result) => {
       if (error) return next(error);
-      else if (!result[0]) return res.status(404).send("Product Not Found");
+      else if (!result[0]) return res.status(200).send(null);
       else product = { ...result[0], ...product };
       db.query(
         "select id,sku, size ,color, price ,stock as quantityInStock from product_options where handler = ?",
@@ -78,9 +78,8 @@ router.get("/", (req, res, next) => {
 
   let sizeFilter, colorFilter;
   const filters = [];
-  let query = `select distinct p.id ,p.name,p.price,p.discount,p.image,p.handler, ${
-    req.user ? "w.id" : null
-  } as wishlistId from products p `;
+  let query = `select distinct p.id ,p.name,p.price,p.discount,p.image,p.handler, ${req.user ? "w.id" : null
+    } as wishlistId from products p `;
 
   if (category)
     query += `join category c on c.id=p.category_id and c.name="${category}"`;

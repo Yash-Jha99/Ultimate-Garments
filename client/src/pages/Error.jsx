@@ -1,7 +1,7 @@
-import { Button, Stack, Typography } from "@mui/material";
 import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom";
-import NotFoundImage from "../../assets/page-not-found.webp";
+import { Button, Stack, Typography } from "@mui/material";
 import ErrorRounded from "@mui/icons-material/ErrorRounded";
+import NotFoundImage from "../assets/page-not-found.webp";
 
 const Error = () => {
   const error = useRouteError();

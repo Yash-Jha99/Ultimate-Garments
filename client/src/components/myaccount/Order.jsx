@@ -22,7 +22,7 @@ const OrderItem = ({
     >
       <NavLink
         style={{ textDecoration: "none", color: "black", display: "block" }}
-        to={`/myaccount/orders/${id}/${orderItemId}`}
+        to={`/myaccount/order_details?order_id=${id}&item_id=${orderItemId}`}
       >
         <Stack direction="row" spacing={2} pb={{ xs: 1, sm: 1 }}>
           <Stack alignItems="center">
