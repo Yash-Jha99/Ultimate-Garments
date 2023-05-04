@@ -28,8 +28,8 @@ if (process.env.NODE_ENV == "production") {
   });
 
   app.use(
-    "/static",
-    express.static(path.join(__dirname, "client", "dist/static"))
+    "/assets",
+    express.static(path.join(__dirname, "client", "dist/assets"))
   );
 
   app.use(
@@ -47,6 +47,7 @@ if (process.env.NODE_ENV == "production") {
   app.get("/*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
   });
+
 }
 
 // error handler
@@ -61,6 +62,7 @@ app.use(function (err, req, res, next) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log("Server started on port ", port));
