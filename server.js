@@ -18,37 +18,38 @@ app.use(express.static(path.join(__dirname, "public")));
 
 useRouter(app);
 
-if (process.env.NODE_ENV == "production") {
-  app.use((req, res, next) => {
-    if (req.header("x-forwarded-proto") !== "https") {
-      res.redirect(`https://${req.header("host")}${req.url}`);
-    } else {
-      next();
-    }
-  });
-
-  app.use(
-    "/assets",
-    express.static(path.join(__dirname, "client", "dist/assets"))
-  );
-
-  app.use(
-    "/manifest.json",
-    express.static(path.join(__dirname, "client", "dist", "manifest.json"))
-  );
-
-  app.use(
-    "/favicon.ico",
-    express.static(path.join(__dirname, "client", "dist", "favicon.ico"))
-  );
-
-  app.use(express.static(path.join(__dirname, "../client/dist")));
-
-  app.get("/*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
-  });
-
+// if (process.env.NODE_ENV == "production") {
+app.use((req, res, next) => {
+  if (req.header("x-forwarded-proto") !== "https") {
+    res.redirect(`https://${req.header("host")}${req.url}`);
+  } else {
+    next();
+  }
+});
 }
+
+app.use(
+  "/assets",
+  express.static(path.join(__dirname, "client", "dist/assets"))
+);
+
+app.use(
+  "/manifest.json",
+  express.static(path.join(__dirname, "client", "dist", "manifest.json"))
+);
+
+app.use(
+  "/favicon.ico",
+  express.static(path.join(__dirname, "client", "dist", "favicon.ico"))
+);
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
+});
+
+
 
 // error handler
 app.use(function (err, req, res, next) {

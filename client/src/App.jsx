@@ -1,11 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { Suspense, lazy, useEffect, useMemo } from "react";
+import React, { Suspense, lazy, useMemo } from "react";
 import { RouterProvider } from "react-router-dom";
 import "./globals.css";
 import { useSelector } from "react-redux";
 import store from "./store/store";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import theme from "./theme";
 import { SnackbarProvider } from "notistack";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getCart } from "./store/reducers/cart";
@@ -23,7 +22,7 @@ import Loader from "./components/general/Loader";
 import { orderDetailsLoader, ordersLoader, productDetailsLoader, productsLoader } from "./loaders";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderFailedPage from "./pages/OrderFailedPage";
-import { CssBaseline, useMediaQuery } from "@mui/material";
+import { Box, CssBaseline, useMediaQuery } from "@mui/material";
 import useInitializeStore from "./hooks/useInitializeStore";
 const ProductsPage = lazy(() => import("./pages/ProductsPage"))
 const ProductDetails = lazy(() => import("./pages/ProductDetails"))
@@ -204,9 +203,11 @@ const App = () => {
                 anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                 autoHideDuration={3000}
             >
-                <RouterProvider router={router} fallbackElement={<Loader />} />
+                <Box bgcolor={darkMode ? "#161616" : "#f1f3f6"}>
+                    <RouterProvider router={router} fallbackElement={<Loader />} />
+                </Box>
             </SnackbarProvider>
-        </ThemeProvider>
+        </ThemeProvider >
     )
 }
 
