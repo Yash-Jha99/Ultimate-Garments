@@ -1,14 +1,15 @@
-import { Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useLocation } from "react-router-dom";
 
 const PriceDetails = ({ itemsCount, totalDiscount, totalAmount }) => {
   const location = useLocation();
   return (
-    <Stack spacing={{ xs: 1, sm: 2 }}>
-      <Typography variant="h6" borderBottom="1px solid lightgray" pb={1}>
+    <Stack spacing={{ xs: 1, sm: 1.5 }}>
+      <Typography variant="h6" >
         PRICE DETAILS ({itemsCount} items)
       </Typography>
+      <Divider />
       {location.pathname === "/checkout/payment" ? (
         <Stack spacing={2} direction="row" justifyContent="space-between">
           <Typography variant="body2">Total Price</Typography>
@@ -16,7 +17,7 @@ const PriceDetails = ({ itemsCount, totalDiscount, totalAmount }) => {
         </Stack>
       ) : (
         <>
-          <Stack spacing={2} direction="row" justifyContent="space-between">
+          <Stack spacing={1} direction="row" justifyContent="space-between">
             <Typography variant="body2">Total MRP (Inc. of Taxes)</Typography>
             <Typography variant="body2">
               ₹{totalAmount + totalDiscount}
@@ -32,12 +33,11 @@ const PriceDetails = ({ itemsCount, totalDiscount, totalAmount }) => {
         <Typography variant="body2">Shipping</Typography>
         <Typography variant="body2">Free</Typography>
       </Stack>
+      <Divider />
       <Stack
-        spacing={2}
+        spacing={1}
         direction="row"
-        borderTop="1px solid lightgray"
         justifyContent="space-between"
-        pt={1}
       >
         <Typography fontWeight={500} variant="body1">
           {location.pathname === "/checkout/payment"
@@ -50,7 +50,6 @@ const PriceDetails = ({ itemsCount, totalDiscount, totalAmount }) => {
       </Stack>
       <Typography
         variant="body1"
-        color="white"
         bgcolor="success.light"
         p={0.5}
         textAlign="center"

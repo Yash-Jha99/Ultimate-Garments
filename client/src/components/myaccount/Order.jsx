@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { useLoaderData, NavLink, Await } from "react-router-dom";
-import { Typography, Box, Stack, Divider } from "@mui/material";
+import { Typography, Box, Stack, Divider, Paper } from "@mui/material";
 import Loader from "../general/Loader";
 import NotFound from "../general/NotFound";
 
@@ -14,14 +14,11 @@ const OrderItem = ({
   status,
 }) => {
   return (
-    <Box
-      sx={{ ":hover": { boxShadow: 4 } }}
-      bgcolor="white"
-      padding={{ xs: 1, sm: 2 }}
-      boxShadow={2}
+    <Paper
+      sx={{ p: { xs: 1, sm: 2 }, ":hover": { boxShadow: 4 } }}
     >
       <NavLink
-        style={{ textDecoration: "none", color: "black", display: "block" }}
+        style={{ textDecoration: "none", color: "inherit", display: "block" }}
         to={`/myaccount/order_details?order_id=${id}&item_id=${orderItemId}`}
       >
         <Stack direction="row" spacing={2} pb={{ xs: 1, sm: 1 }}>
@@ -44,7 +41,7 @@ const OrderItem = ({
           </Stack>
           <Stack width="100%" overflow="hidden" textOverflow="ellipsis">
             <Typography variant="body1">{name}</Typography>
-            <Typography mb={2} fontWeight="bold" variant="h6" color="black">
+            <Typography mb={2} fontWeight="bold" variant="h6">
               ₹ {price}
             </Typography>
             {status === "FAILED" ? (
@@ -59,7 +56,7 @@ const OrderItem = ({
           </Stack>
         </Stack>
       </NavLink>
-    </Box>
+    </Paper>
   );
 };
 
@@ -71,9 +68,9 @@ const Order = () => {
       <Await resolve={data}>
         {(orders) => (
           <Stack spacing={{ xs: 1, sm: 1.5 }}>
-            <Box bgcolor="white" p={2} boxShadow={2}>
+            <Paper sx={{ p: 2 }}>
               <Typography variant="h5" >My Orders</Typography>
-            </Box>
+            </Paper>
             {orders.length === 0 && (
               <NotFound message="You have not placed any order yet" />
             )}

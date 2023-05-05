@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Radio,
   Divider,
+  Paper,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +22,7 @@ const Payment = () => {
   };
 
   return (
-    <Box boxShadow={2} p={{ xs: 2, sm: 3 }} bgcolor="white" height="100%">
+    <Paper sx={{ p: { xs: 2, sm: 3 } }}>
       <Typography mb={1} variant="h5">
         Select Payment Method
       </Typography>
@@ -45,7 +46,7 @@ const Payment = () => {
           label="Card"
         />
       </RadioGroup>
-    </Box>
+    </Paper>
   );
 };
 

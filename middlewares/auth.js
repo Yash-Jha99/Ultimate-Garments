@@ -23,7 +23,6 @@ const user = (req, res, next) => {
 
 const auth = (req, res, next) => {
   const { token } = req.cookies;
-  console.log(req.cookies)
   if (token) return next();
   next(createError(401));
 };

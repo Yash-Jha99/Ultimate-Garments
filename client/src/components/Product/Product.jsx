@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton, Card } from "@mui/material";
 import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { useSelector } from "react-redux";
@@ -57,16 +57,15 @@ const Product = ({
 
   return (
     <Link to={`/${handler}`} style={{ textDecoration: "none" }}>
-      <Box
+      <Card
+        elevation={0}
         sx={{
           position: "relative",
-          ":hover": { boxShadow: 4 },
-          color: "black",
+          ":hover": { boxShadow: 4, transform: "scale(1.02)", transition: "transform 0.1s cubic-bezier(0.4, 0, 0.2, 1)" },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-end",
-          bgcolor: "white",
           height: "100%",
         }}
       >
@@ -103,10 +102,10 @@ const Product = ({
           {wishlisted ? (
             <Favorite color="primary" />
           ) : (
-            <FavoriteBorder color="action" />
+            <FavoriteBorder color="primary" />
           )}
         </IconButton>
-        <Box height={{ xs: 200, md: 340 }} mb={2}>
+        <Box height={{ xs: 270, md: 340 }} mb={2}>
           <img
             src={FallbackImage}
             style={{
@@ -129,7 +128,7 @@ const Product = ({
           textAlign="center"
         >
           <Typography
-            mt={1}
+            mt={{ xs: 0, sm: 1 }}
             fontWeight="bold"
             variant="caption"
             color="text.light"
@@ -158,7 +157,7 @@ const Product = ({
             ({discount}% off)
           </Typography>
         </Box>
-      </Box>
+      </Card>
     </Link>
   );
 };

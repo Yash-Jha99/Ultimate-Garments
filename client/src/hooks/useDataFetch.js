@@ -53,7 +53,7 @@ const useDataFetch = (
     };
   }, [...deps]);
 
-  return { data, loading, error, setData, hasMore, setHasMore };
+  return { data, loading, setLoading, error, setData, hasMore, setHasMore };
 };
 
 export default useDataFetch;

@@ -174,7 +174,6 @@ const WishlistProduct = ({
   return (
     <Box
       sx={{
-        color: "black",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -185,7 +184,7 @@ const WishlistProduct = ({
     >
       <Link
         to={`/${handler}`}
-        style={{ textDecoration: "none", color: "black" }}
+        style={{ textDecoration: "none", color: "inherit" }}
       >
         <Box
           width={{ xs: 130, sm: 200 }}

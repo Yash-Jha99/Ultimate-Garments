@@ -1,67 +1,74 @@
-import { createBrowserRouter, defer, redirect } from "react-router-dom";
-import Home from "./pages/Home";
-import ProductDetails from "./pages/ProductDetails";
+/* eslint-disable react-refresh/only-export-components */
+import React, { Suspense, lazy, useMemo } from "react";
+import { RouterProvider } from "react-router-dom";
+import "./globals.css";
+import { useSelector } from "react-redux";
 import store from "./store/store";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import theme from "./theme";
+import { SnackbarProvider } from "notistack";
+import { createBrowserRouter, redirect } from "react-router-dom";
+import { getCart } from "./store/reducers/cart";
+import Home from "./pages/Home";
 import Cart from "./components/checkout/Cart";
 import WishList from "./components/myaccount/Wishlist";
 import Shipping from "./components/checkout/Shipping";
 import Payment from "./components/checkout/Payment";
 import Profile from "./components/myaccount/Profile";
-import LoginPage from "./pages/LoginPage";
-import { getData } from "./services/NodeService";
-import { getCart } from "./store/reducers/cart";
 import Order from "./components/myaccount/Order";
 import OrderDetails from "./components/myaccount/OrderDetails";
-const App = await import("./App")
-const Checkout = await import("./pages/Checkout")
-const ProductsPage = React.lazy(() => import("./pages/ProductsPage"))
-const ProductDetails = await import("./pages/ProductDetails")
-const MyAccount = await import("./pages/MyAccount")
-const Error = await import("./pages/Error")
-const LoginPage = await import("./pages/LoginPage")
-const OrderSuccessPage = await import("./pages/OrderSuccessPage")
-const OrderFailedPage = await import("./pages/OrderFailedPage")
+import Layout from "./Layout"
+import Error from "./pages/Error"
+import Loader from "./components/general/Loader";
+import { orderDetailsLoader, ordersLoader, productDetailsLoader, productsLoader } from "./loaders";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import OrderFailedPage from "./pages/OrderFailedPage";
+import routerObject from "./router";
+const ProductsPage = lazy(() => import("./pages/ProductsPage"))
+const ProductDetails = lazy(() => import("./pages/ProductDetails"))
+const Checkout = lazy(() => import("./pages/Checkout"))
+const MyAccount = lazy(() => import("./pages/MyAccount"))
+const LoginPage = lazy(() => import("./pages/LoginPage"))
 
-export default createBrowserRouter([
+export default [
   {
     path: "/",
-    element: <App />,
-    loader: ({ request }) => {
-      if (store.getState().auth.isLoggedIn) store.dispatch(getCart());
-      return null;
-    },
+    element: <Layout />,
     errorElement: <Error />,
     children: [
       {
-        path: "",
+        index: true,
         element: <Home />,
       },
       {
-        path: "category/:category/:subcategory",
-        element: <ProductsPage />,
-      },
-      {
-        path: ":productName",
-        element: <ProductDetails />,
-      },
-      {
-        path: "search/:search",
-        element: <ProductsPage />,
-      },
-      {
         path: "login",
-        element: <LoginPage />,
+        element: <Suspense fallback={<Loader fullscreen />}> <LoginPage /></Suspense>,
         loader: () => {
           const { auth } = store.getState();
           if (auth.isLoggedIn) {
             throw window.history.back();
           }
           return null;
-        },
+        }
+      },
+      {
+        path: ":handler",
+        element: <Suspense fallback={<Loader fullscreen />}> <ProductDetails /></Suspense>,
+        loader: productDetailsLoader
+      },
+      {
+        path: "search/:search",
+        element: <Suspense fallback={<Loader fullscreen />}><ProductsPage /> </Suspense>,
+        loader: productsLoader
+      },
+      {
+        path: "products/:category/:subcategory",
+        element: <Suspense fallback={<Loader fullscreen />}> <ProductsPage /></Suspense>,
+        loader: productsLoader
       },
       {
         path: "/myaccount",
-        element: <MyAccount />,
+        element: <Suspense fallback={<Loader fullscreen />}> <MyAccount /></Suspense>,
         loader: ({ request }) => {
           const { auth } = store.getState();
           if (!auth.isLoggedIn) {
@@ -69,7 +76,6 @@ export default createBrowserRouter([
           }
           return null;
         },
-
         children: [
           {
             path: "/myaccount/profile",
@@ -86,29 +92,20 @@ export default createBrowserRouter([
           {
             path: "/myaccount/orders",
             element: <Order />,
-            loader: async () => {
-              const data = getData("order");
-              return defer({ data });
-            },
+            loader: ordersLoader
           },
           {
-            path: "/myaccount/orders/success",
-            element: <OrderSuccessPage />,
+            path: "/myaccount/order/success",
+            element: <OrderSuccessPage />
           },
           {
-            path: "/myaccount/orders/failed",
-            element: <OrderFailedPage />,
+            path: "/myaccount/order/failed",
+            element: <OrderFailedPage />
           },
           {
-            path: "/myaccount/orders/:orderId/:orderItemId",
+            path: "/myaccount/order_details",
             element: <OrderDetails />,
-            loader: async ({ params }) => {
-              return defer({
-                data: getData(
-                  "order/" + params.orderId + "/" + params.orderItemId
-                ),
-              });
-            },
+            loader: orderDetailsLoader
           },
         ],
       },
@@ -117,7 +114,7 @@ export default createBrowserRouter([
 
   {
     path: "/checkout",
-    element: <Checkout />,
+    element: <Suspense fallback={<Loader fullscreen />}> <Checkout /></Suspense>,
     errorElement: <Error />,
     loader: ({ request }) => {
       const { auth } = store.getState();
@@ -142,16 +139,4 @@ export default createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/admin",
-  //   element: <Admin />,
-  //   errorElement: <Error />,
-  //   loader: () => {
-  //     const { isAdmin } = store.getState().auth.user;
-  //     if (!isAdmin) {
-  //       return redirect("/ ");
-  //     }
-  //     return null;
-  //   },
-  // },
-]);
+]

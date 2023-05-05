@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../general/Loader";
@@ -20,7 +20,7 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
 
 
   return (
-    <Box position="relative" bgcolor="white" p={1} boxShadow={2}>
+    <Paper sx={{ p: 1 }} elevation={2}>
       <Typography
         px={2}
         py={1}
@@ -97,7 +97,7 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
           ))}
         </Swiper>
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

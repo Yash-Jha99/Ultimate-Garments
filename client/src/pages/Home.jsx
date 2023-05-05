@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <>
       <Banner images={images} />
-      <Stack px={{ xs: 1, sm: 4.5 }} spacing={2}>
+      <Stack px={{ xs: 1, sm: 4.5 }} spacing={1}>
         <ProductRow title="Men" category="men" />
         <ProductRow title="Women" category="women" />
         <CategoryRow

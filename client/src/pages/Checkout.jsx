@@ -9,6 +9,7 @@ import {
   StepLabel,
   Toolbar,
   AppBar,
+  Paper,
 } from "@mui/material";
 import { Box, Stack } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
@@ -170,8 +171,8 @@ const Checkout = () => {
   return (
     <Box>
       <ScrollRestoration />
-      <Box position="sticky" top={0} zIndex={100}>
-        <Box mx={8} height="62px" bgcolor="white">
+      <Box position="sticky" top={0} zIndex={100} height="62px">
+        <Paper sx={{ mx: 8 }} >
           <AppBar component="nav" color="inherit">
             <Toolbar
               sx={{
@@ -208,7 +209,7 @@ const Checkout = () => {
               </Stack>
             </Toolbar>
           </AppBar>
-        </Box>
+        </Paper>
       </Box>
 
       {!cartLoading && checkoutItems.length === 0 && cart.length === 0 && (
@@ -253,121 +254,119 @@ const Checkout = () => {
             <Stack mb={{ xs: 0, sm: 2 }} width={{ xs: "100%", sm: "70%" }}>
               <Outlet />
             </Stack>
-
-            <Stack
-              spacing={{ xs: 1, sm: 2 }}
-              width={{ xs: "95%", sm: "30%" }}
-              boxShadow={2}
-              p={{ xs: 1, sm: 3 }}
-              bgcolor="white"
-              position={{ xs: "static", sm: "sticky" }}
-              top={75}
-            >
-              {location.pathname === "/checkout/payment" && (
-                <Box
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                  border="1px solid lightgray"
-                  padding={2}
-                >
-                  <Stack
-                    mb={1}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    direction="row"
+            <Paper sx={{ width: { xs: "100%", sm: "30%" } }}>
+              <Stack
+                spacing={{ xs: 1, sm: 2 }}
+                p={{ xs: 1, sm: 3 }}
+                position={{ xs: "static", sm: "sticky" }}
+                top={75}
+              >
+                {location.pathname === "/checkout/payment" && (
+                  <Box
+                    sx={{
+                      cursor: "pointer",
+                    }}
+                    border="1px solid lightgray"
+                    padding={2}
                   >
-                    <Typography variant="body1">Deliver To:</Typography>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      size="small"
-                      onClick={() => navigate("/checkout/shipping")}
+                    <Stack
+                      mb={1}
+                      justifyContent="space-between"
+                      alignItems="center"
+                      direction="row"
                     >
-                      Change
-                    </Button>
-                  </Stack>
-                  <Typography fontWeight={500} variant="subtitle1" mb={1}>
-                    {deliveryAddress.firstName} {deliveryAddress.lastName}{" "}
-                    {"(" + deliveryAddress.pinCode + ")"}
-                  </Typography>
-                  <Typography variant="body2">
-                    {deliveryAddress.address}, {deliveryAddress.town},{" "}
-                    {deliveryAddress.city}, {deliveryAddress.state}{" "}
-                  </Typography>
-                  <Typography variant="subtitle2">
-                    {deliveryAddress.mobileNumber}
-                  </Typography>
+                      <Typography variant="body1">Deliver To:</Typography>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        size="small"
+                        onClick={() => navigate("/checkout/shipping")}
+                      >
+                        Change
+                      </Button>
+                    </Stack>
+                    <Typography fontWeight={500} variant="subtitle1" mb={1}>
+                      {deliveryAddress.firstName} {deliveryAddress.lastName}{" "}
+                      {"(" + deliveryAddress.pinCode + ")"}
+                    </Typography>
+                    <Typography variant="body2">
+                      {deliveryAddress.address}, {deliveryAddress.town},{" "}
+                      {deliveryAddress.city}, {deliveryAddress.state}{" "}
+                    </Typography>
+                    <Typography variant="subtitle2">
+                      {deliveryAddress.mobileNumber}
+                    </Typography>
+                  </Box>
+                )}
+                <Box ref={priceDetailsRef}>
+                  <PriceDetails
+                    itemsCount={checkoutItems.length}
+                    totalDiscount={totalDiscount}
+                    totalAmount={totalAmount}
+                  />
                 </Box>
-              )}
-              <Box ref={priceDetailsRef}>
-                <PriceDetails
-                  itemsCount={checkoutItems.length}
-                  totalDiscount={totalDiscount}
-                  totalAmount={totalAmount}
-                />
-              </Box>
+                <Button
+                  sx={{
+                    p: 1,
+                    fontSize: 20,
+                    display: { xs: "none", sm: "initial" },
+                  }}
+                  variant="contained"
+                  color="secondary"
+                  fullWidth
+                  size="large"
+                  onClick={handleCheckout}
+                >
+                  CHECKOUT SECURELY
+                </Button>
+              </Stack>
+            </Paper>
+          </Stack>
+          <Paper sx={{ position: "fixed", width: "100vw", bottom: 0, display: { xs: "flex", sm: "none" } }} elevation={4}>
+            <Stack
+              zIndex={20}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              px={2}
+              pt={1}
+              pb={2}
+              width="100%"
+              position="sticky"
+              bottom={0}
+            >
+              <Stack justifyContent="center">
+                <Typography lineHeight={1} fontWeight={500} fontSize={18}>
+                  ₹{totalAmount}
+                </Typography>
+                <Button
+                  sx={{
+                    p: 0,
+                    fontWeight: 400,
+                    fontSize: 13,
+                    textTransform: "initial",
+                  }}
+                  color="secondary"
+                  onClick={() =>
+                    priceDetailsRef?.current.scrollIntoView({
+                      behaviour: "smooth",
+                      block: "start",
+                    })
+                  }
+                >
+                  View price details
+                </Button>
+              </Stack>
               <Button
-                sx={{
-                  p: 1,
-                  fontSize: 20,
-                  display: { xs: "none", sm: "initial" },
-                }}
                 variant="contained"
                 color="secondary"
-                fullWidth
                 size="large"
                 onClick={handleCheckout}
               >
                 CHECKOUT SECURELY
               </Button>
             </Stack>
-          </Stack>
-
-          <Stack
-            bgcolor="white"
-            boxShadow={4}
-            zIndex={20}
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            px={3}
-            py={1}
-            display={{ xs: "flex", sm: "none" }}
-            position="sticky"
-            bottom={0}
-          >
-            <Stack justifyContent="center">
-              <Typography lineHeight={1} fontWeight={500} fontSize={18}>
-                ₹{totalAmount}
-              </Typography>
-              <Button
-                sx={{
-                  p: 0,
-                  fontWeight: 400,
-                  fontSize: 13,
-                  textTransform: "initial",
-                }}
-                color="secondary"
-                onClick={() =>
-                  priceDetailsRef?.current.scrollIntoView({
-                    behaviour: "smooth",
-                    block: "start",
-                  })
-                }
-              >
-                View price details
-              </Button>
-            </Stack>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              onClick={handleCheckout}
-            >
-              CHECKOUT SECURELY
-            </Button>
-          </Stack>
+          </Paper>
         </>
       )}
     </Box>

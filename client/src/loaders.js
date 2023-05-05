@@ -2,9 +2,10 @@ import { defer } from "react-router-dom"
 import { getData } from "./services/NodeService"
 
 export const productsLoader = async ({ params }) => {
-    const products = await getData('product', { ...params, pageSize: 12 })
-    const size = await getData('product/options/size', { ...params, pageSize: 12 })
-    const color = await getData('product/options/color', { ...params, pageSize: 12 })
+    console.log(params)
+    const urls = ['product', 'product/options/size', 'product/options/color']
+    const [products, size, color] = await Promise.all(urls.map(url => getData(url, { ...params, pageSize: 12 })))
+    console.log(products, color, size)
     return { products, filters: { size, color } }
 }
 

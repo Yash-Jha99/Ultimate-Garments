@@ -1,7 +1,7 @@
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import WishlistProduct from "../product/WishlistProduct";
-import { Divider, Grid, Typography } from "@mui/material";
+import { Divider, Grid, Paper, Typography } from "@mui/material";
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../general/Loader";
 import NotFound from "../general/NotFound";
@@ -19,7 +19,7 @@ const Wishlist = () => {
   if (loading) return <Loader />;
 
   return (
-    <Box boxShadow={2} p={2} bgcolor="white" minHeight="81vh">
+    <Paper sx={{ p: 2, minHeight: "81vh" }} elevation={2}>
       <Typography variant="h5" mb={1}>My Wishlist</Typography>
       <Divider />
       {loading && <Loader />}
@@ -43,7 +43,7 @@ const Wishlist = () => {
             </Grid>
           ))}
       </Grid>
-    </Box>
+    </Paper>
   );
 };
 

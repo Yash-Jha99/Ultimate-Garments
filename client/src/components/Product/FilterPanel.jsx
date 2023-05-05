@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import useDataFetch from "../../hooks/useDataFetch";
 import {
   Stack,
   Typography,
@@ -13,6 +12,8 @@ import {
   Box,
   AccordionActions,
   Button,
+  Paper,
+  Divider,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -26,6 +27,20 @@ const FilterPanel = ({ onChange, filterData }) => {
     color: 6,
   });
 
+  const filters = {
+    color:
+      colorFilters
+        .filter((color) => color.active)
+        .map((color) => color.color)
+        .join("+") || null,
+    size:
+      sizeFilters
+        .filter((size) => size.active)
+        .map((size) => size.size)
+        .join("+") || null,
+    price: priceFilters,
+  };
+
 
   const handleChange = (event) => {
     const { name, checked } = event.target;
@@ -34,6 +49,7 @@ const FilterPanel = ({ onChange, filterData }) => {
         size.size === name ? { ...size, active: checked } : size
       )
     );
+    onChange(filters);
   };
 
   const handleColorChange = (event) => {
@@ -43,10 +59,12 @@ const FilterPanel = ({ onChange, filterData }) => {
         color.color === name ? { ...color, active: checked } : color
       )
     );
+    onChange(filters);
   };
 
   const handlePriceChange = (event) => {
     setPriceFilters(event.target.value);
+    onChange(filters);
   };
 
   const handleSeeMore = (option) => {
@@ -75,23 +93,6 @@ const FilterPanel = ({ onChange, filterData }) => {
     setPriceFilters(null);
   };
 
-  useEffect(() => {
-    const filters = {
-      color:
-        colorFilters
-          .filter((color) => color.active)
-          .map((color) => color.color)
-          .join("+") || null,
-      size:
-        sizeFilters
-          .filter((size) => size.active)
-          .map((size) => size.size)
-          .join("+") || null,
-      price: priceFilters,
-    };
-
-    onChange(filters);
-  }, [sizeFilters, colorFilters, priceFilters]);
 
   useEffect(() => {
     setColorFilters(color)
@@ -99,18 +100,18 @@ const FilterPanel = ({ onChange, filterData }) => {
   }, [size, color]);
 
   return (
-    <Box boxShadow={2} bgcolor="white">
+    <Paper elevation={2}>
       <Stack
         p={2}
         direction="row"
         justifyContent="space-between"
-        borderBottom="1px solid lightgray"
       >
         <Typography variant="h6">FILTER</Typography>
         <Button size="small" color="secondary" onClick={handleClearFilters}>
           Clear filters
         </Button>
       </Stack>
+      <Divider />
       <Accordion defaultExpanded disableGutters elevation={0}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -223,7 +224,7 @@ const FilterPanel = ({ onChange, filterData }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </Paper>
   );
 };
 

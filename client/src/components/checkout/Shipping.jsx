@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Typography, Box, Divider, Stack } from "@mui/material";
+import { Button, Typography, Box, Divider, Stack, Paper } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setDeliveryAddress } from "../../store/reducers/checkout";
 import {
@@ -200,7 +200,7 @@ const Shipping = () => {
   if (loading) return <Loader />;
 
   return (
-    <Box boxShadow={2} p={{ xs: 2, sm: 2 }} bgcolor="white">
+    <Paper sx={{ p: 2 }} elevation={2}>
       {(showForm || address.length === 0) && (
         <AddressForm
           formDetails={formDetails}
@@ -238,7 +238,7 @@ const Shipping = () => {
             <Button
               sx={{ mt: 2 }}
               variant="contained"
-              color="inherit"
+              color="secondary"
               onClick={() => {
                 setShowForm(true);
                 resetForm();
@@ -249,7 +249,7 @@ const Shipping = () => {
           </>
         )}
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

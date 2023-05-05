@@ -11,7 +11,7 @@ export const postData = async (url, body, isFile = false) => {
     const response = await axios.post(url, body, headers);
     return response;
   } catch (error) {
-    console.log("[POST] Error: ", error?.response?.data);
+    console.log("[POST  Error]: ", error?.response?.data);
     return error.response;
   }
 };
@@ -27,7 +27,7 @@ export const updateData = async (url, body, isFile = false) => {
     const response = await axios.put(url, body, headers);
     return response;
   } catch (error) {
-    console.log("[PUT] Error: ", error.response.data);
+    console.log("[PUT Error]: ", error.response.data);
     return error.response;
   }
 };
@@ -44,7 +44,7 @@ export const getData = async (url, params = {}) => {
     return response.data;
   } catch (error) {
     if (error?.response) return error.response
-    else console.log("[GET] Error: ", err?.response || err?.message || err)
+    else console.log("[GET Error]:", err?.response || err?.message || err)
       ;
   }
 };
@@ -60,7 +60,7 @@ export const deleteData = async (url) => {
     const response = await axios.delete(url, headers);
     return response;
   } catch (error) {
-    console.log("[Delete] Error: ", error.response.data);
+    console.log("[DELETE Error]:", error.response.data);
     return error.response;
   }
 };

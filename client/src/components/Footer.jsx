@@ -4,33 +4,30 @@ import Instagram from "@mui/icons-material/Instagram";
 import Pinterest from "@mui/icons-material/Pinterest";
 import YouTube from "@mui/icons-material/YouTube";
 import LinkedIn from "@mui/icons-material/LinkedIn";
-import { Box, Stack, Typography } from "@mui/material";
+import { Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 
 const Footer = () => {
   return (
-    <Box
-      // width="100%"
-      bgcolor="white"
-      color="#434343"
-      boxShadow={2}
-      p={{ xs: 1, sm: "32px 0 16px 0" }}
+    <Paper
+      sx={{ p: { xs: 1, sm: "32px 0 16px 0" } }}
     >
       <Stack
-        justifyContent={{ xs: "center", sm: "center" }}
+        justifyContent="center"
         direction={{ xs: "column", sm: "row" }}
         spacing={{ xs: 2, sm: 14 }}
+        color="text.secondary"
       >
-        <Stack spacing={1}>
-          <Typography color="#434343" fontWeight="medium" variant="h5" mb={2}>
+        <Stack spacing={1} alignItems={{ xs: "center", sm: "start" }}>
+          <Typography fontWeight="medium" variant="h5" mb={2}>
             LOCATION
           </Typography>
           <Typography variant="subtitle2">
             support@ultimate-garments.in
           </Typography>
         </Stack>
-        <Stack spacing={1}>
-          <Typography color="#434343" fontWeight="medium" variant="h5" mb={2}>
+        <Stack spacing={1} alignItems={{ xs: "center", sm: "start" }}>
+          <Typography fontWeight="medium" variant="h5" mb={2}>
             COMPANY
           </Typography>
           <Typography variant="body2">About Us</Typography>
@@ -38,8 +35,8 @@ const Footer = () => {
           <Typography variant="body2">Privacy Policy</Typography>
           <Typography variant="body2">Shipping Policy</Typography>
         </Stack>
-        <Stack spacing={1}>
-          <Typography color="#434343" fontWeight="medium" variant="h5" mb={2}>
+        <Stack spacing={1} alignItems={{ xs: "center", sm: "start" }}>
+          <Typography fontWeight="medium" variant="h5" mb={2}>
             NEED HELP
           </Typography>
           <Typography variant="body2">Contact Us</Typography>
@@ -49,11 +46,11 @@ const Footer = () => {
           <Typography variant="body2">FAQ's</Typography>
           <Typography variant="body2">Track Order</Typography>
         </Stack>
-        <Stack spacing={1}>
+        <Stack spacing={1} alignItems={{ xs: "center", sm: "start" }}>
           <Typography fontWeight="medium" variant="h5" mb={2}>
             LETS BE FRIENDS
           </Typography>
-          <Stack spacing={1} direction="row" color="#434343">
+          <Stack spacing={1} direction="row" >
             <Facebook />
             <Twitter />
             <Pinterest />
@@ -63,10 +60,10 @@ const Footer = () => {
           </Stack>
         </Stack>
       </Stack>
-      <Typography fontWeight={500} color="black" textAlign="center" mt={4}>
+      <Typography fontWeight={500} textAlign="center" mt={4}>
         &copy; 2023 Ultimate Garments
       </Typography>
-    </Box>
+    </Paper>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Divider, Grid, Paper, Typography } from "@mui/material";
 import {
   Box,
   Stack,
@@ -44,17 +44,13 @@ const CartItem = ({
   const outOfStock = quantityInStock === 0;
 
   return (
-    <Box
-      sx={{ ":hover": { boxShadow: 2 } }}
-      p={2}
-      bgcolor="white"
-      boxShadow={2}
+    <Paper
+      sx={{ ":hover": { boxShadow: 2 }, p: 2 }}
     >
       <Stack
         direction="row"
         spacing={2}
         pb={{ xs: 1, sm: 1 }}
-        borderBottom="1px solid lightgray"
       >
         <Stack alignItems="center">
           <NavLink
@@ -112,15 +108,14 @@ const CartItem = ({
         </Stack>
         <Stack width="100%" overflow="hidden" textOverflow="ellipsis">
           <Typography variant="body2">{name}</Typography>
-
           <Stack direction="row" spacing={{ xs: 1, sm: 2 }} alignItems="center">
-            <Typography fontWeight="bold" variant="h6" color="black">
+            <Typography fontWeight="bold" variant="h6">
               ₹ {price}
             </Typography>
             <Typography
               sx={{ textDecoration: "line-through" }}
               variant="subtitle1"
-              color="gray"
+              color="text.secondary"
             >
               ₹ {Math.ceil(price * (1 + discount / 100))}
             </Typography>
@@ -154,6 +149,7 @@ const CartItem = ({
           )}
         </Stack>
       </Stack>
+      <Divider />
       <Stack
         direction="row"
         justifyContent="space-around"
@@ -163,8 +159,8 @@ const CartItem = ({
         <Button
           sx={{
             textTransform: "none",
-            color: "gray",
-            ":hover": { bgcolor: "white" },
+            color: "text.secondary",
+            ":hover": { bgcolor: "inherit" },
           }}
           disableRipple
           onClick={() => {
@@ -177,15 +173,15 @@ const CartItem = ({
           disableRipple
           sx={{
             textTransform: "none",
-            color: "gray",
-            ":hover": { bgcolor: "white" },
+            color: "text.secondary",
+            ":hover": { bgcolor: "inherit" },
           }}
           onClick={handleMoveToWishlist}
         >
           Move to wishlist
         </Button>
       </Stack>
-    </Box>
+    </Paper>
   );
 };
 

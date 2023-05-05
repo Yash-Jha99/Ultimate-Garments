@@ -1,20 +1,20 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Product from "../components/product/Product";
-import useDataFetch from "../hooks/useDataFetch";
 import { useLoaderData, useParams } from "react-router-dom";
-import { Grid, Stack, Box, Drawer, Fab } from "@mui/material";
+import { Grid, Stack, Box, Drawer, Fab, Paper } from "@mui/material";
 import FilterAlt from "@mui/icons-material/FilterAlt";
 import Loader from "../components/general/Loader";
 import FilterPanel from "../components/product/FilterPanel";
 import NotFound from "../components/general/NotFound";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { randomBadge } from "../utils/utils";
+import { getData } from "../services/NodeService";
 
 const ProductsPage = () => {
   const { category, subcategory, search } = useParams();
-  const { products, filters: filterData } = useLoaderData()
+  const { products, filters: filtersData } = useLoaderData()
   const [items, setItems] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
   const [filters, setFilters] = useState({
     search,
     category,
@@ -37,125 +37,129 @@ const ProductsPage = () => {
     setOpenDrawer(!openDrawer);
   };
 
-  const { loading } = useDataFetch(
-    "product",
-    null,
-    (data) => {
-      if (filters.pageNumber === 1) setItems(data);
-      else setItems((items) => [...items, ...data]);
-      setHasMore(data.length >= 12);
-    },
-    filters,
-    [filters]
-  );
+  const fetchProducts = async (filters) => {
+    setLoading(true)
+    const products = await getData("product", filters)
+    setLoading(false)
+    if (filters.pageNumber === 1) setItems(products)
+    else setItems((items) => [...items, ...products])
+    setHasMore(products.length >= 12)
+  }
 
-  const fetchData = () => {
+  const fetchMoreData = () => {
     setFilters((filters) => ({ ...filters, pageNumber: filters.pageNumber + 1 }));
+    fetchProducts({ ...filters, pageNumber: filters.pageNumber + 1 })
   };
 
-  const handleFilterChange = (filters) => {
-    setFilters((prevfilters) => ({
-      ...prevfilters,
-      ...filters,
-      pageNumber: 1,
-    }));
-    window.scrollTo({ top: 0, behavior: "auto" })
-  };
-
-  useEffect(() => {
+  const handleFilterChange = (newFilters) => {
     setFilters((filters) => ({
       ...filters,
+      ...newFilters,
       pageNumber: 1,
-      category: category,
-      subcategory: subcategory,
     }));
-  }, [category, subcategory]);
+    fetchProducts({
+      ...filters,
+      ...newFilters,
+      pageNumber: 1,
+    })
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  };
 
   useEffect(() => {
-    setItems(products)
-  }, [products])
-
-  if (items.length === 0 && !loading)
-    return <NotFound message="No Product Found" />;
+    setItems(products);
+    setFilters((filters) => ({ ...filters, category, subcategory }))
+    setHasMore(products.length >= 12)
+    setLoading(false)
+  }, [products]);
 
   return (
     <Box>
-      <Stack direction="row" spacing={{ xs: 0.5, sm: 2 }} px={{ xs: 0, sm: 2 }}>
+      {!loading && items.length === 0 ? (
+        <NotFound message="No Product Found" />
+      ) : (
         <Stack
-          width="20%"
-          display={{ xs: "none", sm: "block" }}
-          position="sticky"
-          bottom={"100vh"}
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 0, sm: 2 }}
+          px={{ xs: 0, sm: 2 }}
         >
-          <FilterPanel
-            onChange={handleFilterChange}
-            filterData={filterData}
-          />
-        </Stack>
-        <Box
-          bgcolor="white"
-          boxShadow={2}
-          p={1}
-          width={{ xs: "98%", sm: "80%" }}
-          pr={{ xs: 0.5, sm: 2 }}
-        >
-          <InfiniteScroll
-            dataLength={items.length}
-            next={fetchData}
-            hasMore={hasMore}
-            loader={<Loader height={100} />}
-          >
-            <Grid
-              container
-              columnSpacing={{ xs: 1, sm: 2 }}
-              rowSpacing={{ xs: 0.5, sm: 2 }}
-              p={1}
-            >
-              {loading && filters.pageNumber === 1 ? (
-                <Loader />
-              ) : (
-                items.map((product, index) => (
-                  <Grid
-                    key={product.id}
-                    item
-                    xs={6}
-                    sm={3}
-                    height={{ xs: 280, sm: 430 }}
-                  >
-                    <Product
-                      id={product.id}
-                      image={product.image}
-                      price={product.price}
-                      discount={product.discount}
-                      name={product.name}
-                      handler={product.handler}
-                      wishlistId={product.wishlistId}
-                      badge={randomBadge(index)}
-                    />
-                  </Grid>
-                ))
-              )}
-            </Grid>
-          </InfiniteScroll>
-        </Box>
-        <Drawer
-          anchor={"left"}
-          open={openDrawer}
-          onClose={toggleDrawer("left", false)}
-        >
-          <Box
-            sx={{
-              width: 250,
-            }}
-            role="presentation"
+          <Stack
+            width="20%"
+            display={{ xs: "none", sm: "block" }}
+            position="sticky"
+            bottom={"100vh"}
           >
             <FilterPanel
               onChange={handleFilterChange}
-              filterData={filterData}
+              filterData={filtersData}
             />
+          </Stack>
+          <Box p={{ xs: 0, sm: 1 }}
+            width={{ xs: "100%", sm: "80%" }}
+            pr={{ xs: 0, sm: 2 }}>
+            <Paper
+              elevation={2}
+            >
+              {loading && filters.pageNumber === 1 ? (
+                <Loader fullscreen />
+              ) : (
+                <InfiniteScroll
+                  dataLength={items.length}
+                  next={fetchMoreData}
+                  hasMore={hasMore}
+                  loader={<Loader height={100} />}
+                >
+                  <Grid
+                    container
+                    columnSpacing={{ xs: 1, sm: 2 }}
+                    rowSpacing={{ xs: 0.5, sm: 2 }}
+                    p={1}
+                  >
+                    <>
+                      {items.map((product) => (
+                        <Grid
+                          key={product.id}
+                          item
+                          xs={6}
+                          sm={3}
+                          height={{ xs: 320, sm: 430 }}
+                        >
+                          <Product
+                            id={product.id}
+                            image={product.image}
+                            price={product.price}
+                            discount={product.discount}
+                            name={product.name}
+                            handler={product.handler}
+                            wishlistId={product.wishlistId}
+                            badge="Trending"
+                          />
+                        </Grid>
+                      ))}
+                    </>
+                  </Grid>
+                </InfiniteScroll>
+              )}
+            </Paper>
           </Box>
-        </Drawer>
-      </Stack>
+          <Drawer
+            anchor={"left"}
+            open={openDrawer}
+            onClose={toggleDrawer("left", false)}
+          >
+            <Box
+              sx={{
+                width: 250,
+              }}
+              role="presentation"
+            >
+              <FilterPanel
+                onChange={handleFilterChange}
+                filterData={filtersData}
+              />
+            </Box>
+          </Drawer>
+        </Stack>
+      )}
       <Fab
         sx={{
           display: { xs: "flex", sm: "none" },

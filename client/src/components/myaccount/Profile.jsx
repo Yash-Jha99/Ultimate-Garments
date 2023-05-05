@@ -10,6 +10,7 @@ import {
   FormLabel,
   Radio,
   Box,
+  Paper,
 } from "@mui/material";
 import { updateData } from "../../services/NodeService";
 import { useSelector } from "react-redux"
@@ -97,91 +98,94 @@ const Profile = () => {
   if (loading) return <Loader />;
 
   return (
-    <Box p={{ xs: 1, sm: 4 }} bgcolor="white" boxShadow={2}>
-      <FormControl>
-        <Grid
-          p={2}
-          container
-          rowSpacing={{ xs: 1.5, sm: 3 }}
-          columnSpacing={{ xs: 1, sm: 4 }}
-        >
-          {Object.keys(formDetails).map((label, index) => {
-            if (index < 5)
+    <>
+      <Paper sx={{ p: { xs: 1, sm: 4 } }} elevation={2}>
+
+        <FormControl>
+          <Grid
+            p={2}
+            container
+            rowSpacing={{ xs: 1.5, sm: 3 }}
+            columnSpacing={{ xs: 1, sm: 4 }}
+          >
+            {Object.keys(formDetails).map((label, index) => {
+              if (index < 5)
+                return (
+                  <Grid key={label} item xs={index < 2 ? 6 : 12}>
+                    <TextField
+                      type={index === 3 ? "date" : "text"}
+                      variant="standard"
+                      placeholder={formLabels[index]}
+                      error={error[label]}
+                      label={formLabels[index]}
+                      required
+                      fullWidth
+                      value={formDetails[label]}
+                      onChange={handleChange}
+                      name={label}
+                      disabled={index === 2}
+                      focused
+                      color="secondary"
+                    />
+                  </Grid>
+                );
+              if (index === 5)
+                return (
+                  <Grid item key={index} xs={12}>
+                    <FormLabel error={error[label]} color="secondary" required>
+                      Gender
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name="gender"
+                      value={formDetails[label]}
+                      onChange={handleChange}
+                    >
+                      <FormControlLabel
+                        sx={{ pr: 4 }}
+                        value="female"
+                        control={<Radio color="secondary" />}
+                        label="Female"
+                      />
+                      <FormControlLabel
+                        value="male"
+                        control={<Radio color="secondary" />}
+                        label="Male"
+                      />
+                    </RadioGroup>
+                  </Grid>
+                );
+
               return (
-                <Grid key={label} item xs={index < 2 ? 6 : 12}>
-                  <TextField
-                    type={index === 3 ? "date" : "text"}
-                    variant="standard"
-                    placeholder={formLabels[index]}
-                    error={error[label]}
-                    color="text"
-                    label={formLabels[index]}
-                    required
-                    fullWidth
-                    value={formDetails[label]}
-                    onChange={handleChange}
-                    name={label}
-                    disabled={index === 2}
-                    focused
+                <Grid item key={index} xs={12}>
+                  <FormControlLabel
+                    label="I want to recieve order updates on whatsaspp"
+                    control={
+                      <Checkbox
+                        color="secondary"
+                        checked={formDetails.notify}
+                        onChange={handleChange}
+                        name="notify"
+                      />
+                    }
                   />
                 </Grid>
               );
-            if (index === 5)
-              return (
-                <Grid item key={index} xs={12}>
-                  <FormLabel error={error[label]} color="secondary" required>
-                    Gender
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-controlled-radio-buttons-group"
-                    name="gender"
-                    value={formDetails[label]}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      sx={{ pr: 4 }}
-                      value="female"
-                      control={<Radio color="secondary" />}
-                      label="Female"
-                    />
-                    <FormControlLabel
-                      value="male"
-                      control={<Radio color="secondary" />}
-                      label="Male"
-                    />
-                  </RadioGroup>
-                </Grid>
-              );
-
-            return (
-              <Grid item key={index} xs={12}>
-                <FormControlLabel
-                  label="I want to recieve order updates on whatsaspp"
-                  control={
-                    <Checkbox
-                      color="secondary"
-                      checked={formDetails.notify}
-                      onChange={handleChange}
-                      name="notify"
-                    />
-                  }
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-        <Button
-          sx={{ mt: 2, color: "black" }}
-          fullWidth
-          variant="contained"
-          color="primary"
-          onClick={handleSave}
-        >
-          Save Changes
-        </Button>
-      </FormControl>
-    </Box>
+            })}
+          </Grid>
+          <Button
+            sx={{ mt: 2, color: "black" }}
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+          >
+            Save Changes
+          </Button>
+        </FormControl>
+      </Paper>
+    </>
   );
 };
 

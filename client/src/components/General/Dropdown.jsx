@@ -39,7 +39,6 @@ const Dropdown = ({
       sx={{
         overflow: "visible",
         filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-        py: 1,
         top: overlap ? "0" : "100%",
         ...cn,
         "&:before": !disableArrow && {
@@ -55,7 +54,6 @@ const Dropdown = ({
           zIndex: 0,
         },
       }}
-      bgcolor="white"
       position="absolute"
     >
       {children}
@@ -72,6 +70,7 @@ const Dropdown = ({
 
   return (
     <Box
+      sx={{ display: { xs: "none", sm: "initial" } }}
       position="relative"
       onMouseEnter={onOpen || handleOpen}
       onMouseLeave={onClose || handleClose}

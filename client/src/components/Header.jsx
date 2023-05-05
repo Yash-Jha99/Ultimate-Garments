@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Badge,
@@ -8,17 +8,16 @@ import {
   AppBar,
   Toolbar,
   ListItem,
-  ListItemText,
-  ListItemButton,
   Drawer,
-  List,
   Grid,
+  Paper,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { getData } from "../services/NodeService";
 import Login from "./auth/Login";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@mui/material/Avatar";
@@ -36,6 +35,10 @@ import { logout } from "../store/reducers/auth";
 import { stringToColor } from "../utils/utils";
 import Logo from "../assets/logo.png";
 import useDataFetch from "../hooks/useDataFetch";
+import categories from "../data/categories.json"
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from '@mui/icons-material/LightMode';
+import { toggleDarkMode } from "../store/reducers/theme";
 
 const drawerWidth = 260;
 
@@ -62,6 +65,13 @@ const AccountMenu = () => {
 
   return (
     <React.Fragment>
+      <IconButton disableRipple sx={{ display: { xs: "initial", sm: "none" } }} size="small" onClick={() => navigate("/myaccount")}>
+        <Avatar
+          src="#"
+          sx={{ width: 32, height: 32, bgcolor: stringToColor(name) }}
+          alt={name}
+        />
+      </IconButton>
       <Dropdown
         open={open}
         onOpen={handleOpen}
@@ -77,38 +87,40 @@ const AccountMenu = () => {
           </IconButton>
         }
       >
-        <MenuItem sx={{ display: "block" }} onClick={handleClose}>
-          <Typography fontSize={16} fontWeight={700}>
-            Hey {name?.split(" ")[0]}
-          </Typography>
-          <Typography fontSize={12}>{mobileNumber}</Typography>
-        </MenuItem>
-        <Divider />
-        {menuItems.map(({ label, icon: Icon, path }) => (
+        <Paper sx={{ py: 2, px: 1 }} elevation={2}>
+          <MenuItem sx={{ display: "block" }} onClick={handleClose}>
+            <Typography fontSize={16} fontWeight={700}>
+              Hey {name?.split(" ")[0]}
+            </Typography>
+            <Typography fontSize={12}>{mobileNumber}</Typography>
+          </MenuItem>
+          <Divider />
+          {menuItems.map(({ label, icon: Icon, path }) => (
+            <MenuItem
+              key={label}
+              onClick={() => {
+                handleClose();
+                navigate(path);
+              }}
+            >
+              <ListItemIcon>
+                <Icon fontSize="small" />
+              </ListItemIcon>
+              {label}
+            </MenuItem>
+          ))}
           <MenuItem
-            key={label}
             onClick={() => {
               handleClose();
-              navigate(path);
+              dispatch(logout());
             }}
           >
             <ListItemIcon>
-              <Icon fontSize="small" />
+              <Logout fontSize="small" />
             </ListItemIcon>
-            {label}
+            Logout
           </MenuItem>
-        ))}
-        <MenuItem
-          onClick={() => {
-            handleClose();
-            dispatch(logout());
-          }}
-        >
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        </Paper>
       </Dropdown>
     </React.Fragment>
   );
@@ -142,6 +154,7 @@ const CategoryDropdown = ({ category, subcategories, index }) => {
             fontWeight: "500",
             "&:hover": {
               bgcolor: "primary.main",
+              color: "black",
               cursor: "pointer",
             },
           }}
@@ -150,52 +163,76 @@ const CategoryDropdown = ({ category, subcategories, index }) => {
         </Typography>
       }
     >
-      <Box width={subcategories.length > 10 ? 350 : 175} px={2}>
-        <Grid container>
-          {subcategories.map((subcategory) => (
-            <Grid
-              item
-              key={subcategory.id}
-              xs={subcategories.length > 10 ? 6 : 12}
-            >
-              <MenuItem
-                sx={{
-                  textTransform: "capitalize",
-                  ":hover": { color: "secondary.main" },
-                }}
-                onClick={() => {
-                  handleClose();
-                  navigate(`/products/${category}/${subcategory.name}`);
-                }}
+      <Paper elevation={2}>
+        <Box width={subcategories.length > 10 ? 350 : 175} p={2}>
+          <Grid container>
+            {subcategories.map((subcategory) => (
+              <Grid
+                item
+                key={subcategory.id}
+                xs={subcategories.length > 10 ? 6 : 12}
               >
-                {subcategory.name}
-              </MenuItem>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                <MenuItem
+                  sx={{
+                    textTransform: "capitalize",
+                    ":hover": { color: "secondary.main" },
+                  }}
+                  onClick={() => {
+                    handleClose();
+                    navigate(`/products/${category}/${subcategory.name}`);
+                  }}
+                >
+                  {subcategory.name}
+                </MenuItem>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Paper>
     </Dropdown>
   );
 };
 
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+
 const Header = (props) => {
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [value, setValue] = React.useState(0);
   const searchRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
   const cartItemsNumber = useSelector((state) => state.cart.items.length);
-
-  const getCategories = async () => {
-    const result = await getData("product/category");
-    if (result) {
-      setCategories(
-        result.map((item, index) => ({ id: item.id, name: item.name }))
-      );
-    }
-  };
+  const { darkMode } = useSelector((state) => state.theme);
+  const { name } = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch()
 
   const { data: subcategories } = useDataFetch("product/subcategory", []);
 
@@ -203,6 +240,10 @@ const Header = (props) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   const { window } = props;
@@ -213,39 +254,67 @@ const Header = (props) => {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Box py={2}>
-        <img src={Logo} alt="Ultimate Garments" width={150} />
-      </Box>
-      <Divider />
-      <List>
-        {categories.map((category) => (
-          <Link
-            style={{ color: "black", textDecoration: "none" }}
-            key={category.id}
-            to={`/products/${category.name.replace(/\s+/g, "-")}`}
+    <Paper>
+      <Box bgcolor="background.paper" position="sticky" top={0} zIndex={20}>
+        <Link to="/myaccount">
+          <Box
+            onClick={handleDrawerToggle}
+            px={4}
+            py={2}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            <ListItem key={category.id} disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <ListItemText primary={category.name} />
-              </ListItemButton>
-            </ListItem>
-          </Link>
-        ))}
-      </List>
-    </Box>
+            <Avatar
+              src="#"
+              sx={{
+                width: 40,
+                height: 40,
+                fontSize: 28,
+                fontWeight: 500,
+                bgcolor: stringToColor(name),
+              }}
+              alt={name}
+            />
+
+            <Typography variant="h5">
+              {name}
+            </Typography>
+          </Box>
+        </Link>
+        <Divider />
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="basic tabs example">
+            <Tab disableRipple label="Men" {...a11yProps(0)} />
+            <Tab disableRipple label="Women" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+      </Box>
+      <TabPanel value={value} index={0}>
+        {subcategories.filter(
+          (item) => item.category_id === "1"
+        ).map(subcategory => <Link key={subcategory.id} to={`/products/men/${subcategory.name}`}> <ListItem onClick={handleDrawerToggle} sx={{ textTransform: "capitalize" }}>{subcategory.name}</ListItem></Link>)
+        }
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        {subcategories.filter(
+          (item) => item.category_id === "2"
+        ).map(subcategory => <Link key={subcategory.id} to={`/products/women/${subcategory.name}`}> <ListItem onClick={handleDrawerToggle} sx={{ textTransform: "capitalize" }}>{subcategory.name}</ListItem></Link>)
+        }
+      </TabPanel>
+    </Paper>
   );
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
-  useEffect(() => {
-    getCategories();
-  }, []);
+  // useEffect(() => {
+  //   getCategories();
+  // }, []);
 
   return (
-    <Box bgcolor="white" position="sticky" top={0} zIndex={100}>
-      <Box mx={8} height="62px" bgcolor="white">
+    <Box position="sticky" top={0} zIndex={100} height="62px">
+      <Paper >
         <AppBar component="nav" color="inherit">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
             <Stack
@@ -258,12 +327,12 @@ const Header = (props) => {
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{ mr: 2, display: { sm: "none" } }}
+                sx={{ mr: 1.5, display: { sm: "none" } }}
               >
                 <MenuIcon />
               </IconButton>
               <Link to="/">
-                <img src={Logo} alt="Ultimate Garments" width={80} />
+                <img src={Logo} alt="Ultimate Garments" width={76} />
               </Link>
               <Box sx={{ display: { xs: "none", sm: "flex" } }}>
                 {categories.map((category, index) => (
@@ -280,7 +349,7 @@ const Header = (props) => {
             </Stack>
             <Box
               sx={{
-                marginLeft: { xs: 6, sm: 20 },
+                marginLeft: { xs: 5, sm: 20 },
                 position: "relative",
                 display: "flex",
                 listStyle: "none",
@@ -288,21 +357,22 @@ const Header = (props) => {
                 columnGap: 2,
               }}
             >
+              <IconButton onClick={() => dispatch(toggleDarkMode())}>
+                {!darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+              </IconButton>
               <SearchIcon
                 onClick={(e) => {
                   setShowSearch(!showSearch);
                 }}
                 sx={{
-                  color: "black",
                   fontSize: { xs: 20, sm: 24 },
                   cursor: "pointer",
                 }}
               />
-
               <Link to="myaccount/wishlist">
                 <FavoriteIcon
                   sx={{
-                    color: "black",
+                    color: "inherit",
                     fontSize: { xs: 20, sm: 24 },
                   }}
                 />
@@ -311,7 +381,6 @@ const Header = (props) => {
                 <Badge badgeContent={cartItemsNumber} color="secondary">
                   <ShoppingCartIcon
                     sx={{
-                      color: "black",
                       fontSize: { xs: 20, sm: 24 },
                     }}
                   />
@@ -323,7 +392,7 @@ const Header = (props) => {
                 <Button
                   color="inherit"
                   sx={{
-                    fontSize: { xs: 16, sm: 20 },
+                    fontSize: { xs: 16, sm: 18 },
                     visibility:
                       location.pathname === "/login" ? "hidden" : "visible",
                   }}
@@ -344,8 +413,8 @@ const Header = (props) => {
                     width: { xs: "95vw", sm: 340 },
                   }}
                 >
-                  <TextField
-                    sx={{
+                  <input
+                    style={{
                       padding: "10px 10px",
                       width: "100%",
                       border: "1px solid black",
@@ -358,12 +427,14 @@ const Header = (props) => {
                   />
                   <Button
                     sx={{
-                      padding: "10px 20px",
+                      padding: "6px 20px",
                       background: "black",
                       color: "white",
+                      borderRadius: "none",
                       border: "1px solid black",
                       outline: "none",
                       cursor: "pointer",
+                      ":hover": { bgcolor: "black" }
                     }}
                     onClick={() => {
                       navigate("/search/" + searchRef.current.value);
@@ -397,7 +468,7 @@ const Header = (props) => {
             {drawer}
           </Drawer>
         </Box>
-      </Box>
+      </Paper>
       <Login open={open} handleClose={handleClose} />
     </Box>
   );

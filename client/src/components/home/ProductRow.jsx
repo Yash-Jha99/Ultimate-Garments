@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Card, Paper, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../general/Loader";
@@ -10,7 +10,7 @@ const ProductRow = ({ category, title = null }) => {
   const [params] = useState({ category });
   const { loading, data: products } = useDataFetch("product", [], null, params);
   return (
-    <Box position="relative" bgcolor="white" p={1} boxShadow={2}>
+    <Paper sx={{ p: 1 }} elevation={2}>
       <Typography
         px={2}
         py={1}
@@ -48,50 +48,53 @@ const ProductRow = ({ category, title = null }) => {
               to={`/${product.handler}`}
               style={{ textDecoration: "none", color: "black" }}
             >
-              <Stack
-                width={{ xs: 160, sm: 240 }}
-                bgcolor="white"
-                height="100%"
-                justifyContent="center"
-              >
-                <Box
-                  component="img"
-                  sx={{
-                    display: "block",
-                    overflow: "hidden",
-                    width: "100%",
-                    height: { xs: 200, sm: 310 },
-                    objectFit: "contain",
-                  }}
-                  src={product.image}
-                  alt={product.name}
-                />
-                <Box
-                  mx={1}
-                  width="90%"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  whiteSpace="nowrap"
-                  textAlign="center"
+              <Card>
+                <Stack
+                  width={{ xs: 160, sm: 240 }}
+                  pb={1}
+                  height="100%"
+                  justifyContent="center"
                 >
-                  <Typography
-                    pt={2}
-                    fontWeight="bold"
-                    variant="caption"
-                    color="text.light"
+                  <Box
+                    component="img"
+                    sx={{
+                      display: "block",
+                      overflow: "hidden",
+                      width: "100%",
+                      maxHeight: { xs: 200, sm: 310 },
+                      minHeight: { xs: 200, sm: 310 },
+                      objectFit: "contain",
+                    }}
+                    src={product.image}
+                    alt={product.name}
+                  />
+                  <Box
+                    mx={1}
+                    width="90%"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                    textAlign="center"
                   >
-                    {product.name}
-                  </Typography>
-                  <Typography fontWeight="bold" variant="subtitle1">
-                    ₹{product.price}
-                  </Typography>
-                </Box>
-              </Stack>
+                    <Typography
+                      pt={2}
+                      fontWeight="bold"
+                      variant="caption"
+                      color="text.light"
+                    >
+                      {product.name}
+                    </Typography>
+                    <Typography fontWeight="bold" variant="subtitle1">
+                      ₹{product.price}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Card>
             </Link>
           </SwiperSlide>
         ))}
       </Swiper>
-    </Box>
+    </Paper>
   );
 };
 

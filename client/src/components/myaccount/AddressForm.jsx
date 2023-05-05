@@ -15,7 +15,7 @@ const AddressForm = ({
           <Grid key={label} item xs={12} sm={6}>
             <TextField
               error={error[label]}
-              color="text"
+              color="secondary"
               label={formLabels[index]}
               required
               size="small"
@@ -43,7 +43,6 @@ const AddressForm = ({
     <Button
       sx={{ mb: 1 }}
       variant="contained"
-      color="inherit"
       fullWidth
       onClick={onSave}
     >

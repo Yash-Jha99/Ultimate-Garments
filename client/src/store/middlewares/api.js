@@ -22,10 +22,10 @@ export const api = ({ dispatch }) => next => async (action) => {
 
     }
     catch (err) {
-        console.log("[Redux Error]", err.message)
+        console.log("[Redux Error]:", err?.message || err)
         if (onError)
             dispatch({ type: onError, payload: err.message })
-        else dispatch({ type: apiCallFailed })
+        else dispatch({ type: apiCallFailed.type })
     }
 
 }
