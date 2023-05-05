@@ -28,6 +28,7 @@ import { addToCheckout } from "../store/reducers/checkout";
 import Logo from "../assets/logo.png";
 import ShieldSVG from "../assets/shield.svg";
 import NotFound from "../components/general/NotFound";
+import emptyCartImage from "../assets/empty-cart.png"
 import { useSnackbar } from "notistack";
 import PriceDetails from "../components/checkout/PriceDetails";
 
@@ -166,11 +167,10 @@ const Checkout = () => {
     setActiveStep(stepRoutes.indexOf(location.pathname));
   }, [location.pathname]);
 
-  if (loading) return <Loader fullscreen />;
-
   return (
     <Box>
       <ScrollRestoration />
+      {loading && <Loader fullscreen />}
       <Box position="sticky" top={0} zIndex={100} height="62px">
         <Paper sx={{ mx: 8 }} >
           <AppBar component="nav" color="inherit">
@@ -214,7 +214,7 @@ const Checkout = () => {
 
       {!cartLoading && checkoutItems.length === 0 && cart.length === 0 && (
         <Box textAlign="center">
-          <NotFound message="Your cart is empty" />
+          <NotFound message="Your cart is empty" image={emptyCartImage} />
           <Button
             sx={{ mt: -25 }}
             variant="contained"

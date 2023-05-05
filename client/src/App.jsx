@@ -22,7 +22,7 @@ import Loader from "./components/general/Loader";
 import { orderDetailsLoader, ordersLoader, productDetailsLoader, productsLoader } from "./loaders";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderFailedPage from "./pages/OrderFailedPage";
-import { Box, CssBaseline, useMediaQuery } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import useInitializeStore from "./hooks/useInitializeStore";
 const ProductsPage = lazy(() => import("./pages/ProductsPage"))
 const ProductDetails = lazy(() => import("./pages/ProductDetails"))
@@ -203,7 +203,7 @@ const App = () => {
                 anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                 autoHideDuration={3000}
             >
-                <Box bgcolor={darkMode ? "#161616" : "#f1f3f6"}>
+                <Box bgcolor={darkMode ? "#161616" : "#f1f3f6"} minHeight="100vh">
                     <RouterProvider router={router} fallbackElement={<Loader />} />
                 </Box>
             </SnackbarProvider>

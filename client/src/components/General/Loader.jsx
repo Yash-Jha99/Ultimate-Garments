@@ -10,7 +10,7 @@ const Loader = ({
     return (
         <Box
             sx={{
-                opacity: 0.8
+                opacity: 0.75
             }}
             display="flex"
             justifyContent="center"

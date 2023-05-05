@@ -142,7 +142,7 @@ const CategoryDropdown = ({ category, subcategories, index }) => {
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}
-      position={index === 0 ? "left" : "center"}
+      position={"center"}
       disableArrow
       transitionProps={{ timeout: 50 }}
       trigger={
@@ -164,7 +164,7 @@ const CategoryDropdown = ({ category, subcategories, index }) => {
       }
     >
       <Paper elevation={2}>
-        <Box width={subcategories.length > 10 ? 350 : 175} p={2}>
+        <Box minWidth={subcategories.length > 10 ? 350 : 175} p={2}>
           <Grid container>
             {subcategories.map((subcategory) => (
               <Grid
@@ -358,7 +358,7 @@ const Header = (props) => {
               }}
             >
               <IconButton onClick={() => dispatch(toggleDarkMode())}>
-                {!darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+                {!darkMode ? <DarkModeIcon color="black" /> : <LightModeIcon />}
               </IconButton>
               <SearchIcon
                 onClick={(e) => {

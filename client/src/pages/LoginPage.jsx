@@ -24,7 +24,7 @@ import Loader from "../components/general/Loader";
 const LoginPage = () => {
   const [showOtpPanel, setShowOtpPanel] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(null);
   const [otpTimer, setOtpTimer] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
@@ -245,11 +245,8 @@ const LoginPage = () => {
                 InputProps={{
                   endAdornment: formDetails.otp.length === 6 && (
                     <InputAdornment position="end">
-                      {otpVerified ? (
-                        <CheckCircle color="success" />
-                      ) : (
-                        <Cancel color="error" />
-                      )}
+                      {otpVerified === true && <CheckCircle color="success" />}
+                      {otpVerified === false && <Cancel color="error" />}
                     </InputAdornment>
                   ),
                 }}
@@ -268,7 +265,7 @@ const LoginPage = () => {
               {showRegisterForm && registerPanel}
               <Button
                 variant="contained"
-                sx={{ bgcolor: "black", ":hover": { bgcolor: "black" } }}
+                sx={{ bgcolor: "black", ":hover": { bgcolor: "black" }, color: "white" }}
                 onClick={handleSignup}
               >
                 {showRegisterForm ? "Sign Up" : "Verify"}
@@ -277,13 +274,13 @@ const LoginPage = () => {
           ) : (
             <>
               <Button
-                sx={{ mt: 2, bgcolor: "black", ":hover": { bgcolor: "black" } }}
+                sx={{ mt: 2, bgcolor: "black", ":hover": { bgcolor: "black" }, color: "white" }}
                 variant="contained"
                 id="sign-in-button"
                 onClick={handleLoginOTP}
               >
                 <Stack direction="row" spacing={2}>
-                  {loading && <Loader size={20} color="inherit" />}
+                  {loading && <Loader size={20} height="100%" color="inherit" />}
                   <Typography whiteSpace="nowrap" fontSize={14}>
                     Login with OTP
                   </Typography>

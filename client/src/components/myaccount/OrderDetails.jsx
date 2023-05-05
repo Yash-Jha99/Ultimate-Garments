@@ -100,7 +100,6 @@ const OrderDetails = () => {
                       mb={2}
                       fontWeight="bold"
                       variant="h6"
-                      color="black"
                     >
                       ₹ {price}
                     </Typography>

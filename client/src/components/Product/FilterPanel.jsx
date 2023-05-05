@@ -27,20 +27,6 @@ const FilterPanel = ({ onChange, filterData }) => {
     color: 6,
   });
 
-  const filters = {
-    color:
-      colorFilters
-        .filter((color) => color.active)
-        .map((color) => color.color)
-        .join("+") || null,
-    size:
-      sizeFilters
-        .filter((size) => size.active)
-        .map((size) => size.size)
-        .join("+") || null,
-    price: priceFilters,
-  };
-
 
   const handleChange = (event) => {
     const { name, checked } = event.target;
@@ -49,7 +35,7 @@ const FilterPanel = ({ onChange, filterData }) => {
         size.size === name ? { ...size, active: checked } : size
       )
     );
-    onChange(filters);
+
   };
 
   const handleColorChange = (event) => {
@@ -59,12 +45,12 @@ const FilterPanel = ({ onChange, filterData }) => {
         color.color === name ? { ...color, active: checked } : color
       )
     );
-    onChange(filters);
+
   };
 
   const handlePriceChange = (event) => {
     setPriceFilters(event.target.value);
-    onChange(filters);
+
   };
 
   const handleSeeMore = (option) => {
@@ -92,6 +78,24 @@ const FilterPanel = ({ onChange, filterData }) => {
     setSizeFilters(sizeFilters.map((size) => ({ ...size, active: false })));
     setPriceFilters(null);
   };
+
+  useEffect(() => {
+    const filters = {
+      color:
+        colorFilters
+          .filter((color) => color.active)
+          .map((color) => color.color)
+          .join("+") || null,
+      size:
+        sizeFilters
+          .filter((size) => size.active)
+          .map((size) => size.size)
+          .join("+") || null,
+      price: priceFilters,
+    };
+    onChange(filters);
+
+  }, [sizeFilters, priceFilters, colorFilters])
 
 
   useEffect(() => {

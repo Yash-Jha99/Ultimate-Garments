@@ -28,6 +28,7 @@ import { addToCart } from "../store/reducers/cart";
 import { addToCheckout } from "../store/reducers/checkout";
 import { useSnackbar } from "notistack";
 import DeliveryOptions from "../components/product/DeliveryOptions";
+import NotFound from "../components/general/NotFound";
 
 const ProductDetails = () => {
   const { search } = useLocation();
@@ -42,6 +43,8 @@ const ProductDetails = () => {
   const query = new URLSearchParams(search);
   const { enqueueSnackbar } = useSnackbar();
   const { product } = useLoaderData()
+
+  if (!product.name) return <NotFound message="Product Not Found" />
 
   const {
     id,

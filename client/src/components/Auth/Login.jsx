@@ -285,7 +285,7 @@ const Login = ({ open, handleClose }) => {
               onClick={handleLoginOTP}
             >
               <Stack direction="row" spacing={2}>
-                {loading && <Loader size={20} color="inherit" />}
+                {loading && <Loader size={20} height="100%" color="inherit" />}
                 <Typography whiteSpace="nowrap">Login with OTP</Typography>
               </Stack>
             </Button>
