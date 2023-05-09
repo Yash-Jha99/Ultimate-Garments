@@ -56,22 +56,22 @@ const ProductDetails = () => {
     offer = "FLAT ₹100 OFF On ₹999 (Code:SHIRT100)",
     options,
     colors,
-    wishlistId
+    wishlist
   } = product;
 
+  const wishlistId = wishlist?.[0]?.id ?? null
   const [qty, setQty] = useState(1);
   const [inValid, setInValid] = useState("");
-  const [selectedSize, setSelectedSize] = useState(colors.find((color) => color.handler === productName) ?? {});
-  const [selectedColor, setSelectedColor] = useState(options.find((size) => size.size === query.get("size")) ?? {});
+  const [selectedColor, setSelectedColor] = useState(colors.find((color) => color.handler === productName) ?? {});
+  const [selectedSize, setSelectedSize] = useState(options.find((size) => size.size === query.get("size")) ?? {});
   const [wishlisted, setWishlisted] = useState(wishlistId !== null);
-  const [newWishlistId, setNewWishlistedId] = useState("");
+  const [newWishlistId, setNewWishlistedId] = useState(wishlistId);
   const isProductInCart = cart.findIndex(
     (item) =>
       item.productId === id &&
       item.color === selectedColor.label &&
       item.size === selectedSize.name
   ) !== -1
-
   const selectedOption = options.find((opt) => opt.size === selectedSize?.name);
 
   const sizes = options.map((option) => ({
@@ -79,11 +79,11 @@ const ProductDetails = () => {
     id: option.sku,
   }));
 
-  const outOfStock = selectedOption?.quantityInStock === 0;
+  const outOfStock = selectedOption?.stock === 0;
   const isCheckoutValid =
     selectedOption !== undefined &&
     !outOfStock &&
-    selectedOption.quantityInStock >= qty;
+    selectedOption.stock >= qty;
 
   const handleWishlist = async () => {
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
@@ -95,7 +95,7 @@ const ProductDetails = () => {
       });
       if (response.status === 201) {
         enqueueSnackbar("Product Wishlisted", { variant: "success" });
-        setNewWishlistedId(response.data.wishlistId);
+        setNewWishlistedId(response.data.id);
       } else {
         setWishlisted(false);
         enqueueSnackbar("Something went wrong", { variant: "error" });
@@ -156,11 +156,9 @@ const ProductDetails = () => {
     dispatch(
       addToCheckout([
         {
-          productId: id,
-          price,
-          product_option_id: selectedOption.id,
+          option: { id: selectedOption.id },
           quantity: qty,
-          discount,
+          product: { discount, price, id }
         },
       ])
     );
@@ -204,7 +202,7 @@ const ProductDetails = () => {
             </Box>
             <Stack
               direction="row"
-              bgcolor="background.paper"
+              bgcolor={{ sm: "transparent", xs: "background.paper" }}
               spacing={2}
               boxShadow={{ xs: 4, sm: 0 }}
               width={{ xs: "94%", sm: "100%" }}

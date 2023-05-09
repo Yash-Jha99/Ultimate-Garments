@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+model Address {
+  id           String  @id @db.VarChar(45)
+  userId       String  @db.VarChar(45)
+  firstName    String  @db.VarChar(45)
+  lastName     String  @db.VarChar(45)
+  mobileNumber String  @db.VarChar(45)
+  pincode      String  @db.VarChar(10)
+  town         String  @db.VarChar(45)
+  city         String  @db.VarChar(45)
+  state        String  @db.VarChar(45)
+  address      String  @db.VarChar(255)
+  user         User    @relation(fields: [userId], references: [id])
+  default      User?   @relation("defaultAddress")
+  Order        Order[]
+}
+
+model Cart {
+  id              String        @id @db.VarChar(45)
+  quantity        Int?          @default(1)
+  productId       String        @db.VarChar(45)
+  userId          String        @db.VarChar(45)
+  productOptionId Int
+  product         Product       @relation(fields: [productId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  option          ProductOption @relation(fields: [productOptionId], references: [id])
+}
+
+model Category {
+  id          String        @id @db.VarChar(45)
+  name        String        @unique(map: "name_UNIQUE") @db.VarChar(255)
+  icon        String?       @db.VarChar(255)
+  subcategory Subcategory[]
+  product     Product[]
+}
+
+model OrderItem {
+  id              String        @id @db.VarChar(45)
+  orderId         String        @db.VarChar(45)
+  productId       String        @db.VarChar(45)
+  productOptionId Int
+  quantity        Int
+  price           Int
+  product         Product       @relation(fields: [productId], references: [id])
+  productOption   ProductOption @relation(fields: [productOptionId], references: [id])
+  order           Order         @relation(fields: [orderId], references: [id])
+}
+
+model Order {
+  id          String      @id @db.VarChar(45)
+  userId      String      @db.VarChar(45)
+  paymentId   String      @unique @db.VarChar(45)
+  addressId   String      @db.VarChar(45)
+  status      orderStatus
+  orderedAt   DateTime    @default(now()) @db.Timestamp()
+  packedAt    DateTime?   @db.Timestamp()
+  shippedAt   DateTime?   @db.Timestamp()
+  deliveredAt DateTime?   @db.Timestamp()
+  user        User        @relation(fields: [userId], references: [id])
+  payment     Payment     @relation(fields: [paymentId], references: [id])
+  address     Address     @relation(fields: [addressId], references: [id])
+  orderItem   OrderItem[]
+}
+
+model Payment {
+  id        String        @id @db.VarChar(45)
+  type      String        @db.VarChar(45)
+  amount    Float
+  createdAt DateTime      @default(now()) @db.Timestamp()
+  status    paymentStatus
+  order     Order?
+}
+
+model ProductOption {
+  id        Int         @id
+  handler   String      @db.VarChar(255)
+  price     Int
+  stock     Int
+  image     String?     @db.VarChar(255)
+  sku       String      @db.VarChar(10)
+  size      String?     @db.VarChar(45)
+  color     String?     @db.VarChar(45)
+  material  String?     @db.VarChar(45)
+  product   Product     @relation(fields: [handler], references: [handler])
+  orderItem OrderItem[]
+  cart      Cart[]
+}
+
+model Product {
+  id            String          @id @db.VarChar(45)
+  handler       String          @unique @db.VarChar(45)
+  name          String          @db.VarChar(255)
+  categoryId    String          @db.VarChar(45)
+  subcategoryId String          @db.VarChar(45)
+  tags          String?         @db.VarChar(255)
+  price         Int
+  stock         Int
+  vendor        String          @db.VarChar(45)
+  image         String?         @db.VarChar(255)
+  discount      Int
+  sku           String          @db.VarChar(25)
+  description   String?         @db.Text
+  category      Category        @relation(fields: [categoryId], references: [id])
+  subcategory   Subcategory     @relation(fields: [subcategoryId], references: [id])
+  options       ProductOption[]
+  orderItem     OrderItem[]
+  wishlist      Wishlist[]
+  cart          Cart[]
+}
+
+model Subcategory {
+  id         String    @id @db.VarChar(45)
+  name       String    @db.VarChar(45)
+  icon       String?   @db.VarChar(255)
+  categoryId String    @db.VarChar(45)
+  category   Category  @relation(fields: [categoryId], references: [id])
+  product    Product[]
+}
+
+model User {
+  id               String     @id @db.VarChar(255)
+  name             String     @db.VarChar(45)
+  mobileNumber     String     @unique(map: "mobile_number_UNIQUE") @db.VarChar(45)
+  email            String     @unique(map: "email_UNIQUE") @db.VarChar(45)
+  notify           Boolean?   @default(false) @db.Boolean
+  dob              String?    @db.VarChar(45)
+  gender           String?    @db.VarChar(45)
+  isAdmin          Boolean?   @default(false) @db.Boolean
+  defaultAddressId String?    @unique @db.VarChar(45)
+  defaultAddress   Address?   @relation("defaultAddress", fields: [defaultAddressId], references: [id])
+  wishlist         Wishlist[]
+  Cart             Cart[]
+  Order            Order[]
+  address          Address[]
+}
+
+model Wishlist {
+  id        String  @id @db.VarChar(45)
+  userId    String  @db.VarChar(45)
+  productId String  @db.VarChar(45)
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+enum paymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum orderStatus {
+  ORDERED
+  PACKED
+  SHIPPED
+  DELIVERED
+  FAILED
+}

@@ -89,7 +89,7 @@ const Profile = () => {
       lastName,
       email: data.email,
       dob: data.dob ?? "",
-      mobileNumber: data.mobile_number,
+      mobileNumber: data.mobileNumber,
       gender: data.gender ?? "",
       notify: data.notify === 1,
     });

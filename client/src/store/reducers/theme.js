@@ -7,8 +7,8 @@ const themeSlice = createSlice({
         toggleDarkMode: (state) => {
             state.darkMode = !state.darkMode
         },
-        initializeMode: (state, payload) => {
-            state = payload
+        initializeMode: (state, action) => {
+            state.darkMode = action.payload.darkMode
         }
     }
 });

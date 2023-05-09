@@ -91,7 +91,7 @@ const AddressItem = ({
       }
 
       <Typography fontWeight={600} variant="subtitle1" mb={1}>
-        {item.firstName} {item.lastName} {"(" + item.pinCode + ")"}
+        {item.firstName} {item.lastName} {"(" + item.pincode + ")"}
       </Typography>
       <Typography variant="body2">
         {item.address}, {item.town}

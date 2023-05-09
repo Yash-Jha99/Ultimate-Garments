@@ -89,22 +89,24 @@ const Login = ({ open, handleClose }) => {
   const handleChange = async (e) => {
     const { name, value, checked } = e.target;
     error[name] = false;
-    setOtpVerified(null);
 
-    if (name === "otp" && value.length === 6) {
-      setFormDetails((data) => ({ ...data, otp: value }));
-      try {
-        await window.otpResult.confirm(value);
-        const response = await postData("auth/validate", {
-          otp: value,
-          mobileNumber: formDetails.mobileNumber,
-        });
-        if (response.status === 200) {
-          setOtpVerified(true);
-          response.data && dispatch(login({ token: response.data }));
+    if (name === "otp") {
+      if (value.length !== 6) setOtpVerified(null)
+      else {
+        setFormDetails((data) => ({ ...data, otp: value }));
+        try {
+          await window.otpResult.confirm(value);
+          const response = await postData("auth/validate", {
+            otp: value,
+            mobileNumber: formDetails.mobileNumber,
+          });
+          if (response.status === 200) {
+            setOtpVerified(true);
+            response.data && dispatch(login({ token: response.data }));
+          }
+        } catch (error) {
+          setOtpVerified(false);
         }
-      } catch (error) {
-        setOtpVerified(false);
       }
     }
 

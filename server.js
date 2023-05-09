@@ -1,10 +1,10 @@
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
+require("dotenv").config();
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 const useRouter = require("./routes/router");
-require("dotenv").config();
 const app = express();
 
 app.use(cors({ credentials: true, origin: ['http://localhost:3000', 'https://ultimate-garments.vercel.app', "http://localhost:4173", "http://localhost:5173"] }));
@@ -59,10 +59,19 @@ app.use(function (err, req, res, next) {
 
   if (err.status) res.status(err.status).send(err);
   else {
-    console.log("[SERVER ERROR]:", err);
+    console.log("[ERROR]:", err);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.log("[Error]:", reason)
+})
+
+process.on('uncaughtException', (reason, promise) => {
+  console.log("[Error]:", reason)
+})
 
 
 const port = process.env.PORT || 5000;

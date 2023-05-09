@@ -130,7 +130,7 @@ const ProductsPage = () => {
                             discount={product.discount}
                             name={product.name}
                             handler={product.handler}
-                            wishlistId={product.wishlistId}
+                            wishlistId={product.wishlist[0]?.id ?? null}
                             badge="Trending"
                           />
                         </Grid>

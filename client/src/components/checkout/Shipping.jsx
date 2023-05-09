@@ -25,7 +25,7 @@ const Shipping = () => {
     firstName: false,
     lastName: false,
     mobileNumber: false,
-    pinCode: false,
+    pincode: false,
     town: false,
     city: false,
     state: false,
@@ -36,7 +36,7 @@ const Shipping = () => {
     firstName: "",
     lastName: "",
     mobileNumber: "",
-    pinCode: "",
+    pincode: "",
     town: "",
     city: "",
     state: "",
@@ -72,7 +72,7 @@ const Shipping = () => {
       firstName: "",
       lastName: "",
       mobileNumber: "",
-      pinCode: "",
+      pincode: "",
       town: "",
       city: "",
       state: "",
@@ -97,7 +97,7 @@ const Shipping = () => {
       }
 
       if (
-        key === "pinCode" &&
+        key === "pincode" &&
         (isNaN(formDetails[key].trim()) || formDetails[key].trim().length !== 6)
       ) {
         setError((error) => ({ ...error, [key]: true }));
@@ -175,10 +175,10 @@ const Shipping = () => {
       if (data?.length !== 0) {
         const newData = data.map((address) => ({
           id: address.id,
-          firstName: address.first_name,
-          lastName: address.last_name,
-          mobileNumber: address.mobile_number,
-          pinCode: address.pincode,
+          firstName: address.firstName,
+          lastName: address.lastName,
+          mobileNumber: address.mobileNumber,
+          pincode: address.pincode,
           town: address.town,
           city: address.city,
           state: address.state,
@@ -186,9 +186,9 @@ const Shipping = () => {
         }));
         setAddress(newData);
         const activeAddress = newData.find(
-          (address) => address.id === data[0].defaultAddressId
+          (address) => address.id === data[0].user.defaultAddressId
         );
-        setDefaultAddressId(data[0].defaultAddressId);
+        setDefaultAddressId(data[0].user.defaultAddressId);
         if (!deliveryAddress && location.pathname === "/checkout/shipping") {
           setActiveAddress(activeAddress);
           dispatch(setDeliveryAddress(activeAddress));

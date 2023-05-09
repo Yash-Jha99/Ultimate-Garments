@@ -98,13 +98,13 @@ const Checkout = () => {
   if (location.pathname === "/checkout/cart") checkoutItems = cart;
 
   const totalAmount = checkoutItems
-    .map((product) => product.price * product.quantity)
+    .map((item) => item.product.price * item.quantity)
     .reduce((total, price) => total + price, 0);
 
   const totalDiscount = checkoutItems
     .map(
-      (product) =>
-        Math.ceil((product.price * product.discount) / 100) * product.quantity
+      (item) =>
+        Math.ceil((item.product.price * item.product.discount) / 100) * item.quantity
     )
     .reduce((total, discount) => total + discount, 0);
 
@@ -136,10 +136,10 @@ const Checkout = () => {
       const reqBody1 = {
         products: checkoutItems.map((item) => ({
           cartId: item.id,
-          id: item.productId,
-          price: item.price,
+          id: item.product.id,
+          price: item.product.price,
           quantity: item.quantity,
-          optionId: item.product_option_id,
+          optionId: item.option.id,
         })),
         paymentType: paymentMethod,
         addressId: deliveryAddress.id,
@@ -148,10 +148,10 @@ const Checkout = () => {
       const res = await postData("order", reqBody1);
       if (res.status === 201) {
         if (paymentMethod === "Cash") {
-          navigate("/myaccount/orders/success");
+          navigate("/myaccount/order/success");
         } else {
           const response = await postData("payment/create-checkout-session", {
-            orderItemIds: res.data.orderItemIds.map((item) => item.id),
+            orderItemIds: res.data.orderItemIds,
             orderId: res.data.orderId,
           });
           if (response.status === 200) {
@@ -287,7 +287,7 @@ const Checkout = () => {
                     </Stack>
                     <Typography fontWeight={500} variant="subtitle1" mb={1}>
                       {deliveryAddress.firstName} {deliveryAddress.lastName}{" "}
-                      {"(" + deliveryAddress.pinCode + ")"}
+                      {"(" + deliveryAddress.pincode + ")"}
                     </Typography>
                     <Typography variant="body2">
                       {deliveryAddress.address}, {deliveryAddress.town},{" "}

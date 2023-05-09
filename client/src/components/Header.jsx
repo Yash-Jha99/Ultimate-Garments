@@ -292,13 +292,13 @@ const Header = (props) => {
       </Box>
       <TabPanel value={value} index={0}>
         {subcategories.filter(
-          (item) => item.category_id === "1"
+          (item) => item.categoryId === "1"
         ).map(subcategory => <Link key={subcategory.id} to={`/products/men/${subcategory.name}`}> <ListItem onClick={handleDrawerToggle} sx={{ textTransform: "capitalize" }}>{subcategory.name}</ListItem></Link>)
         }
       </TabPanel>
       <TabPanel value={value} index={1}>
         {subcategories.filter(
-          (item) => item.category_id === "2"
+          (item) => item.categoryId === "2"
         ).map(subcategory => <Link key={subcategory.id} to={`/products/women/${subcategory.name}`}> <ListItem onClick={handleDrawerToggle} sx={{ textTransform: "capitalize" }}>{subcategory.name}</ListItem></Link>)
         }
       </TabPanel>
@@ -341,7 +341,7 @@ const Header = (props) => {
                     index={index}
                     category={category.name}
                     subcategories={subcategories.filter(
-                      (item) => item.category_id === category.id
+                      (item) => item.categoryId === category.id
                     )}
                   />
                 ))}
@@ -372,7 +372,6 @@ const Header = (props) => {
               <Link to="myaccount/wishlist">
                 <FavoriteIcon
                   sx={{
-                    color: "inherit",
                     fontSize: { xs: 20, sm: 24 },
                   }}
                 />
@@ -386,21 +385,22 @@ const Header = (props) => {
                   />
                 </Badge>
               </Link>
-              {auth.isLoggedIn ? (
-                <AccountMenu />
-              ) : (
-                <Button
-                  color="inherit"
-                  sx={{
-                    fontSize: { xs: 16, sm: 18 },
-                    visibility:
-                      location.pathname === "/login" ? "hidden" : "visible",
-                  }}
-                  onClick={() => setOpen(true)}
-                >
-                  Login
-                </Button>
-              )}
+              <Box display={{ xs: "none", sm: "initial" }}>
+                {auth.isLoggedIn ? (
+                  <AccountMenu />
+                ) : (
+                  <Button
+                    color="inherit"
+                    sx={{
+                      fontSize: { xs: 16, sm: 18 },
+                      visibility:
+                        location.pathname === "/login" ? "hidden" : "visible",
+                    }}
+                    onClick={() => setOpen(true)}
+                  >
+                    Login
+                  </Button>
+                )}</Box>
               {showSearch && (
                 <Box
                   sx={{

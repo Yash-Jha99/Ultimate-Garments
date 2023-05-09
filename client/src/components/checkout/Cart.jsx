@@ -190,19 +190,19 @@ const Cart = () => {
   return (
     <Stack spacing={{ xs: 1, sm: 2 }}>
       {loading && <Loader />}
-      {cart.map((cartProduct) => (
+      {cart.map((cart) => (
         <CartItem
-          id={cartProduct.id}
-          productId={cartProduct.productId}
-          key={cartProduct.id}
-          image={cartProduct.image}
-          price={cartProduct.price}
-          name={cartProduct.name}
-          qty={cartProduct.quantity}
-          discount={cartProduct.discount}
-          color={cartProduct.color}
-          size={cartProduct.size}
-          quantityInStock={cartProduct.quantityInStock}
+          key={cart.id}
+          id={cart.id}
+          productId={cart.product.id}
+          image={cart.product.image}
+          price={cart.product.price}
+          name={cart.product.name}
+          qty={cart.quantity}
+          discount={cart.product.discount}
+          color={cart.option.color}
+          size={cart.option.size}
+          quantityInStock={cart.option.stock}
         />
       ))}
     </Stack>

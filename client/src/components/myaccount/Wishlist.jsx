@@ -28,16 +28,16 @@ const Wishlist = () => {
       )}
       <Grid container spacing={{ xs: 0.5, sm: 2 }} pt={2}>
         {data.length !== 0 &&
-          data.map((product) => (
-            <Grid key={product.id} item xs={6} sm={4} md={3}>
+          data.map((item) => (
+            <Grid key={item.id} item xs={6} sm={4} md={3}>
               <WishlistProduct
-                id={product.id}
-                productId={product.productId}
-                image={product.image}
-                price={product.price}
-                discount={product.discount}
-                name={product.name}
-                handler={product.handler}
+                id={item.id}
+                productId={item.product.id}
+                image={item.product.image}
+                price={item.product.price}
+                discount={item.product.discount}
+                name={item.product.name}
+                handler={item.product.handler}
                 onDelete={setDeleteId}
               />
             </Grid>

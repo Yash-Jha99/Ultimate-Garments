@@ -1,0 +1,314 @@
+[
+    {
+        "id": "1",
+        "name": "t-shirts",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-03-30_Jake_Look_01_21771_16371.jpeg?v=1437070235",
+        "categoryId": "1"
+    },
+    {
+        "id": "10",
+        "name": "shoes",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-05-13_Reshoot_Look10_30159_21803.jpeg?v=1437069365",
+        "categoryId": "1"
+    },
+    {
+        "id": "11",
+        "name": "shorts",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "12",
+        "name": "belts",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "14",
+        "name": "dresses",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2014_11_17_Lana_Look034_02.jpeg?v=1437081220",
+        "categoryId": "2"
+    },
+    {
+        "id": "15",
+        "name": "bracelets",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "16",
+        "name": "coats & jackets",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "17",
+        "name": "pants",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "18",
+        "name": "scarves",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "19",
+        "name": "skirts",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2014_11_17_Lana_Look10_01.jpeg?v=1437073298",
+        "categoryId": "2"
+    },
+    {
+        "id": "2",
+        "name": "scarves",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "20",
+        "name": "tops",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/20141215_Lana-1436.jpeg?v=1437072873",
+        "categoryId": "2"
+    },
+    {
+        "id": "21",
+        "name": "socks",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "22",
+        "name": "necklaces",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "23",
+        "name": "earrings",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "26",
+        "name": "shoes",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "27",
+        "name": "knitwear",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "28",
+        "name": "bracelets",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "29",
+        "name": "gloves",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "3",
+        "name": "coats & jackets",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-06-04-Matt_Look6_20691_22923.jpeg?v=1437072034",
+        "categoryId": "1"
+    },
+    {
+        "id": "30",
+        "name": "socks",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "31",
+        "name": "hats",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "32",
+        "name": "vests",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-04-03_Jake_Look_12_30806_18081.jpeg?v=1437068078",
+        "categoryId": "1"
+    },
+    {
+        "id": "33",
+        "name": "Accessories",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "35",
+        "name": "Toiletries",
+        "icon": "",
+        "categoryId": "4"
+    },
+    {
+        "id": "36",
+        "name": "belts",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "37",
+        "name": "jumpsuits",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "38",
+        "name": "home accessories",
+        "icon": "",
+        "categoryId": "4"
+    },
+    {
+        "id": "39",
+        "name": "shorts",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-06-04-Matt_Look1_20686_22797_copy.jpeg?v=1437072043",
+        "categoryId": "1"
+    },
+    {
+        "id": "4",
+        "name": "button-ups",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "40",
+        "name": "t-shirts",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-07-02_Ashley_16_50269_23854.jpeg?v=1437064362",
+        "categoryId": "2"
+    },
+    {
+        "id": "41",
+        "name": "outerwear",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-04-19_LANA_LOOK16_20843_20518.jpeg?v=1437071790",
+        "categoryId": "2"
+    },
+    {
+        "id": "42",
+        "name": "rings",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "43",
+        "name": "cardigans",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-02-16_Lana_Look_03_21484_4547.jpeg?v=1442350429",
+        "categoryId": "2"
+    },
+    {
+        "id": "44",
+        "name": "denim",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "45",
+        "name": "denim",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-04-03_Jake_Look_08_32020_18028.jpeg?v=1442349608",
+        "categoryId": "1"
+    },
+    {
+        "id": "46",
+        "name": "Pants",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-03-30_Jake_Look_01_21771_16369.jpeg?v=1437070363",
+        "categoryId": "1"
+    },
+    {
+        "id": "48",
+        "name": "Accessories",
+        "icon": "",
+        "categoryId": "1"
+    },
+    {
+        "id": "49",
+        "name": "shirts",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-04-03_Jake_Look_09_30295_18055.jpeg?v=1437069072",
+        "categoryId": "1"
+    },
+    {
+        "id": "5",
+        "name": "bags",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "50",
+        "name": "hats",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "51",
+        "name": "rings",
+        "icon": "",
+        "categoryId": "2"
+    },
+    {
+        "id": "52",
+        "name": "Socks",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2015-07-08_Laydown_30574_24570.jpeg?v=1437068469",
+        "categoryId": "1"
+    },
+    {
+        "id": "53",
+        "name": "button ups",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "55",
+        "name": "tank tops",
+        "icon": "",
+        "categoryId": "4"
+    },
+    {
+        "id": "57",
+        "name": "bags",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "58",
+        "name": "accessories",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "59",
+        "name": "knitwear",
+        "icon": "",
+        "categoryId": "3"
+    },
+    {
+        "id": "6",
+        "name": "button-ups",
+        "icon": "",
+        "categoryId": "1"
+    },
+    {
+        "id": "7",
+        "name": "trousers",
+        "icon": "https://cdn.shopify.com/s/files/1/0923/8036/products/2014-10-10_Addis_Look_08_01.jpeg?v=1437078798",
+        "categoryId": "1"
+    },
+    {
+        "id": "8",
+        "name": "knitwear",
+        "icon": "",
+        "categoryId": "1"
+    },
+    {
+        "id": "9",
+        "name": "vests",
+        "icon": "",
+        "categoryId": "2"
+    }
+]

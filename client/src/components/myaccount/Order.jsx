@@ -10,7 +10,7 @@ const OrderItem = ({
   orderedDate,
   image,
   price,
-  orderItemId,
+  orderId,
   status,
 }) => {
   return (
@@ -19,7 +19,7 @@ const OrderItem = ({
     >
       <NavLink
         style={{ textDecoration: "none", color: "inherit", display: "block" }}
-        to={`/myaccount/order_details?order_id=${id}&item_id=${orderItemId}`}
+        to={`/myaccount/order_details?order_id=${orderId}&item_id=${id}`}
       >
         <Stack direction="row" spacing={2} pb={{ xs: 1, sm: 1 }}>
           <Stack alignItems="center">
@@ -50,7 +50,7 @@ const OrderItem = ({
               </Typography>
             ) : (
               <Typography fontWeight={500} variant="body2">
-                Ordered on {orderedDate}
+                Ordered on {new Date(orderedDate).toDateString()}
               </Typography>
             )}
           </Stack>
@@ -74,16 +74,16 @@ const Order = () => {
             {orders.length === 0 && (
               <NotFound message="You have not placed any order yet" />
             )}
-            {orders.map((order) => (
+            {orders.map((item) => (
               <OrderItem
-                id={order.id}
-                key={order.orderItemId}
-                name={order.name}
-                image={order.image}
-                orderedDate={order.orderedDate}
-                price={order.price}
-                orderItemId={order.orderItemId}
-                status={order.status}
+                id={item.id}
+                key={item.id}
+                name={item.product.name}
+                image={item.product.image}
+                orderedDate={item.order.orderedAt}
+                price={item.price}
+                orderId={item.orderId}
+                status={item.order.status}
               />
             ))}
           </Stack>

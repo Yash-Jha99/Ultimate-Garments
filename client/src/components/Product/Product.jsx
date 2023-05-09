@@ -38,7 +38,7 @@ const Product = ({
       });
       if (response.status === 201) {
         enqueueSnackbar("Product Wishlisted", { variant: "success" });
-        setNewWishlistedId(response.data.wishlistId);
+        setNewWishlistedId(response.data.id);
       } else {
         setWishlisted(false);
         enqueueSnackbar("Something went wrong", { variant: "error" });

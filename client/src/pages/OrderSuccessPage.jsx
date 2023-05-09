@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
 function OrderSuccessPage() {
   const navigate = useNavigate();
@@ -13,10 +13,8 @@ function OrderSuccessPage() {
   }, []);
 
   return (
-    <Box>
+    <Paper elevation={2}>
       <Stack
-        boxShadow={2}
-        bgcolor="white"
         spacing={2}
         height="86vh"
         justifyContent="center"
@@ -40,7 +38,7 @@ function OrderSuccessPage() {
           My Orders
         </Button>
       </Stack>
-    </Box>
+    </Paper>
   );
 }
 

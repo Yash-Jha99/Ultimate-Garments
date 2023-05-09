@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React, { Suspense } from "react";
-import { Await, useLoaderData } from "react-router-dom";
+import { Await, Link, useLoaderData } from "react-router-dom";
 import Loader from "../general/Loader";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
@@ -42,23 +42,23 @@ const OrderDetails = () => {
     <Suspense fallback={<Loader />}>
       <Await resolve={orderDetail}>
         {({
-          image,
-          name,
           price,
-          date,
-          color,
-          size,
-          first_name: firstName,
-          last_name: lastName,
-          mobile_number: mobileNumber,
-          city,
-          state,
-          pincode,
-          address,
-          town,
-          paymentType,
-          status,
-          ...orderDetail
+          product: { image, name, handler },
+          productOption: { color, size },
+          order: {
+            address:
+            { firstName,
+              lastName,
+              mobileNumber,
+              city,
+              state,
+              pincode,
+              address,
+              town },
+            payment,
+            status,
+            ...orderDetail
+          }
         }) => (
           <Stack spacing={{ xs: 1, sm: 2 }}>
             <Paper>
@@ -76,21 +76,23 @@ const OrderDetails = () => {
                   pb={{ xs: 1, sm: 3 }}
                 >
                   <Stack alignItems="center">
-                    <Box
-                      height={{ xs: 72, sm: 120 }}
-                      width={{ xs: 72, sm: 120 }}
-                      mx={{ xs: 0, sm: 2 }}
-                    >
-                      <img
-                        src={image}
-                        alt="product"
-                        style={{
-                          objectFit: "contain",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    </Box>
+                    <Link to={`/${handler}`}>
+                      <Box
+                        height={{ xs: 72, sm: 120 }}
+                        width={{ xs: 72, sm: 120 }}
+                        mx={{ xs: 0, sm: 2 }}
+                      >
+                        <img
+                          src={image}
+                          alt="product"
+                          style={{
+                            objectFit: "contain",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      </Box>
+                    </Link>
                   </Stack>
                   <Stack width="100%" overflow="hidden" textOverflow="ellipsis">
                     <Typography fontWeight={500} variant="body2">
@@ -115,7 +117,7 @@ const OrderDetails = () => {
                 </Stack>
                 <Stack spacing={3} width={{ xs: "100%", sm: "50%" }}>
                   <Typography variant="body2">
-                    <b>Payment Mode : </b> {paymentType}
+                    <b>Payment Mode : </b> {payment.type}
                   </Typography>
                   {status === "FAILED" ? (
                     <Typography color="error">Your order failed</Typography>
@@ -135,7 +137,7 @@ const OrderDetails = () => {
                             <Stack>
                               {label}
                               <br />
-                              {orderDetail[label[0].toLowerCase() + "Date"]}
+                              {new Date(orderDetail[label.toLowerCase() + "At"]).toDateString().split(" ").slice(0, 3).join(" ")}
                             </Stack>
                           </StepLabel>
                         </Step>
