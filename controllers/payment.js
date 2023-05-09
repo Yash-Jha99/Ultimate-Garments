@@ -22,9 +22,9 @@ exports.createCheckoutSession = async (req, res) => {
         })),
         mode: "payment",
         success_url:
-            process.env.PAYMENT_SUCCESS_URL + "?success=true&oid=" + orderId,
+            req.headers.origin + "/myaccount/order/success?oid=" + orderId,
         cancel_url:
-            process.env.PAYMENT_CANCEL_URL + "?success=false&oid=" + orderId,
+            req.headers.origin + "/myaccount/order/failed?oid=" + orderId,
     });
     res.status(200).json({ url: session.url });
 }

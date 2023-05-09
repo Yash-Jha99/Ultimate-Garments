@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ErrorIcon from "@mui/icons-material/Error";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Paper, Stack, Typography } from "@mui/material";
 import { updateData } from "../services/NodeService";
 
 function OrderFailedPage() {
@@ -21,32 +21,32 @@ function OrderFailedPage() {
   }, []);
 
   return (
-    <Stack
-      boxShadow={2}
-      bgcolor="white"
-      spacing={2}
-      height="86vh"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <ErrorIcon sx={{ fontSize: 150 }} color="error" />
-      <Stack>
-        <Typography textAlign="center" fontWeight="medium" variant="h4">
-          Payment failed !
-        </Typography>
-        <Typography textAlign="center" color="GrayText" variant="h6">
-          Please try again later
-        </Typography>
-      </Stack>
-      <Button
-        sx={{ color: "black" }}
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/", { replace: true })}
+    <Paper elevation={2}>
+      <Stack
+        spacing={2}
+        height="86vh"
+        justifyContent="center"
+        alignItems="center"
       >
-        Go To Homepage
-      </Button>
-    </Stack>
+        <ErrorIcon sx={{ fontSize: 150 }} color="error" />
+        <Stack>
+          <Typography textAlign="center" fontWeight="medium" variant="h4">
+            Payment failed !
+          </Typography>
+          <Typography textAlign="center" color="GrayText" variant="h6">
+            Please try again later
+          </Typography>
+        </Stack>
+        <Button
+          sx={{ color: "black" }}
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/", { replace: true })}
+        >
+          Go To Homepage
+        </Button>
+      </Stack>
+    </Paper>
   );
 }
 
