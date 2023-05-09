@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/reducers/cart";
 import { addToCheckout } from "../store/reducers/checkout";
 import { useSnackbar } from "notistack";
-import DeliveryOptions from "../components/product/DeliveryOptions";
+import DeliveryOptions from "../components/Product/DeliveryOptions";
 import NotFound from "../components/general/NotFound";
 
 const ProductDetails = () => {
