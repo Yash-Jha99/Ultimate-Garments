@@ -5,8 +5,8 @@ import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import FallbackImage from "../../assets/image-placeholder.png";
 import { deleteData, postData } from "../../services/NodeService";
+import Img from "../general/Image";
 
 const Product = ({
   id,
@@ -112,8 +112,8 @@ const Product = ({
           )}
         </IconButton>
         <Box height={{ xs: 270, md: 340 }} mb={2}>
-          <img
-            src={FallbackImage}
+          <Img
+            src={image}
             style={{
               objectFit: "contain",
               display: "block",
@@ -122,7 +122,6 @@ const Product = ({
             width="100%"
             alt="product"
             loading="lazy"
-            onLoad={(e) => (e.target.src = image)}
           />
         </Box>
         <Box

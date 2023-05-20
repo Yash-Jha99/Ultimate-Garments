@@ -4,7 +4,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
-import FallbackImage from "../../assets/image-placeholder.png";
+import Image from "../general/Image";
 
 const Banner = ({ images }) => {
   return (
@@ -25,13 +25,14 @@ const Banner = ({ images }) => {
       >
         {images.map(({ image, label }) => (
           <SwiperSlide key={label}>
-            <img
-              src={FallbackImage}
-              alt="label"
-              loading="lazy"
-              style={{ objectFit: "contain" }}
-              onLoad={(e) => (e.target.src = image)}
-            />
+            <Box height={450}>
+              <Image
+                src={image}
+                alt="label"
+                height={450}
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
           </SwiperSlide>
         ))}
       </Swiper>
