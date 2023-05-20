@@ -1,34 +1,37 @@
+import BoltIcon from "@mui/icons-material/Bolt";
+import Check from "@mui/icons-material/Check";
 import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import Check from "@mui/icons-material/Check";
 import LocalOffer from "@mui/icons-material/LocalOffer";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
-  IconButton,
-  Typography,
-  FormControl,
-  MenuItem,
-  Select,
-  Button,
   Avatar,
-  Paper,
+  Box,
+  Button,
   Card,
   CardContent,
-  CardActionArea,
-  CardMedia,
-  CardActions,
+  FormControl,
+  IconButton,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  Typography,
 } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import BoltIcon from "@mui/icons-material/Bolt";
-import { Box, Stack } from "@mui/material";
-import React, { useState } from "react";
-import { useLoaderData, useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteData, postData } from "../services/NodeService";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import NotFound from "../components/general/NotFound";
+import DeliveryOptions from "../components/product/DeliveryOptions";
+import { deleteData, postData } from "../services/NodeService";
 import { addToCart } from "../store/reducers/cart";
 import { addToCheckout } from "../store/reducers/checkout";
-import { useSnackbar } from "notistack";
-import DeliveryOptions from "../components/Product/DeliveryOptions";
-import NotFound from "../components/general/NotFound";
 
 const ProductDetails = () => {
   const { search } = useLocation();
@@ -42,9 +45,7 @@ const ProductDetails = () => {
   const location = useLocation();
   const query = new URLSearchParams(search);
   const { enqueueSnackbar } = useSnackbar();
-  const { product } = useLoaderData()
-
-  if (!product.name) return <NotFound message="Product Not Found" />
+  const { product } = useLoaderData();
 
   const {
     id,
@@ -56,34 +57,39 @@ const ProductDetails = () => {
     offer = "FLAT ₹100 OFF On ₹999 (Code:SHIRT100)",
     options,
     colors,
-    wishlist
+    wishlist,
   } = product;
 
-  const wishlistId = wishlist?.[0]?.id ?? null
+  const wishlistId = wishlist?.[0]?.id ?? null;
   const [qty, setQty] = useState(1);
   const [inValid, setInValid] = useState("");
-  const [selectedColor, setSelectedColor] = useState(colors.find((color) => color.handler === productName) ?? {});
-  const [selectedSize, setSelectedSize] = useState(options.find((size) => size.size === query.get("size")) ?? {});
+  const [selectedColor, setSelectedColor] = useState(
+    colors?.find((color) => color.handler === productName) ?? {}
+  );
+  const [selectedSize, setSelectedSize] = useState(
+    options?.find((size) => size.size === query.get("size")) ?? {}
+  );
   const [wishlisted, setWishlisted] = useState(wishlistId !== null);
   const [newWishlistId, setNewWishlistedId] = useState(wishlistId);
-  const isProductInCart = cart.findIndex(
-    (item) =>
-      item.productId === id &&
-      item.color === selectedColor.label &&
-      item.size === selectedSize.name
-  ) !== -1
-  const selectedOption = options.find((opt) => opt.size === selectedSize?.name);
+  const isProductInCart =
+    cart.findIndex(
+      (item) =>
+        item.productId === id &&
+        item.color === selectedColor.label &&
+        item.size === selectedSize.name
+    ) !== -1;
+  const selectedOption = options?.find(
+    (opt) => opt.size === selectedSize?.name
+  );
 
-  const sizes = options.map((option) => ({
+  const sizes = options?.map((option) => ({
     name: option.size,
     id: option.sku,
   }));
 
   const outOfStock = selectedOption?.stock === 0;
   const isCheckoutValid =
-    selectedOption !== undefined &&
-    !outOfStock &&
-    selectedOption.stock >= qty;
+    selectedOption !== undefined && !outOfStock && selectedOption.stock >= qty;
 
   const handleWishlist = async () => {
     if (!isLoggedIn) return navigate("/login?from=" + location.pathname);
@@ -158,12 +164,14 @@ const ProductDetails = () => {
         {
           option: { id: selectedOption.id },
           quantity: qty,
-          product: { discount, price, id }
+          product: { discount, price, id },
         },
       ])
     );
     navigate("/checkout/shipping");
   };
+
+  if (!product.name) return <NotFound message="Product Not Found" />;
 
   return (
     <Paper>
@@ -186,9 +194,7 @@ const ProductDetails = () => {
               height={{ xs: "100%", sm: "100%" }}
               width={{ xs: "100vw", sm: "68%" }}
             >
-              <Paper sx={{
-              }} variant="outlined">
-
+              <Paper sx={{}} variant="outlined">
                 <img
                   src={image}
                   alt="product"
@@ -404,12 +410,16 @@ const ProductDetails = () => {
               direction={{ xs: "column", sm: "row" }}
               spacing={2}
             >
-              <Card sx={{
-                width: { xs: "100%", sm: "50%" }
-              }}
-                variant="outlined">
+              <Card
+                sx={{
+                  width: { xs: "100%", sm: "50%" },
+                }}
+                variant="outlined"
+              >
                 <CardContent>
-                  <Typography variant="h6" component="div">Description</Typography>
+                  <Typography variant="h6" component="div">
+                    Description
+                  </Typography>
                   <Typography variant="body2">
                     <div
                       dangerouslySetInnerHTML={{
@@ -419,18 +429,22 @@ const ProductDetails = () => {
                   </Typography>
                 </CardContent>
               </Card>
-              <Card sx={{ width: { xs: "100%", sm: "50%" } }} variant="outlined" >
+              <Card
+                sx={{ width: { xs: "100%", sm: "50%" } }}
+                variant="outlined"
+              >
                 <CardContent>
                   <Typography gutterBottom variant="h6" component="div">
                     Delivery & Return Policy
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     We provide free shipping on all orders. Pay online to avoid
-                    charges of ₹50/product applicable on COD orders. The return or
-                    exchange can be done within 15 days after delivery. Every
-                    delivery from Beyoung is processed under excellent condition and
-                    in the fastest time possible. For our beloved customer’s care,
-                    we give contactless delivery. Refer to FAQ for more information.
+                    charges of ₹50/product applicable on COD orders. The return
+                    or exchange can be done within 15 days after delivery. Every
+                    delivery from Beyoung is processed under excellent condition
+                    and in the fastest time possible. For our beloved customer’s
+                    care, we give contactless delivery. Refer to FAQ for more
+                    information.
                   </Typography>
                 </CardContent>
               </Card>
@@ -438,7 +452,7 @@ const ProductDetails = () => {
           </Stack>
         </Stack>
       </Box>
-    </Paper >
+    </Paper>
   );
 };
 

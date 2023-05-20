@@ -1,10 +1,9 @@
 import { Box, Paper, Typography } from "@mui/material";
-import React from "react";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import FallbackImage from "../../assets/image-placeholder.png";
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../general/Loader";
-import FallbackImage from "../../assets/image-placeholder.jpg";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Link } from "react-router-dom";
 
 const CategoryRow = ({ category, showItems = null, title = null }) => {
   const { loading, data } = useDataFetch(
@@ -13,11 +12,9 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
     null
   );
 
-
-  const categories = showItems
+  const subcategories = showItems
     ? data.filter((item) => showItems.includes(item.name))
     : data;
-
 
   return (
     <Paper sx={{ p: 1 }} elevation={2}>
@@ -52,10 +49,10 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
           }}
           className="mySwiper"
         >
-          {categories.map((category) => (
-            <SwiperSlide key={category.id}>
+          {subcategories.map((subcategory) => (
+            <SwiperSlide key={subcategory.id}>
               <Link
-                to={`/products/${category.category}/${category.name}`}
+                to={`/products/${category}/${subcategory.name}`}
                 style={{ textDecoration: "none", color: "black" }}
               >
                 <Box>
@@ -68,8 +65,8 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
                       height: { xs: 150, sm: 200 },
                       objectFit: "contain",
                     }}
-                    src={category.icon.concat("&width=200") || FallbackImage}
-                    alt={category.name}
+                    src={subcategory.icon.concat("&width=200") || FallbackImage}
+                    alt={subcategory.name}
                   />
                   <Box
                     sx={{
@@ -88,7 +85,7 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
                       color="white"
                       textTransform="uppercase"
                     >
-                      {category.name}
+                      {subcategory.name}
                     </Typography>
                   </Box>
                 </Box>

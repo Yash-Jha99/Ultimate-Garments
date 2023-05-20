@@ -1,7 +1,6 @@
-import * as path from "path"
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import rollupReplace from "@rollup/plugin-replace";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [
@@ -14,22 +13,4 @@ export default defineConfig({
     }),
     react(),
   ],
-  resolve: process.env.USE_SOURCE
-    ? {
-      alias: {
-        "@remix-run/router": path.resolve(
-          __dirname,
-          "../../packages/router/index.ts"
-        ),
-        "react-router": path.resolve(
-          __dirname,
-          "../../packages/react-router/index.ts"
-        ),
-        "react-router-dom": path.resolve(
-          __dirname,
-          "../../packages/react-router-dom/index.tsx"
-        ),
-      },
-    }
-    : {},
 });

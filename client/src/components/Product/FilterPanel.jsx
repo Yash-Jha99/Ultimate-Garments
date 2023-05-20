@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
-  Stack,
-  Typography,
   Accordion,
+  AccordionActions,
   AccordionDetails,
   AccordionSummary,
-  FormControlLabel,
-  Checkbox,
-  RadioGroup,
-  Radio,
-  Box,
-  AccordionActions,
   Button,
-  Paper,
+  Checkbox,
   Divider,
+  FormControlLabel,
+  Paper,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useEffect, useState } from "react";
 
 const FilterPanel = ({ onChange, filterData }) => {
-  const { size, color } = filterData
+  const { size, color } = filterData;
   const [priceFilters, setPriceFilters] = useState(null);
   const [sizeFilters, setSizeFilters] = useState([]);
   const [colorFilters, setColorFilters] = useState([]);
@@ -27,7 +26,6 @@ const FilterPanel = ({ onChange, filterData }) => {
     color: 6,
   });
 
-
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setSizeFilters(
@@ -35,7 +33,6 @@ const FilterPanel = ({ onChange, filterData }) => {
         size.size === name ? { ...size, active: checked } : size
       )
     );
-
   };
 
   const handleColorChange = (event) => {
@@ -45,12 +42,10 @@ const FilterPanel = ({ onChange, filterData }) => {
         color.color === name ? { ...color, active: checked } : color
       )
     );
-
   };
 
   const handlePriceChange = (event) => {
     setPriceFilters(event.target.value);
-
   };
 
   const handleSeeMore = (option) => {
@@ -94,22 +89,16 @@ const FilterPanel = ({ onChange, filterData }) => {
       price: priceFilters,
     };
     onChange(filters);
-
-  }, [sizeFilters, priceFilters, colorFilters])
-
+  }, [sizeFilters, priceFilters, colorFilters]);
 
   useEffect(() => {
-    setColorFilters(color)
-    setSizeFilters(size)
+    setColorFilters(color);
+    setSizeFilters(size);
   }, [size, color]);
 
   return (
     <Paper elevation={2}>
-      <Stack
-        p={2}
-        direction="row"
-        justifyContent="space-between"
-      >
+      <Stack p={2} direction="row" justifyContent="space-between">
         <Typography variant="h6">FILTER</Typography>
         <Button size="small" color="secondary" onClick={handleClearFilters}>
           Clear filters

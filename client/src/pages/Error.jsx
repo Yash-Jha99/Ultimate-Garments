@@ -1,12 +1,16 @@
-import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import ErrorRounded from "@mui/icons-material/ErrorRounded";
-import pageNotFoundImage from "../assets/page-not-found.jpg";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import {
+  isRouteErrorResponse,
+  useNavigate,
+  useRouteError,
+} from "react-router-dom";
+import pageNotFoundImage from "../assets/page-not-found.png";
 
 const Error = () => {
   const error = useRouteError();
-  const navigate = useNavigate()
-  if (error) console.log("[ROUTER Error]: ", error.message)
+  const navigate = useNavigate();
+  if (error) console.log("[ROUTER Error]: ", error.message);
 
   return (
     <Paper>
@@ -17,14 +21,17 @@ const Error = () => {
         justifyContent="center"
         alignItems="center"
       >
-        {isRouteErrorResponse(error) ? (<Box textAlign="center">
-          <img
-            style={{ width: "500px", maxWidth: "100%" }}
-            src={pageNotFoundImage}
-            alt="Page Not Found"
-          />
-          <Typography variant="h4" mt={1}>Page Not Found !</Typography>
-        </Box>
+        {isRouteErrorResponse(error) ? (
+          <Box textAlign="center">
+            <img
+              style={{ width: "500px", maxWidth: "100%" }}
+              src={pageNotFoundImage}
+              alt="Page Not Found"
+            />
+            <Typography variant="h4" mt={1}>
+              Page Not Found !
+            </Typography>
+          </Box>
         ) : (
           <Box textAlign="center">
             <ErrorRounded sx={{ fontSize: 150 }} color="error" />

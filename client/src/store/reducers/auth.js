@@ -22,7 +22,8 @@ const authSlice = createSlice({
       if (params.get("from")) window.location.href = params.get("from");
       window.location.reload();
     },
-    logout: (state, action) => {
+
+    logout: (state) => {
       state.isLoggedIn = false;
       state.token = null;
       localStorage.clear();
@@ -33,3 +34,7 @@ const authSlice = createSlice({
 
 export default authSlice.reducer;
 export const { login, logout } = authSlice.actions;
+
+export const getAuth = () => (getState) => {
+  return getState().auth;
+};

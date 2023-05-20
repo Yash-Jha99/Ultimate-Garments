@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Box, Typography, IconButton, Card } from "@mui/material";
 import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import { useSelector } from "react-redux";
-import { deleteData, postData } from "../../services/NodeService";
+import { Box, Card, IconButton, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
-import FallbackImage from "../../assets/image-placeholder.jpg";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import FallbackImage from "../../assets/image-placeholder.png";
+import { deleteData, postData } from "../../services/NodeService";
 
 const Product = ({
   id,
@@ -61,7 +61,11 @@ const Product = ({
         elevation={0}
         sx={{
           position: "relative",
-          ":hover": { boxShadow: 4, transform: "scale(1.02)", transition: "transform 0.1s cubic-bezier(0.4, 0, 0.2, 1)" },
+          ":hover": {
+            boxShadow: 4,
+            transform: "scale(1.02)",
+            transition: "transform 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+          },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -69,21 +73,23 @@ const Product = ({
           height: "100%",
         }}
       >
-        {badge && <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            bgcolor: "error.main",
+        {badge && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              bgcolor: "error.main",
 
-            fontSize: 14,
-            p: "3px 6px",
-            fontWeight: "normal",
-            color: "white",
-          }}
-        >
-          {badge}
-        </Box>}
+              fontSize: 14,
+              p: "3px 6px",
+              fontWeight: "normal",
+              color: "white",
+            }}
+          >
+            {badge}
+          </Box>
+        )}
         <IconButton
           disableRipple
           onClick={handleClick}

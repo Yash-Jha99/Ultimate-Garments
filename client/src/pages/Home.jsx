@@ -1,8 +1,7 @@
-import React from "react";
-import Banner from "../components/home/Banner";
 import { Stack } from "@mui/material";
-import ProductRow from "../components/home/ProductRow";
+import Banner from "../components/home/Banner";
 import CategoryRow from "../components/home/CategoryRow";
+import ProductRow from "../components/home/ProductRow";
 
 const images = [
   {

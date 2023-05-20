@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 
-const Loader = ({
+const NavigationLoader = ({
   color = "secondary",
   size = 40,
   fullscreen = false,
@@ -8,9 +8,6 @@ const Loader = ({
 }) => {
   return (
     <Box
-      sx={{
-        opacity: 0.75,
-      }}
       display="flex"
       justifyContent="center"
       alignItems="center"
@@ -27,4 +24,4 @@ const Loader = ({
   );
 };
 
-export default Loader;
+export default NavigationLoader;

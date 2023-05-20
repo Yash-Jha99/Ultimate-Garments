@@ -1,44 +1,44 @@
-import React, { useState, useRef } from "react";
-import {
-  Box,
-  Badge,
-  Stack,
-  Typography,
-  Button,
-  AppBar,
-  Toolbar,
-  ListItem,
-  Drawer,
-  Grid,
-  Paper,
-  Tabs,
-  Tab,
-} from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Home from "@mui/icons-material/Home";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import ListIcon from "@mui/icons-material/List";
+import Logout from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import Login from "./auth/Login";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  AppBar,
+  Badge,
+  Box,
+  Button,
+  Drawer,
+  Grid,
+  ListItem,
+  Paper,
+  Stack,
+  Tab,
+  Tabs,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import Home from "@mui/icons-material/Home";
-import ListIcon from "@mui/icons-material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Logout from "@mui/icons-material/Logout";
-import Dropdown from "./general/Dropdown";
-import { logout } from "../store/reducers/auth";
-import { stringToColor } from "../utils/utils";
-import Logo from "../assets/logo.png";
-import useDataFetch from "../hooks/useDataFetch";
-import categories from "../data/categories.json"
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from '@mui/icons-material/LightMode';
-import { toggleDarkMode } from "../store/reducers/theme";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import MenuItem from "@mui/material/MenuItem";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Logo from "../../assets/logo.png";
+import categories from "../../data/categories.json";
+import useDataFetch from "../../hooks/useDataFetch";
+import { logout } from "../../store/reducers/auth";
+import { toggleDarkMode } from "../../store/reducers/theme";
+import { stringToColor } from "../../utils/utils";
+import Login from "../auth/Login";
+import Dropdown from "../general/Dropdown";
 
 const drawerWidth = 260;
 
@@ -65,7 +65,12 @@ const AccountMenu = () => {
 
   return (
     <React.Fragment>
-      <IconButton disableRipple sx={{ display: { xs: "initial", sm: "none" } }} size="small" onClick={() => navigate("/myaccount")}>
+      <IconButton
+        disableRipple
+        sx={{ display: { xs: "initial", sm: "none" } }}
+        size="small"
+        onClick={() => navigate("/myaccount")}
+      >
         <Avatar
           src="#"
           sx={{ width: 32, height: 32, bgcolor: stringToColor(name) }}
@@ -126,7 +131,7 @@ const AccountMenu = () => {
   );
 };
 
-const CategoryDropdown = ({ category, subcategories, index }) => {
+const CategoryDropdown = ({ category, subcategories }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -216,10 +221,9 @@ function TabPanel(props) {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-
 
 const Header = (props) => {
   // const [categories, setCategories] = useState([]);
@@ -232,7 +236,7 @@ const Header = (props) => {
   const cartItemsNumber = useSelector((state) => state.cart.items.length);
   const { darkMode } = useSelector((state) => state.theme);
   const { name } = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const { data: subcategories } = useDataFetch("product/subcategory", []);
 
@@ -277,30 +281,54 @@ const Header = (props) => {
               alt={name}
             />
 
-            <Typography variant="h5">
-              {name}
-            </Typography>
+            <Typography variant="h5">{name}</Typography>
           </Box>
         </Link>
         <Divider />
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            variant="fullWidth"
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+          >
             <Tab disableRipple label="Men" {...a11yProps(0)} />
             <Tab disableRipple label="Women" {...a11yProps(1)} />
           </Tabs>
         </Box>
       </Box>
       <TabPanel value={value} index={0}>
-        {subcategories.filter(
-          (item) => item.categoryId === "1"
-        ).map(subcategory => <Link key={subcategory.id} to={`/products/men/${subcategory.name}`}> <ListItem onClick={handleDrawerToggle} sx={{ textTransform: "capitalize" }}>{subcategory.name}</ListItem></Link>)
-        }
+        {subcategories
+          .filter((item) => item.categoryId === "1")
+          .map((subcategory) => (
+            <Link key={subcategory.id} to={`/products/men/${subcategory.name}`}>
+              {" "}
+              <ListItem
+                onClick={handleDrawerToggle}
+                sx={{ textTransform: "capitalize" }}
+              >
+                {subcategory.name}
+              </ListItem>
+            </Link>
+          ))}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {subcategories.filter(
-          (item) => item.categoryId === "2"
-        ).map(subcategory => <Link key={subcategory.id} to={`/products/women/${subcategory.name}`}> <ListItem onClick={handleDrawerToggle} sx={{ textTransform: "capitalize" }}>{subcategory.name}</ListItem></Link>)
-        }
+        {subcategories
+          .filter((item) => item.categoryId === "2")
+          .map((subcategory) => (
+            <Link
+              key={subcategory.id}
+              to={`/products/women/${subcategory.name}`}
+            >
+              {" "}
+              <ListItem
+                onClick={handleDrawerToggle}
+                sx={{ textTransform: "capitalize" }}
+              >
+                {subcategory.name}
+              </ListItem>
+            </Link>
+          ))}
       </TabPanel>
     </Paper>
   );
@@ -314,7 +342,7 @@ const Header = (props) => {
 
   return (
     <Box position="sticky" top={0} zIndex={100} height="62px">
-      <Paper >
+      <Paper>
         <AppBar component="nav" color="inherit">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
             <Stack
@@ -361,7 +389,7 @@ const Header = (props) => {
                 {!darkMode ? <DarkModeIcon color="black" /> : <LightModeIcon />}
               </IconButton>
               <SearchIcon
-                onClick={(e) => {
+                onClick={() => {
                   setShowSearch(!showSearch);
                 }}
                 sx={{
@@ -400,7 +428,8 @@ const Header = (props) => {
                   >
                     Login
                   </Button>
-                )}</Box>
+                )}
+              </Box>
               {showSearch && (
                 <Box
                   sx={{
@@ -434,7 +463,7 @@ const Header = (props) => {
                       border: "1px solid black",
                       outline: "none",
                       cursor: "pointer",
-                      ":hover": { bgcolor: "black" }
+                      ":hover": { bgcolor: "black" },
                     }}
                     onClick={() => {
                       navigate("/search/" + searchRef.current.value);

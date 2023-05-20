@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Product from "../components/product/Product";
-import { useLoaderData, useParams } from "react-router-dom";
-import { Grid, Stack, Box, Drawer, Fab, Paper } from "@mui/material";
 import FilterAlt from "@mui/icons-material/FilterAlt";
-import Loader from "../components/general/Loader";
-import FilterPanel from "../components/product/FilterPanel";
-import NotFound from "../components/general/NotFound";
+import { Box, Drawer, Fab, Grid, Paper, Stack } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useLoaderData, useParams } from "react-router-dom";
+import Loader from "../components/general/Loader";
+import NotFound from "../components/general/NotFound";
+import FilterPanel from "../components/product/FilterPanel";
+import Product from "../components/product/Product";
 import { getData } from "../services/NodeService";
 
 const ProductsPage = () => {
   const { category, subcategory, search } = useParams();
-  const { products, filters: filtersData } = useLoaderData()
+  const { products, filters: filtersData } = useLoaderData();
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true)
-  const [hasMore, setHasMore] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const [filters, setFilters] = useState({
     search,
     category,
@@ -23,7 +23,7 @@ const ProductsPage = () => {
     pageNumber: 1,
     size: "",
     color: "",
-    price: ""
+    price: "",
   });
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
@@ -38,17 +38,20 @@ const ProductsPage = () => {
   };
 
   const fetchProducts = async (filters) => {
-    setLoading(true)
-    const products = await getData("product", filters)
-    setLoading(false)
-    if (filters.pageNumber === 1) setItems(products)
-    else setItems((items) => [...items, ...products])
-    setHasMore(products.length >= 12)
-  }
+    setLoading(true);
+    const products = await getData("product", filters);
+    setLoading(false);
+    if (filters.pageNumber === 1) setItems(products);
+    else setItems((items) => [...items, ...products]);
+    setHasMore(products.length >= 12);
+  };
 
   const fetchMoreData = () => {
-    setFilters((filters) => ({ ...filters, pageNumber: filters.pageNumber + 1 }));
-    fetchProducts({ ...filters, pageNumber: filters.pageNumber + 1 })
+    setFilters((filters) => ({
+      ...filters,
+      pageNumber: filters.pageNumber + 1,
+    }));
+    fetchProducts({ ...filters, pageNumber: filters.pageNumber + 1 });
   };
 
   const handleFilterChange = (newFilters) => {
@@ -61,15 +64,15 @@ const ProductsPage = () => {
       ...filters,
       ...newFilters,
       pageNumber: 1,
-    })
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
     setItems(products);
-    setFilters((filters) => ({ ...filters, category, subcategory }))
-    setHasMore(products.length >= 12)
-    setLoading(false)
+    setFilters((filters) => ({ ...filters, category, subcategory }));
+    setHasMore(products.length >= 12);
+    setLoading(false);
   }, [products]);
 
   return (
@@ -93,12 +96,8 @@ const ProductsPage = () => {
               filterData={filtersData}
             />
           </Stack>
-          <Box p={{ xs: 0, sm: 1 }}
-            width={{ xs: "100%", sm: "80%" }}
-            pr={{ xs: 0, sm: 2 }}>
-            <Paper
-              elevation={2}
-            >
+          <Box width={{ xs: "100%", sm: "80%" }} pr={{ xs: 0, sm: 2 }}>
+            <Paper elevation={2}>
               {loading && filters.pageNumber === 1 ? (
                 <Loader fullscreen />
               ) : (
@@ -175,5 +174,5 @@ const ProductsPage = () => {
       </Fab>
     </Box>
   );
-}
+};
 export default ProductsPage;

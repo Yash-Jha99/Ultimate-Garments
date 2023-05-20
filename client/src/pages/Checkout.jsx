@@ -2,35 +2,27 @@ import Home from "@mui/icons-material/Home";
 import Payment from "@mui/icons-material/Payment";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import {
+  Box,
   Button,
-  Typography,
-  Stepper,
+  Paper,
+  Stack,
   Step,
   StepLabel,
-  Toolbar,
-  AppBar,
-  Paper,
+  Stepper,
+  Typography,
 } from "@mui/material";
-import { Box, Stack } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  Link,
-  Outlet,
-  ScrollRestoration,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { postData } from "../services/NodeService";
-import Loader from "../components/general/Loader";
-import { addToCheckout } from "../store/reducers/checkout";
-import Logo from "../assets/logo.png";
-import ShieldSVG from "../assets/shield.svg";
-import NotFound from "../components/general/NotFound";
-import emptyCartImage from "../assets/empty-cart.png"
 import { useSnackbar } from "notistack";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import emptyCartImage from "../assets/empty-cart.png";
+import DeliveryDetails from "../components/checkout/DeliveryDetails";
 import PriceDetails from "../components/checkout/PriceDetails";
+import Loader from "../components/general/Loader";
+import NotFound from "../components/general/NotFound";
+import { postData } from "../services/NodeService";
+import { addToCheckout } from "../store/reducers/checkout";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
@@ -104,7 +96,8 @@ const Checkout = () => {
   const totalDiscount = checkoutItems
     .map(
       (item) =>
-        Math.ceil((item.product.price * item.product.discount) / 100) * item.quantity
+        Math.ceil((item.product.price * item.product.discount) / 100) *
+        item.quantity
     )
     .reduce((total, discount) => total + discount, 0);
 
@@ -169,49 +162,7 @@ const Checkout = () => {
 
   return (
     <Box>
-      <ScrollRestoration />
       {loading && <Loader fullscreen />}
-      <Box position="sticky" top={0} zIndex={100} height="62px">
-        <Paper sx={{ mx: 8 }} >
-          <AppBar component="nav" color="inherit">
-            <Toolbar
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <Stack
-                width="100%"
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                spacing={{ xs: 0, sm: 4 }}
-                mx={{ xs: 1, sm: 5 }}
-              >
-                <Link to="/">
-                  <img src={Logo} alt="Ultimate Garments" width={80} />
-                </Link>
-                <Stack
-                  width={{ xs: 170, sm: "initial" }}
-                  direction="row"
-                  alignItems="center"
-                  spacing={1.5}
-                >
-                  <img width={50} src={ShieldSVG} alt="" />
-                  <Typography
-                    fontWeight={500}
-                    fontSize={{ xs: 14, sm: 24 }}
-                    variant="h5"
-                  >
-                    100% SECURE PAYMENT
-                  </Typography>
-                </Stack>
-              </Stack>
-            </Toolbar>
-          </AppBar>
-        </Paper>
-      </Box>
-
       {!cartLoading && checkoutItems.length === 0 && cart.length === 0 && (
         <Box textAlign="center">
           <NotFound message="Your cart is empty" image={emptyCartImage} />
@@ -262,41 +213,7 @@ const Checkout = () => {
                 top={75}
               >
                 {location.pathname === "/checkout/payment" && (
-                  <Box
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                    border="1px solid lightgray"
-                    padding={2}
-                  >
-                    <Stack
-                      mb={1}
-                      justifyContent="space-between"
-                      alignItems="center"
-                      direction="row"
-                    >
-                      <Typography variant="body1">Deliver To:</Typography>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        size="small"
-                        onClick={() => navigate("/checkout/shipping")}
-                      >
-                        Change
-                      </Button>
-                    </Stack>
-                    <Typography fontWeight={500} variant="subtitle1" mb={1}>
-                      {deliveryAddress.firstName} {deliveryAddress.lastName}{" "}
-                      {"(" + deliveryAddress.pincode + ")"}
-                    </Typography>
-                    <Typography variant="body2">
-                      {deliveryAddress.address}, {deliveryAddress.town},{" "}
-                      {deliveryAddress.city}, {deliveryAddress.state}{" "}
-                    </Typography>
-                    <Typography variant="subtitle2">
-                      {deliveryAddress.mobileNumber}
-                    </Typography>
-                  </Box>
+                  <DeliveryDetails deliveryAddress={deliveryAddress} />
                 )}
                 <Box ref={priceDetailsRef}>
                   <PriceDetails
@@ -322,7 +239,15 @@ const Checkout = () => {
               </Stack>
             </Paper>
           </Stack>
-          <Paper sx={{ position: "fixed", width: "100vw", bottom: 0, display: { xs: "flex", sm: "none" } }} elevation={4}>
+          <Paper
+            sx={{
+              position: "fixed",
+              width: "100vw",
+              bottom: 0,
+              display: { xs: "flex", sm: "none" },
+            }}
+            elevation={4}
+          >
             <Stack
               zIndex={20}
               direction="row"

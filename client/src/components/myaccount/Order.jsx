@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
-import { useLoaderData, NavLink, Await } from "react-router-dom";
-import { Typography, Box, Stack, Divider, Paper } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
+import { Suspense } from "react";
+import { Await, NavLink, useLoaderData } from "react-router-dom";
 import Loader from "../general/Loader";
 import NotFound from "../general/NotFound";
 
@@ -14,9 +14,7 @@ const OrderItem = ({
   status,
 }) => {
   return (
-    <Paper
-      sx={{ p: { xs: 1, sm: 2 }, ":hover": { boxShadow: 4 } }}
-    >
+    <Paper sx={{ p: { xs: 1, sm: 2 }, ":hover": { boxShadow: 4 } }}>
       <NavLink
         style={{ textDecoration: "none", color: "inherit", display: "block" }}
         to={`/myaccount/order_details?order_id=${orderId}&item_id=${id}`}
@@ -68,24 +66,27 @@ const Order = () => {
       <Await resolve={data}>
         {(orders) => (
           <Stack spacing={{ xs: 1, sm: 1.5 }}>
-            <Paper sx={{ p: 2 }}>
-              <Typography variant="h5" >My Orders</Typography>
-            </Paper>
-            {orders.length === 0 && (
+            {orders.length === 0 ? (
               <NotFound message="You have not placed any order yet" />
+            ) : (
+              <>
+                <Paper sx={{ p: 2 }}>
+                  <Typography variant="h5">My Orders</Typography>
+                </Paper>
+                {orders.map((item) => (
+                  <OrderItem
+                    id={item.id}
+                    key={item.id}
+                    name={item.product.name}
+                    image={item.product.image}
+                    orderedDate={item.order.orderedAt}
+                    price={item.price}
+                    orderId={item.orderId}
+                    status={item.order.status}
+                  />
+                ))}
+              </>
             )}
-            {orders.map((item) => (
-              <OrderItem
-                id={item.id}
-                key={item.id}
-                name={item.product.name}
-                image={item.product.image}
-                orderedDate={item.order.orderedAt}
-                price={item.price}
-                orderId={item.orderId}
-                status={item.order.status}
-              />
-            ))}
           </Stack>
         )}
       </Await>
