@@ -1,10 +1,10 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Box } from "@mui/material";
 import { Autoplay, Pagination } from "swiper";
 import "swiper/css";
-import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Box } from "@mui/material";
+import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from "swiper/react";
+import FallbackImage from "../../assets/image-placeholder.png";
 
 const Banner = ({ images }) => {
   return (
@@ -26,9 +26,11 @@ const Banner = ({ images }) => {
         {images.map(({ image, label }) => (
           <SwiperSlide key={label}>
             <img
-              src={image}
+              src={FallbackImage}
               alt="label"
+              loading="lazy"
               style={{ objectFit: "contain" }}
+              onLoad={(e) => (e.target.src = image)}
             />
           </SwiperSlide>
         ))}

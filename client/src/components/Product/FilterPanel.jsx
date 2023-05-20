@@ -88,7 +88,7 @@ const FilterPanel = ({ onChange, filterData }) => {
           .join("+") || null,
       price: priceFilters,
     };
-    onChange(filters);
+    if (filters.size || filters.color || filters.price) onChange(filters);
   }, [sizeFilters, priceFilters, colorFilters]);
 
   useEffect(() => {

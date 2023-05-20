@@ -21,9 +21,6 @@ const ProductsPage = () => {
     subcategory,
     pageSize: 12,
     pageNumber: 1,
-    size: "",
-    color: "",
-    price: "",
   });
   const [openDrawer, setOpenDrawer] = React.useState(false);
 

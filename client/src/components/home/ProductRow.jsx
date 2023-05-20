@@ -1,10 +1,10 @@
 import { Box, Card, Paper, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Navigation } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
 import useDataFetch from "../../hooks/useDataFetch";
 import Loader from "../general/Loader";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper";
-import { Link } from "react-router-dom";
 
 const ProductRow = ({ category, title = null }) => {
   const [params] = useState({ category });
@@ -57,6 +57,7 @@ const ProductRow = ({ category, title = null }) => {
                 >
                   <Box
                     component="img"
+                    loading="lazy"
                     sx={{
                       display: "block",
                       overflow: "hidden",
@@ -65,7 +66,7 @@ const ProductRow = ({ category, title = null }) => {
                       minHeight: { xs: 200, sm: 310 },
                       objectFit: "contain",
                     }}
-                    src={product.image}
+                    src={product.image + "&height=310"}
                     alt={product.name}
                   />
                   <Box

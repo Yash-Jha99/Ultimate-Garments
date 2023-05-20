@@ -1,15 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Cart from "./components/checkout/Cart";
-import Payment from "./components/checkout/Payment";
-import Shipping from "./components/checkout/Shipping";
 import Layout from "./components/layout/Layout";
 import ProtectedLayout from "./components/layout/ProtectedLayout";
-import Order from "./components/myaccount/Order";
-import OrderDetails from "./components/myaccount/OrderDetails";
-import Profile from "./components/myaccount/Profile";
-import WishList from "./components/myaccount/Wishlist";
 import {
   loginLoader,
   orderDetailsLoader,
@@ -21,6 +14,13 @@ import Error from "./pages/Error";
 import Home from "./pages/Home";
 import OrderFailedPage from "./pages/OrderFailedPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
+const Cart = lazy(() => import("./components/checkout/Cart"));
+const Payment = lazy(() => import("./components/checkout/Payment"));
+const Shipping = lazy(() => import("./components/checkout/Shipping"));
+const Order = lazy(() => import("./components/myaccount/Order"));
+const OrderDetails = lazy(() => import("./components/myaccount/OrderDetails"));
+const Profile = lazy(() => import("./components/myaccount/Profile"));
+const WishList = lazy(() => import("./components/myaccount/Wishlist"));
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 const Checkout = lazy(() => import("./pages/Checkout"));

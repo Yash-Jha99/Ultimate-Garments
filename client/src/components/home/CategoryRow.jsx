@@ -58,6 +58,7 @@ const CategoryRow = ({ category, showItems = null, title = null }) => {
                 <Box>
                   <Box
                     component="img"
+                    loading="lazy"
                     sx={{
                       display: "block",
                       overflow: "hidden",
