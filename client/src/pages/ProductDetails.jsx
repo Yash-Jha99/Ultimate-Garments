@@ -28,14 +28,14 @@ import {
   useParams,
 } from "react-router-dom";
 import NotFound from "../components/general/NotFound";
-import DeliveryOptions from "../components/product/DeliveryOptions";
+import DeliveryOptions from "../components/Product/DeliveryOptions";
 import { deleteData, postData } from "../services/NodeService";
 import { addToCart } from "../store/reducers/cart";
 import { addToCheckout } from "../store/reducers/checkout";
 
 const ProductDetails = () => {
   const { search } = useLocation();
-  const { productName } = useParams();
+  const { handler } = useParams();
   const dispatch = useDispatch();
   const {
     cart: { items: cart },
@@ -64,7 +64,7 @@ const ProductDetails = () => {
   const [qty, setQty] = useState(1);
   const [inValid, setInValid] = useState("");
   const [selectedColor, setSelectedColor] = useState(
-    colors?.find((color) => color.handler === productName) ?? {}
+    colors?.find((color) => color.handler === handler) ?? {}
   );
   const [selectedSize, setSelectedSize] = useState(
     options?.find((size) => size.size === query.get("size")) ?? {}
@@ -326,7 +326,8 @@ const ProductDetails = () => {
                       onClick={() => {
                         setInValid("");
                         setSelectedColor(color);
-                        navigate("/" + color.handler);
+                        if (handler !== color.handler)
+                          navigate("/" + color.handler);
                       }}
                       key={color.label}
                     >

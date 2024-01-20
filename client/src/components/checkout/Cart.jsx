@@ -26,6 +26,7 @@ const CartItem = ({
   color = "red",
   discount = 25,
   quantityInStock,
+  handler,
 }) => {
   const [quantity, setQuantity] = useState(qty);
   const dispatch = useDispatch();
@@ -44,18 +45,12 @@ const CartItem = ({
   const outOfStock = quantityInStock === 0;
 
   return (
-    <Paper
-      sx={{ ":hover": { boxShadow: 2 }, p: 2 }}
-    >
-      <Stack
-        direction="row"
-        spacing={2}
-        pb={{ xs: 1, sm: 1 }}
-      >
+    <Paper sx={{ ":hover": { boxShadow: 2 }, p: 2 }}>
+      <Stack direction="row" spacing={2} pb={{ xs: 1, sm: 1 }}>
         <Stack alignItems="center">
           <NavLink
             style={{ textDecoration: "none", display: "block" }}
-            to={`/${name.replace(/\s+/g, "-")}?size=${size}&color=${color}`}
+            to={`/${handler}?size=${size}&color=${color}`}
           >
             <Box
               height={{ xs: 72, sm: 120 }}
@@ -203,6 +198,7 @@ const Cart = () => {
           color={cart.option.color}
           size={cart.option.size}
           quantityInStock={cart.option.stock}
+          handler={cart.product.handler}
         />
       ))}
     </Stack>

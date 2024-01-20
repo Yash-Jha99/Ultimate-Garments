@@ -23,6 +23,7 @@ import Loader from "../components/general/Loader";
 import NotFound from "../components/general/NotFound";
 import { postData } from "../services/NodeService";
 import { addToCheckout } from "../store/reducers/checkout";
+import { getCart } from "../store/reducers/cart";
 
 const StepIcon = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
@@ -141,6 +142,7 @@ const Checkout = () => {
       const res = await postData("order", reqBody1);
       if (res.status === 201) {
         if (paymentMethod === "Cash") {
+          dispatch(getCart());
           navigate("/myaccount/order/success");
         } else {
           const response = await postData("payment/create-checkout-session", {
