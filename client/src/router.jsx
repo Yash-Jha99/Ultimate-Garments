@@ -14,18 +14,30 @@ import Error from "./pages/Error";
 import Home from "./pages/Home";
 import OrderFailedPage from "./pages/OrderFailedPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
-const Cart = lazy(() => import("./components/checkout/Cart"));
-const Payment = lazy(() => import("./components/checkout/Payment"));
-const Shipping = lazy(() => import("./components/checkout/Shipping"));
-const Order = lazy(() => import("./components/myaccount/Order"));
-const OrderDetails = lazy(() => import("./components/myaccount/OrderDetails"));
-const Profile = lazy(() => import("./components/myaccount/Profile"));
-const WishList = lazy(() => import("./components/myaccount/Wishlist"));
-const ProductsPage = lazy(() => import("./pages/ProductsPage"));
-const ProductDetails = lazy(() => import("./pages/ProductDetails"));
-const Checkout = lazy(() => import("./pages/Checkout"));
-const MyAccount = lazy(() => import("./pages/MyAccount"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
+import Payment from "./components/checkout/Payment";
+import Shipping from "./components/checkout/Shipping";
+import Cart from "./components/checkout/Cart";
+import Checkout from "./pages/Checkout";
+import OrderDetails from "./components/myaccount/OrderDetails";
+import Order from "./components/myaccount/Order";
+import Wishlist from "./components/myaccount/Wishlist";
+import Profile from "./components/myaccount/Profile";
+import MyAccount from "./pages/MyAccount";
+import LoginPage from "./pages/LoginPage";
+import ProductDetails from "./pages/ProductDetails";
+import ProductsPage from "./pages/ProductsPage";
+// const Cart = lazy(() => import("./components/checkout/Cart"));
+// const Payment = lazy(() => import("./components/checkout/Payment"));
+// const Shipping = lazy(() => import("./components/checkout/Shipping"));
+// const Order = lazy(() => import("./components/myaccount/Order"));
+// const OrderDetails = lazy(() => import("./components/myaccount/OrderDetails"));
+// const Profile = lazy(() => import("./components/myaccount/Profile"));
+// const WishList = lazy(() => import("./components/myaccount/Wishlist"));
+// const ProductsPage = lazy(() => import("./pages/ProductsPage"));
+// const ProductDetails = lazy(() => import("./pages/ProductDetails"));
+// const Checkout = lazy(() => import("./pages/Checkout"));
+// const MyAccount = lazy(() => import("./pages/MyAccount"));
+// const LoginPage = lazy(() => import("./pages/LoginPage"));
 
 const router = createBrowserRouter([
   {
@@ -74,7 +86,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/myaccount/wishlist",
-            element: <WishList />,
+            element: <Wishlist />,
           },
           {
             path: "/myaccount/address",
