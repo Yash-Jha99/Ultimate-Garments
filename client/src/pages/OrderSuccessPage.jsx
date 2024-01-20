@@ -9,7 +9,7 @@ function OrderSuccessPage() {
   useEffect(() => {
     setTimeout(() => {
       navigate("/myaccount/orders", { replace: true });
-    }, 10000);
+    }, 3000);
   }, []);
 
   return (

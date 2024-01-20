@@ -17,7 +17,7 @@ function OrderFailedPage() {
     updateOrderStatus();
     setTimeout(() => {
       navigate("/", { replace: true });
-    }, 10000);
+    }, 3000);
   }, []);
 
   return (
